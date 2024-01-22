@@ -4,8 +4,8 @@ import com.commenau.model.Category;
 import com.commenau.paging.PageRequest;
 import com.commenau.service.CategoryService;
 import com.commenau.util.HttpUtil;
+import com.commenau.util.PagingUtil;
 import com.commenau.validate.Validator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -23,20 +23,14 @@ public class CategoryController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String nextPageStr = request.getParameter("page");
-        int page = 1;
-        if (nextPageStr == null || nextPageStr.isEmpty())
-            nextPageStr = "1";
-        try {
-            page = Integer.parseInt(nextPageStr);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
+        String pageStr = request.getParameter("page");
+
+        //paging
         int totalItem = categoryService.getTotalItem();
-        int maxPage = (totalItem % maxPageItem == 0) ? (totalItem / maxPageItem) : (totalItem / maxPageItem) + 1;
-        if (page <= 0 || page > maxPage)
-            page = 1;
+        int maxPage = PagingUtil.maxPage(totalItem, maxPageItem);
+        int page = PagingUtil.convertToPageNumber(pageStr, maxPage);
         PageRequest pageRequest = PageRequest.builder().page(page).maxPageItem(maxPageItem).build();
+
         request.setAttribute("maxPage", maxPage);
         request.setAttribute("page", page);
         request.setAttribute("categoryActive", "");
@@ -63,10 +57,9 @@ public class CategoryController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         Integer[] ids = HttpUtil.of(request.getReader()).toModel(Integer[].class);
         boolean result = categoryService.detele(ids);
-        objectMapper.writeValue(response.getOutputStream(), result);
+        response.setStatus(result ? HttpServletResponse.SC_NO_CONTENT : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     private boolean validate(Category category) {

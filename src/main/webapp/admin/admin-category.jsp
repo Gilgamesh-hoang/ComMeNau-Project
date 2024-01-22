@@ -119,42 +119,46 @@
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.span -->
                     </div>
-                    <!-- /.row -->
                     <!-- paginatation -->
-                    <c:if test="${maxPage != 1}">
-                        <nav aria-label="Page navigation example" style="text-align: center;">
-                            <ul class="pagination">
-                                <c:forEach var="index" begin="1" end="${maxPage}">
-                                    <li class="page-item">
-                                        <a class="page-link <c:if test="${page == index}">active</c:if>"
-                                           href='<c:url value="/admin/categories?page=${index}"/>'>${index}</a>
-                                    </li>
-                                </c:forEach>
-                            </ul>
-                        </nav>
-                    </c:if>
-                    <!--hết-->
-
-                    <!-- PAGE CONTENT ENDS -->
+                    <form id="formPaging" action="<c:url value="/admin/categories"/>" method="get">
+                        <input type="hidden" value="" id="page" name="page"/>
+                    </form>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="pagination"></ul>
+                    </nav>
                 </div>
-                <!-- /.col -->
-
-
-                <!-- /.row -->
             </div>
-            <!-- /.page-content -->
         </div>
     </div>
-    <!-- /.main-content -->
 </div>
 
 <!--====== Main Footer ======-->
 <%@ include file="/admin/common/footer.jsp" %>
+
+<script src="<c:url value="/jquery/jquery.twbsPagination.js"/>"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
+        //paging
+        $(function () {
+            var totalPages = ${maxPage};
+            var currentPage = ${page};
+            window.pagObj = $('#pagination').twbsPagination({
+                totalPages: totalPages,
+                visiblePages: 10,
+                startPage: currentPage,
+                onPageClick: function (event, page) {
+                    // console.info(page + ' (from options)');
+                    if (currentPage !== page) {
+                        $('#page').val(page);
+                        $('#formPaging').submit();
+                    }
+                }
+            });
+        });
+
+
         // Bắt sự kiện khi nút "Edit" được nhấn
         $(document).on("click", ".btn-info", function (e) {
             e.preventDefault(); // Ngăn chặn việc submit form
@@ -276,9 +280,8 @@
                         url: '<c:url value="/admin/categories"/>',
                         method: 'DELETE',
                         contentType: "application/json; charset=utf-8",
-                        dataType: "json",
                         data: JSON.stringify(ids),
-                        success: function (response) {
+                        success: function () {
                             Swal.fire({
                                 icon: "success",
                                 title: "Xóa thành công",
@@ -296,7 +299,7 @@
                                 window.location.href = "<c:url value="/admin/categories"/>";
                             }, 800);
                         },
-                        error: function (error) {
+                        error: function () {
                             console.log('that bai')
                             Swal.fire({
                                 icon: "warning",
