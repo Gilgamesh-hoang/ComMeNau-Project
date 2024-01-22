@@ -2,13 +2,10 @@ package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.CartItemDTO;
-import com.commenau.dto.ProductViewDTO;
 import com.commenau.model.CartItem;
 import com.commenau.model.User;
 import com.commenau.service.CartService;
-import com.commenau.service.ProductService;
 import com.commenau.util.HttpUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -18,7 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +22,6 @@ import java.util.Map;
 public class CartController extends HttpServlet {
     @Inject
     private CartService cartService;
-    @Inject
-    private ProductService productService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,16 +38,7 @@ public class CartController extends HttpServlet {
             }
         } else {
             //get products from cookie
-            List<CartItemDTO> items = new ArrayList<>();
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().startsWith("productId")) {
-                    int productId = Integer.parseInt(cookie.getName().substring("productId".length()));
-                    int quantity = Integer.parseInt(cookie.getValue());
-                    ProductViewDTO product = productService.getByIdWithAvatar(productId);
-                    items.add(CartItemDTO.builder().product(product).quantity(quantity).build());
-                }
-            }
+            List<CartItemDTO> items = cartService.getItemFromCookies(request.getCookies());
             if (items.isEmpty())
                 request.getRequestDispatcher("/customer/empty-cart.jsp").forward(request, response);
             else {
@@ -73,7 +58,7 @@ public class CartController extends HttpServlet {
         // Map incoming JSON data to CartItem
         CartItem cartItem = HttpUtil.of(request.getReader()).toModel(CartItem.class);
 
-        if (cartItem==null) {
+        if (cartItem == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -93,31 +78,8 @@ public class CartController extends HttpServlet {
         } else {
             // Use cookie for non-authenticated users
             Cookie[] cookies = request.getCookies();
-            int available;
-
-            // Loop through cookies to handle products in the cart
-            for (Cookie cookie : cookies) {
-                // Find the corresponding product in the cookies
-                if (cookie.getName().equals("productId" + cartItem.getProductId())) {
-
-                    // Increment quantity if found in the cookie
-                    int quantity = Integer.parseInt(cookie.getValue()) + cartItem.getQuantity();
-                    if (productService.checkProductValid(cartItem.getProductId(), quantity)) {
-                        available = productService.checkAvailable(cartItem.getProductId(), quantity);
-                        cookie.setValue(String.valueOf(available));
-                        cookie.setMaxAge(5 * 24 * 60 * 60);
-                        response.addCookie(cookie);
-                        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                    } else
-                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                    return;
-                }
-            }
-            if (productService.checkProductValid(cartItem.getProductId(), cartItem.getQuantity())) {
-                // Add the product to cookies if not found in the existing cart
-                available = productService.checkAvailable(cartItem.getProductId(), cartItem.getQuantity());
-                Cookie cookie = new Cookie("productId" + cartItem.getProductId(), String.valueOf(available));
-                cookie.setMaxAge(5 * 24 * 60 * 60);
+            Cookie cookie = cartService.addItemToCookie(cookies, cartItem);
+            if (cookie != null) {
                 response.addCookie(cookie);
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else
@@ -144,76 +106,36 @@ public class CartController extends HttpServlet {
         } else {
             // Use cookie for non-authenticated users to update the cart
             Cookie[] cookies = request.getCookies();
-            boolean hasError = false;
-
-            // Loop through cookies to handle cart updates
-            for (Cookie cookie : cookies) {
-                for (Map.Entry<String, String> entry : map.entrySet()) {
-                    if (cookie.getName().equals("productId" + entry.getKey())) {
-                        // Extract productId from cookie name
-                        int productId = Integer.parseInt(entry.getKey());
-                        int quantity = Integer.parseInt(entry.getValue());
-
-                        // Check if the product is valid before updating
-                        if (!productService.checkProductValid(productId, quantity)) {
-                            hasError = true;
-                        }
-                        quantity = productService.checkAvailable(productId, quantity);
-                        cookie.setValue(String.valueOf(quantity));
-                        cookie.setMaxAge(5 * 24 * 60 * 60);
-                        response.addCookie(cookie);
-
-                        break;
-                    }
-                }
-            }
-            if (hasError)
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            else {
+            List<Cookie> cookieList = cartService.updateItemInCookies(cookies, map);
+            if (!cookieList.isEmpty()) {
+                cookieList.forEach(response::addCookie);
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user = ((User) request.getSession().getAttribute(SystemConstant.AUTH));
+        User user = ((User) request.getSession(false).getAttribute(SystemConstant.AUTH));
         Integer productId = HttpUtil.of(request.getReader()).toModel(Integer.class);
-        ObjectMapper mapper = new ObjectMapper();
+        //remove in database
         if (user != null) {
             boolean result = false;
             // delete a product
-            if (productId != null && productId > 0 ) {
+            if (productId != null && productId > 0) {
                 result = cartService.deleteProduct(productId, user.getId());
             } else {
                 //delete all product in cart
                 result = cartService.deleteAll(user.getId());
             }
-            // using jackson send a result to browser
-            mapper.writeValue(response.getOutputStream(), result);
+            response.setStatus(result ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
-            // delete a product
-            if (productId != null && productId > 0 ) {
-                Cookie[] cookies = request.getCookies();
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("productId" + productId)) {
-                        cookie.setMaxAge(0);
-                        response.addCookie(cookie);
-                        mapper.writeValue(response.getOutputStream(), true);
-                        break;
-                    }
-                }
-            } else {
-                //delete all product in cart
-                Cookie[] cookies = request.getCookies();
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().startsWith("productId")) {
-                        cookie.setMaxAge(0);
-                        response.addCookie(cookie);
-                    }
-                }
-                mapper.writeValue(response.getOutputStream(), true);
-            }
+            //remove in cookies
+            cartService.removeItemsInCookies(request.getCookies(), productId).forEach(response::addCookie);
+            response.setStatus(HttpServletResponse.SC_OK);
+
         }
 
     }

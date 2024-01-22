@@ -1,6 +1,6 @@
 package com.commenau.controller.admin;
 
-import com.commenau.dto.ProductViewDTO;
+import com.commenau.dto.ProductDTO;
 import com.commenau.model.Product;
 import com.commenau.model.ProductImage;
 import com.commenau.paging.PageRequest;
@@ -36,7 +36,7 @@ public class ProductDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productIdStr = request.getParameter("productId");
-        ProductViewDTO product = new ProductViewDTO();
+        ProductDTO product = new ProductDTO();
         // display data of product
         if (productIdStr != null) {
             int productId = 0;
@@ -45,7 +45,7 @@ public class ProductDetailController extends HttpServlet {
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
-            product = productService.getProductViewById(productId);
+            product = productService.getProductById(productId);
         }
         request.setAttribute("productActive", "");
         request.setAttribute("product", product);

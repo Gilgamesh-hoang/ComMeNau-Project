@@ -2,7 +2,7 @@ package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.CartItemDTO;
-import com.commenau.dto.ProductViewDTO;
+import com.commenau.dto.ProductDTO;
 import com.commenau.model.Invoice;
 import com.commenau.model.User;
 import com.commenau.service.CartService;
@@ -65,7 +65,7 @@ public class CheckoutController extends HttpServlet {
                 if (cookie.getName().startsWith("productId")) {
                     int productId = Integer.parseInt(cookie.getName().substring("productId".length()));
                     int quantity = Integer.parseInt(cookie.getValue());
-                    ProductViewDTO product = productService.getByIdWithAvatar(productId);
+                    ProductDTO product = productService.getByIdWithAvatar(productId);
                     items.add(CartItemDTO.builder().product(product).quantity(quantity).build());
                 }
             }

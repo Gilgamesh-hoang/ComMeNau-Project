@@ -65,7 +65,7 @@
                                                 </div>
                                                 <div class="table-p__info">
                                                     <span class="table-p__name"><a
-                                                            href="<c:url value="/product/${item.product.id}"/>">${item.product.productName}</a></span>
+                                                            href="<c:url value="/product/${item.product.id}"/>">${item.product.name}</a></span>
                                                 </div>
                                             </div>
                                         </td>
@@ -297,10 +297,7 @@
                         url: "<c:url value="/carts"/>",
                         data: JSON.stringify(cartItemId),
                         contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (response) {
-                            <%--window.location.href = "<c:url value="/gio-hang"/>";--%>
-                            <%--console.log("xoa thanh cong");--%>
+                        success: function () {
                             Swal.fire({
                                 icon: "success",
                                 title: "Xóa sản phẩm thành công",
@@ -318,9 +315,7 @@
                                 window.location.href = "<c:url value="/carts"/>";
                             }, 600);
                         },
-                        error: function (error) {
-                            <%--console.log("Đã xảy ra lỗi trong quá trình gửi dữ liệu: " + error);--%>
-                            <%--window.location.href = "<c:url value="/gio-hang"/>";--%>
+                        error: function () {
                             Swal.fire({
                                 icon: "warning",
                                 title: "Xóa sản phẩm thất bại",
@@ -359,8 +354,7 @@
                         url: "<c:url value="/carts"/>",
                         data: JSON.stringify("-1"),
                         contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (response) {
+                        success: function () {
                             Swal.fire({
                                 icon: "success",
                                 title: "Đã xóa tất cả sản phẩm",
@@ -378,7 +372,7 @@
                                 window.location.href = "<c:url value="/carts"/>";
                             }, 600);
                         },
-                        error: function (error) {
+                        error: function () {
                             Swal.fire({
                                 icon: "warning",
                                 title: "Xóa sản phẩm thất bại",

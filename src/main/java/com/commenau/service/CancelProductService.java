@@ -2,8 +2,7 @@ package com.commenau.service;
 
 import com.commenau.dao.CancelProductDAO;
 import com.commenau.dto.CancelProductDTO;
-import com.commenau.dto.ProductViewDTO;
-import com.commenau.model.Blog;
+import com.commenau.dto.ProductDTO;
 import com.commenau.model.CancelProduct;
 import com.commenau.paging.PageRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -34,12 +33,12 @@ public class CancelProductService {
             List<CancelProductDTO> results = new ArrayList<>();
             List<CancelProduct> list = cancelDAO.findByKeyWord(pageRequest, keyWord.trim());
             list.forEach(item -> {
-                ProductViewDTO viewDTO = productService.getByIdWithAvatar(item.getProductId());
+                ProductDTO viewDTO = productService.getByIdWithAvatar(item.getProductId());
                 CancelProductDTO dto = CancelProductDTO.builder()
                         .id(item.getId())
                         .quantity(item.getQuantity())
                         .canceledAt(item.getCanceledAt())
-                        .productName(viewDTO.getProductName())
+                        .productName(viewDTO.getName())
                         .productImage(viewDTO.getImages().get(0))
                         .build();
                 results.add(dto);
@@ -51,12 +50,12 @@ public class CancelProductService {
         List<CancelProductDTO> results = new ArrayList<>();
         List<CancelProduct> list = cancelDAO.findAll(pageRequest);
         list.forEach(item -> {
-            ProductViewDTO viewDTO = productService.getByIdWithAvatar(item.getProductId());
+            ProductDTO viewDTO = productService.getByIdWithAvatar(item.getProductId());
             CancelProductDTO dto = CancelProductDTO.builder()
                     .id(item.getId())
                     .quantity(item.getQuantity())
                     .canceledAt(item.getCanceledAt())
-                    .productName(viewDTO.getProductName())
+                    .productName(viewDTO.getName())
                     .productImage(viewDTO.getImages().get(0))
                     .build();
             results.add(dto);

@@ -3,7 +3,6 @@ package com.commenau.service;
 import com.commenau.dao.ProductReviewDAO;
 import com.commenau.dao.UserDAO;
 import com.commenau.dto.ProductReviewDTO;
-import com.commenau.dto.ProductViewDTO;
 import com.commenau.model.ProductReview;
 import com.commenau.model.User;
 

@@ -51,7 +51,7 @@ public class UserService {
         String passwd = user.getPassword();
         user = userDao.getUserByUsername(user.getUsername());
         if (user != null && BCrypt.checkpw(passwd, user.getPassword())
-                && user.getStatus().equals(SystemConstant.ACTIVATED)) // ton tai + check pass + activeted
+                && user.getStatus().equals(SystemConstant.ACTIVATED))
             return user;
         else
             return null;
@@ -113,9 +113,6 @@ public class UserService {
         return userDao.findUserByInput(input);
     }
 
-    public boolean changeStatusOfCustomer(User user) {
-        return userDao.changeStatusOfCustomer(user);
-    }
 
     public boolean lockOrUnlock(Long userId) {
         User u = userDao.getUserById(userId);

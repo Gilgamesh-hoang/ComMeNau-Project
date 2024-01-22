@@ -25,8 +25,6 @@ public class LostPasswordController extends HttpServlet {
     private MailService mail;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String currentPage = request.getRequestURL().toString();
-//        request.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
         request.getRequestDispatcher("/customer/lost-password.jsp").forward(request, response);
     }
 

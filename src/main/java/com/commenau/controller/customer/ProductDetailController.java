@@ -2,9 +2,7 @@ package com.commenau.controller.customer;
 
 
 import com.commenau.constant.SystemConstant;
-import com.commenau.dto.ProductViewDTO;
-import com.commenau.model.Product;
-import com.commenau.model.ProductReview;
+import com.commenau.dto.ProductDTO;
 import com.commenau.model.User;
 import com.commenau.service.ProductReviewService;
 import com.commenau.service.ProductService;
@@ -17,14 +15,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/product/*")
 public class ProductDetailController extends HttpServlet {
     @Inject
     ProductService productService;
-    @Inject
-    ProductReviewService productReviewService;
     @Inject
     WishlistService wishlistService;
 
@@ -42,10 +37,10 @@ public class ProductDetailController extends HttpServlet {
             }
         }
 
-        ProductViewDTO productViewDTO = productService.getProductViewById(productId);
+        ProductDTO productDTO = productService.getProductById(productId);
 
-        req.setAttribute("product", productViewDTO);
-        req.setAttribute("relativeProducts", productService.getRelativeProductViewByID(productViewDTO.getId()));
+        req.setAttribute("product", productDTO);
+        req.setAttribute("relativeProducts", productService.getRelativeProductViewByID(productDTO.getId()));
         String currentPage = req.getRequestURL().toString();
         req.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
         req.getRequestDispatcher("/customer/product-detail.jsp").forward(req, resp);

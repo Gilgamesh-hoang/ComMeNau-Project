@@ -13,16 +13,14 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class InvoiceDTO {
     private Integer id;
-    private String userFullName;
-    private String userEmail;
-    private String checkoutMethod;
+    private String fullName;
+    private String email;
     private String status;
     private Double shippingFee;
     private Double total;
     private String address;
     private String phoneNumber;
     private String paymentMethod;
-    private Timestamp updatedAt;
     private Timestamp createdAt;
-    //image,name, list?
+
 }

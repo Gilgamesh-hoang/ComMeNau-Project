@@ -67,7 +67,7 @@
                 <!--====== Product Right Side Details ======-->
                 <div class="pd-detail">
                     <div>
-                        <span class="pd-detail__name">${product.productName}</span>
+                        <span class="pd-detail__name">${product.name}</span>
                     </div>
                     <div>
                         <div class="pd-detail__inline">
@@ -87,11 +87,11 @@
                     <div class="u-s-m-b-15">
                         <div class="pd-detail__rating gl-rating-style">
                             <div>
-                                <c:forEach begin="1" end="${product.rating}">
+                                <c:forEach begin="1" end="${product.rate}">
                                     <i class="fas fa-star"></i>
                                 </c:forEach>
 
-                                <c:forEach begin="1" end="${5 - product.rating}">
+                                <c:forEach begin="1" end="${5 - product.rate}">
                                     <i class="far fa-star"></i>
                                 </c:forEach>
 
@@ -188,15 +188,15 @@
                     <div class="u-s-m-b-30">
                         <div class="pd-tab__rev-score">
                             <div class="u-s-m-b-8">
-                                <h2>${product.amountOfReview} Đánh giá - ${product.rating} (Sao)</h2>
+                                <h2>${product.amountOfReview} Đánh giá - ${product.rate} (Sao)</h2>
                             </div>
                             <div class="gl-rating-style-2 u-s-m-b-8">
                                 <div>
-                                    <c:forEach begin="1" end="${product.rating}">
+                                    <c:forEach begin="1" end="${product.rate}">
                                         <i class="fas fa-star"></i>
                                     </c:forEach>
 
-                                    <c:forEach begin="1" end="${5 - product.rating}">
+                                    <c:forEach begin="1" end="${5 - product.rate}">
                                         <i class="far fa-star"></i>
                                     </c:forEach>
 
@@ -213,7 +213,7 @@
                         <form>
                             <div class="rev-f1__group d-flex flex-row justify-content-between">
                                 <div class="u-s-m-b-15">
-                                    <h2>${product.amountOfReview} Đánh giá cho ${product.productName}</h2>
+                                    <h2>${product.amountOfReview} Đánh giá cho ${product.name}</h2>
                                 </div>
                                 <div class="u-s-m-b-15">
 

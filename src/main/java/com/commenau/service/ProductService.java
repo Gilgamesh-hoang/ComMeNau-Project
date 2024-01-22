@@ -1,8 +1,9 @@
 package com.commenau.service;
 
 import com.commenau.dao.*;
+import com.commenau.dto.ProductDTO;
 import com.commenau.dto.ProductRelativeViewDTO;
-import com.commenau.dto.ProductViewDTO;
+import com.commenau.mapper.ProductMapper;
 import com.commenau.model.Product;
 import com.commenau.paging.PageRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductService implements Pageable<ProductViewDTO> {
+public class ProductService implements Pageable<ProductDTO> {
 
     @Inject
     private ProductDAO productDAO;
@@ -30,20 +31,11 @@ public class ProductService implements Pageable<ProductViewDTO> {
     private ProductImageDAO productImageDAO;
     @Inject
     private CancelProductDAO cancelDAO;
-
-    public ProductViewDTO getByIdWithAvatar(int id) {
+    public ProductDTO getByIdWithAvatar(int id) {
         Product product = productDAO.findOneById(id);
-        ProductViewDTO productViewDTO =
-                ProductViewDTO.builder()
-                        .id(product.getId())
-                        .productName(product.getName())
-                        .description(product.getDescription())
-                        .price(product.getPrice())
-                        .available(product.getAvailable())
-                        .discount(product.getDiscount())
-                        .build();
-        productViewDTO.setImages(List.of(productImageDAO.findAvatarByProductId(product.getId())));
-        return productViewDTO;
+        ProductDTO productDTO =ProductMapper.INSTANCE.toDTO(product);
+        productDTO.setImages(List.of(productImageDAO.findAvatarByProductId(product.getId())));
+        return productDTO;
 
     }
 
@@ -51,25 +43,15 @@ public class ProductService implements Pageable<ProductViewDTO> {
         return productDAO.countProductsInCategory(categoryId);
     }
 
-    public ProductViewDTO getProductViewById(int id) {
-        Product product = productDAO.getById(id);
-        ProductViewDTO productViewDTO =
-                ProductViewDTO.builder()
-                        .id(Math.toIntExact(product.getId()))
-                        .categoryId(product.getCategoryId())
-                        .productName(product.getName())
-                        .description(product.getDescription())
-                        .price(product.getPrice())
-                        .discount(product.getDiscount())
-                        .available(product.getAvailable())
-                        .status(product.isStatus())
-                        .build();
+    public ProductDTO getProductById(int id) {
+        Product product = productDAO.findOneById(id);
+        ProductDTO productDTO =ProductMapper.INSTANCE.toDTO(product);
 
-        productViewDTO.setImages(productImageDAO.getAllImageByProductId(id));
-        productViewDTO.setAmountOfReview(countProductReviewsById(Math.toIntExact(product.getId())));
-        productViewDTO.setRating(averageRating(id));
+        productDTO.setImages(productImageDAO.getAllImageByProductId(id));
+        productDTO.setAmountOfReview(countProductReviewsById(Math.toIntExact(product.getId())));
+        productDTO.setRate(averageRating(id));
 
-        return productViewDTO;
+        return productDTO;
 
     }
 
@@ -126,7 +108,7 @@ public class ProductService implements Pageable<ProductViewDTO> {
     }
 
     @Override
-    public List<ProductViewDTO> getPage(int categoryId, int size, int page, String sortBy, String sort) {
+    public List<ProductDTO> getPage(int categoryId, int size, int page, String sortBy, String sort) {
         List<Product> products;
         if (sortBy == null) {
             products = productDAO.getProductViewPage(categoryId, size, page);
@@ -136,41 +118,41 @@ public class ProductService implements Pageable<ProductViewDTO> {
             products = productDAO.getProductViewPageSortByRating(categoryId, size, page, sort);
 
         }
-        List<ProductViewDTO> productViewDTOS = new ArrayList<>();
+        List<ProductDTO> productDTOS = new ArrayList<>();
 
         for (var x : products) {
 
-            ProductViewDTO productViewDTO =
-                    ProductViewDTO.builder()
+            ProductDTO productDTO =
+                    ProductDTO.builder()
                             .id(Math.toIntExact(x.getId()))
-                            .productName(x.getName())
+                            .name(x.getName())
                             .description(x.getDescription())
                             .price(x.getPrice())
                             .discount(x.getDiscount())
-                            .rating((int) x.getRate())
+                            .rate((int) x.getRate())
                             .available(x.getAvailable())
                             .build();
             String categoryName = categoryDao.getNameById(Math.toIntExact(x.getCategoryId()));
-            productViewDTO.setCategoryName(categoryName);
-            productViewDTO.setAmountOfReview(this.countProductReviewsById(x.getId()));
-            productViewDTO.setAvatar(productImageDAO.getAvatar(x.getId()));
-            productViewDTOS.add(productViewDTO);
+            productDTO.setCategoryName(categoryName);
+            productDTO.setAmountOfReview(this.countProductReviewsById(x.getId()));
+            productDTO.setAvatar(productImageDAO.getAvatar(x.getId()));
+            productDTOS.add(productDTO);
         }
 
 
-        return productViewDTOS;
+        return productDTOS;
 
     }
 
-    public List<ProductViewDTO> getByKeyWord(PageRequest pageRequest, String keyWord) {
+    public List<ProductDTO> getByKeyWord(PageRequest pageRequest, String keyWord) {
         if (StringUtils.isBlank(keyWord))
             return getAll(pageRequest);
         else {
-            List<ProductViewDTO> results = new ArrayList<>();
+            List<ProductDTO> results = new ArrayList<>();
             List<Product> products = productDAO.findByKeyWord(pageRequest, keyWord.trim());
             products.forEach(product -> {
-                ProductViewDTO dto = getByIdWithAvatar(product.getId());
-                dto.setRating((int) product.getRate());
+                ProductDTO dto = getByIdWithAvatar(product.getId());
+                dto.setRate((int) product.getRate());
                 dto.setStatus(product.isStatus());
                 dto.setAvailable(product.getAvailable());
                 dto.setCategoryName(categoryDao.getNameById(product.getCategoryId()));
@@ -181,7 +163,7 @@ public class ProductService implements Pageable<ProductViewDTO> {
     }
 
     @Override
-    public List<ProductViewDTO> getPage(int id, int size, int page) {
+    public List<ProductDTO> getPage(int id, int size, int page) {
         return this.getPage(id, size, page, null, null);
     }
 
@@ -195,7 +177,7 @@ public class ProductService implements Pageable<ProductViewDTO> {
         return productDAO.countByKeyWord(keyWord);
     }
 
-    public List<ProductViewDTO> getAll(PageRequest pageRequest) {
+    public List<ProductDTO> getAll(PageRequest pageRequest) {
         return productDAO.findAll(pageRequest);
     }
 

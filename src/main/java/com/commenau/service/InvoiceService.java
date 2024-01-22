@@ -41,7 +41,7 @@ public class InvoiceService {
             }
             InvoiceDTO invoicedto = InvoiceDTO.builder()
                     .id(in.getId())
-                    .updatedAt(invoiceStatusDAO.getStatusByInvoice(in.getId()).getCreatedAt())
+                    .createdAt(invoiceStatusDAO.getStatusByInvoice(in.getId()).getCreatedAt())
                     .status(invoiceStatusDAO.getStatusByInvoice(in.getId()).getStatus())
                     .total(total + shippingFee)
                     .build();
@@ -72,10 +72,9 @@ public class InvoiceService {
             total += invoiceItem.getPrice() * invoiceItem.getQuantity();
         }
         return InvoiceDTO.builder().id(invoiceId)
-                .userFullName(invoice.getFullName())
-                .userEmail(invoice.getEmail())
+                .fullName(invoice.getFullName())
+                .email(invoice.getEmail())
                 .status(invoiceStatusDAO.getStatusByInvoice(invoiceId).getStatus())
-                .updatedAt(invoiceStatusDAO.getStatusByInvoice(invoiceId).getCreatedAt())
                 .createdAt(invoice.getCreatedAt())
                 .shippingFee(shippingFee)
                 .total(total)
@@ -94,7 +93,7 @@ public class InvoiceService {
             }
             double shippingFee = i.getShippingFee() == null ? 0 : i.getShippingFee();
             re.add(new InvoiceDTO().builder().id(i.getId())
-                    .userFullName(i.getFullName())
+                    .fullName(i.getFullName())
                     .total(total)
                     .shippingFee(shippingFee)
                     .phoneNumber(i.getPhoneNumber())
@@ -118,7 +117,7 @@ public class InvoiceService {
             }
             InvoiceDTO invoicedto = InvoiceDTO.builder()
                     .id(in.getId())
-                    .updatedAt(invoiceStatusDAO.getStatusByInvoice(in.getId()).getCreatedAt())
+                    .createdAt(invoiceStatusDAO.getStatusByInvoice(in.getId()).getCreatedAt())
                     .status(invoiceStatusDAO.getStatusByInvoice(in.getId()).getStatus())
                     .total(total + shippingFee)
                     .build();
@@ -161,11 +160,7 @@ public class InvoiceService {
         //get product obj and quantity from cart
         Map<Product, Integer> map = new HashMap<>();
         cartDAO.findCartItemByUserId(invoice.getUserId()).forEach(cartItemDTO -> {
-            Product product = Product.builder()
-                    .id(cartItemDTO.getProduct().getId())
-                    .name(cartItemDTO.getProduct().getProductName())
-                    .price(cartItemDTO.getProduct().getPrice())
-                    .discount(cartItemDTO.getProduct().getDiscount()).build();
+            Product product = productDAO.findOneById(cartItemDTO.getProductId());
             map.put(product, cartItemDTO.getQuantity());
         });
 

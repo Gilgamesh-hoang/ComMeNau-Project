@@ -2,10 +2,9 @@ package com.commenau.dao;
 
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
-import com.commenau.dto.ProductViewDTO;
+import com.commenau.dto.ProductDTO;
 import com.commenau.model.Product;
 import com.commenau.paging.PageRequest;
-import com.commenau.connectionPool.ConnectionPool;
 import com.commenau.util.PagingUtil;
 import org.jdbi.v3.core.statement.Update;
 
@@ -16,33 +15,24 @@ import java.util.List;
 import java.util.Map;
 
 public class ProductDAO {
-    private static String averageRatingSql = "select avg(rating) from product_reviews where productId = ?";
-    private static String countProductReviewsSql = "select count(*) from product_reviews where productId = ?";
 
     public Product findOneById(int productId) {
-        String sql = "SELECT id,name,description,price,discount,status,rate,available FROM products WHERE id = :id";
+        String sql = "SELECT id,categoryId,name,description,price,discount,status,rate,available FROM products WHERE id = :id";
         Product product = JDBIConnector.getInstance(). withHandle(handle ->
                 handle.createQuery(sql).bind("id", productId).mapToBean(Product.class).stream().findFirst().orElse(new Product()));
         return product;
     }
 
-    public Product getById(int id) {
-        Product product = JDBIConnector.getInstance().withHandle(n -> {
-            Product p = n.createQuery("select id, categoryId , name , description, price , discount, available, status from products where id = ?").bind(0, id).mapToBean(Product.class).stream().findFirst().get();
-            return p;
-        });
-        return product;
-    }
 
     public int averageRating(int id) {
         return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery(averageRatingSql).bind(0, id).mapTo(Double.class).findOne().orElse(0d).intValue();
+            return n.createQuery("select avg(rating) from product_reviews where productId = ?").bind(0, id).mapTo(Double.class).findOne().orElse(0d).intValue();
         });
     }
 
     public int countProductReviewsById(int id) {
         return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery(countProductReviewsSql).bind(0, id).mapTo(Integer.class).findOne().orElse(0);
+            return n.createQuery("select count(*) from product_reviews where productId = ?").bind(0, id).mapTo(Integer.class).findOne().orElse(0);
         });
     }
 
@@ -75,13 +65,6 @@ public class ProductDAO {
                 sql = "select *, p.price * (1 - p.discount) AS price_discount from products as p where  status = 1 and p.categoryId =  ? order by " + sortby + " " + sort + "  limit ? offset ?";
                 return n.createQuery(sql).bind(0, categoryId).bind(1, size).bind(2, (page - 1) * size).mapToBean(Product.class).stream().toList();
             }
-//            if (categoryId == 0) {
-//                sql = "select * from products as p where  status = 1  order by " + sortBy + " " + sort + "  limit ? offset ?";
-//                return n.createQuery(sql).bind(0, size).bind(1, (page - 1) * size).mapToBean(Product.class).stream().toList();
-//            } else {
-//                sql = "select * from products as p where  status = 1 and p.categoryId =  ? order by " + sortBy + " " + sort + "  limit ? offset ?";
-//                return n.createQuery(sql).bind(0, categoryId).bind(1, size).bind(2, (page - 1) * size).mapToBean(Product.class).stream().toList();
-//            }
         });
     }
 
@@ -117,13 +100,6 @@ public class ProductDAO {
         });
     }
 
-    public void test() {
-        JDBIConnector.getInstance().withHandle(n -> {
-            Product p = n.createQuery("select id , name from products limit 1").mapToBean(Product.class).stream().findFirst().get();
-            System.out.println(p.getName());
-            return null;
-        });
-    }
 
     public List<Product> getNewRelativeProductView() {
         return JDBIConnector.getInstance().withHandle(n -> {
@@ -147,7 +123,7 @@ public class ProductDAO {
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
     }
 
-    public List<ProductViewDTO> findAll(PageRequest pageRequest) {
+    public List<ProductDTO> findAll(PageRequest pageRequest) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT p.id AS productId,c.name AS categoryName,p.name AS productName,price,status,rate,available,image ");
         builder.append("FROM products p ");
@@ -157,13 +133,13 @@ public class ProductDAO {
         return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
                         .map((rs, ctx) -> {
-                            return ProductViewDTO.builder()
+                            return ProductDTO.builder()
                                     .id(rs.getInt("productId"))
                                     .categoryName(rs.getString("categoryName"))
-                                    .productName(rs.getString("productName"))
+                                    .name(rs.getString("productName"))
                                     .price(rs.getDouble("price"))
                                     .status(rs.getBoolean("status"))
-                                    .rating((int) rs.getFloat("rate"))
+                                    .rate((int) rs.getFloat("rate"))
                                     .available(rs.getInt("available"))
                                     .images(rs.getString("image") == null ? new ArrayList<>() : List.of(rs.getString("image")))
                                     .build();
