@@ -12,6 +12,7 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 public class ContactDAO {
     public int countAll() {
         return JDBIConnector.getInstance().withHandle(handle ->
@@ -28,31 +29,22 @@ public class ContactDAO {
                 .bind("keyWord", "%" + keyWord + "%")
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
     }
-
-    public ContactDTO findOneById(int contactId) {
-        String sql = "SELECT c.id AS contactId, fullName, email, message, r.id AS replyId,content,title " +
-                "FROM contacts c LEFT JOIN reply_contacts r ON r.contactId = c.id WHERE c.id=:id";
-        Optional<ContactDTO> contact = JDBIConnector.getInstance().withHandle(handle ->
+    public ReplyContact findReplyByContactId(int contactId) {
+        String sql = "SELECT * FROM reply_contacts WHERE contactId=:contactId";
+        Optional<ReplyContact> contact = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).bind("id", contactId)
-                        .map((rs, ctx) -> {
-                            ReplyContact reply = null;
-                            int replyId = rs.getInt("replyId");
-                            if (replyId != 0)
-                                reply = ReplyContact.builder().id(replyId)
-                                        .title(rs.getString("title"))
-                                        .content(rs.getString("content"))
-                                        .build();
-
-                            return ContactDTO.builder()
-                                    .id(rs.getInt("contactId"))
-                                    .fullName(rs.getString("fullName"))
-                                    .email(rs.getString("email"))
-                                    .message(rs.getString("message"))
-                                    .reply(reply).build();
-                        }).stream().findFirst());
-        return contact.orElse(new ContactDTO());
+                        .mapToBean(ReplyContact.class).stream().findFirst());
+        return contact.orElse(null);
     }
 
+    public Contact findOneById(int contactId) {
+        String sql = "SELECT c.id AS id, fullName, email, message " +
+                "FROM contacts c LEFT JOIN reply_contacts r ON r.contactId = c.id WHERE c.id=:id";
+        Optional<Contact> contact = JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind("id", contactId)
+                        .mapToBean(Contact.class).stream().findFirst());
+        return contact.orElse(new Contact());
+    }
     public List<ContactDTO> findAll(PageRequest pageRequest) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT c.id AS contactId, fullName, email, message, createdAt, r.id AS replyId ");
@@ -152,4 +144,6 @@ public class ContactDAO {
         );
         return result > 0;
     }
+
+
 }

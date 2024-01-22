@@ -2,6 +2,7 @@ package com.commenau.service;
 
 import com.commenau.dao.ContactDAO;
 import com.commenau.dto.ContactDTO;
+import com.commenau.mapper.ContactMapper;
 import com.commenau.model.Contact;
 import com.commenau.model.ReplyContact;
 import com.commenau.paging.PageRequest;
@@ -51,7 +52,10 @@ public class ContactService {
     }
 
     public ContactDTO getById(int contactId) {
-        return contactDAO.findOneById(contactId);
+        Contact contact = contactDAO.findOneById(contactId);
+        ContactDTO result = ContactMapper.INSTANCE.toDTO(contact);
+        result.setReply(contactDAO.findReplyByContactId(contact.getId()));
+        return result;
     }
 
     public boolean deleteByIds(Integer[] ids) {
