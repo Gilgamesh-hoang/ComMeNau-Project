@@ -1,5 +1,6 @@
 package com.commenau.dao;
 
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.CancelProduct;
 import com.commenau.paging.PageRequest;
@@ -7,14 +8,13 @@ import com.commenau.util.PagingUtil;
 
 import java.util.Arrays;
 import java.util.List;
-import com.commenau.connectionPool.ConnectionPool;
 public class CancelProductDAO {
 
     public void cancelProduct() {
         try {
             String sql = "INSERT INTO cancel_products (productId, quantity) " +
                     "SELECT id, available FROM products WHERE available > 0 AND status =:status";
-            ConnectionPool.getConnection().inTransaction(handle ->
+            JDBIConnector.getInstance().inTransaction(handle ->
                     handle.createUpdate(sql).bind("status", SystemConstant.IN_BUSINESS).execute());
         } catch (Exception e) {
             e.printStackTrace();
@@ -22,7 +22,7 @@ public class CancelProductDAO {
     }
 
     public int countAll() {
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                         handle.createQuery("SELECT COUNT(id) FROM cancel_products"))
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
     }
@@ -30,7 +30,7 @@ public class CancelProductDAO {
     public int countByKeyWord(String keyWord) {
         String sql = "SELECT COUNT(DISTINCT p.id) FROM cancel_products c INNER JOIN products p ON p.id =c.productId " +
                 "WHERE quantity like :keyWord OR p.name LIKE :keyWord OR CONVERT(canceledAt, CHAR) LIKE :keyWord";
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                         handle.createQuery(sql))
                 .bind("keyWord", "%" + keyWord + "%")
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
@@ -43,7 +43,7 @@ public class CancelProductDAO {
         builder.append("WHERE quantity LIKE :keyWord OR p.name LIKE :keyWord OR CONVERT(canceledAt, CHAR) LIKE :keyWord ");
         builder.append("GROUP BY productId ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("keyWord", "%" + keyWord + "%")
                         .mapToBean(CancelProduct.class).stream().toList()
@@ -54,14 +54,14 @@ public class CancelProductDAO {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT * FROM cancel_products ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
                         .mapToBean(CancelProduct.class).stream().toList()
         );
     }
 
     public boolean delete(Integer[] ids) {
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("DELETE FROM cancel_products WHERE id IN (<listId>)")
                         .bindList("listId", Arrays.asList(ids)).execute()
         );
@@ -69,7 +69,7 @@ public class CancelProductDAO {
     }
 
     public boolean deleteByProductId(Integer productId) throws Exception {
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("DELETE FROM cancel_products WHERE productId = :productId")
                         .bind("productId", productId).execute()
         );

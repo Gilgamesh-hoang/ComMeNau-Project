@@ -1,5 +1,6 @@
 package com.commenau.dao;
 
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.model.InvoiceItem;
 import com.commenau.model.Product;
 import com.commenau.util.RoundUtil;
@@ -7,13 +8,12 @@ import com.commenau.util.RoundUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import com.commenau.connectionPool.ConnectionPool;
 public class InvoiceItemDAO {
 
     public List<InvoiceItem> getAllInvoiceItemById(int invoiceId) {
         String sql = "select sum(ii.price) + i.shippingFee from invoice_items ii JOIN invoices i ON ii.invoiceId = i.id where invoiceId = ?";
         String sql1 = "select productId,quantity, price from invoice_items where invoiceId = ?";
-        return ConnectionPool.getConnection().withHandle(handle -> {
+        return JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery(sql1)
                     .bind(0, invoiceId)
                     .mapToBean(InvoiceItem.class)
@@ -22,7 +22,7 @@ public class InvoiceItemDAO {
     }
 
     public InvoiceItem getBestSellingProduct() {
-        Optional<InvoiceItem> invoiceItem = ConnectionPool.getConnection().withHandle(handle ->
+        Optional<InvoiceItem> invoiceItem = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery("SELECT productId, SUM(quantity) AS quantity FROM invoice_items ii " +
                                 "INNER JOIN invoices i ON i.id = ii.invoiceId " +
                                 "WHERE YEAR(i.createdAt) = YEAR(CURDATE()) AND MONTH(i.createdAt) = MONTH(CURDATE()) " +
@@ -39,7 +39,7 @@ public class InvoiceItemDAO {
                 "INNER JOIN carts c ON c.id = ci.cartId " +
                 "INNER JOIN products p ON ci.productId = p.id " +
                 "WHERE c.userId = :userId ";
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate(sql)
                         .bind("userId", userId)
                         .bind("invoiceId", invoiceId).execute());
@@ -50,7 +50,7 @@ public class InvoiceItemDAO {
         String sql = "INSERT INTO invoice_items(invoiceId,productId,quantity,price) " +
                 "VALUES (:invoiceId,:productId,:quantity,:price)";
         try {
-            ConnectionPool.getConnection().inTransaction(handle -> {
+            JDBIConnector.getInstance().inTransaction(handle -> {
                 for (Map.Entry<Product, Integer> entry : map.entrySet()) {
                     Product product = entry.getKey();
                     int quantity = entry.getValue();
@@ -74,7 +74,7 @@ public class InvoiceItemDAO {
     }
 
     public boolean updateProductId(int productId) throws Exception {
-            int result = ConnectionPool.getConnection().inTransaction(handle ->
+            int result = JDBIConnector.getInstance().inTransaction(handle ->
                     handle.createUpdate("UPDATE invoice_items SET productId=NULL WHERE productId = :productId")
                             .bind("productId", productId)
                             .execute()

@@ -46,7 +46,7 @@ public class ConnectionPool implements ConnectionFactory {
         }
     }
 
-    public synchronized Connection getConnection() {
+    private synchronized Connection getConnection() {
         int maxSize = Integer.parseInt(DBProperties.maxConnections);
         if (connectionPool.isEmpty()) {
             if (usingConnectionNumber < maxSize) {
@@ -68,7 +68,7 @@ public class ConnectionPool implements ConnectionFactory {
         return connection;
     }
 
-    public synchronized void releaseConnection(Connection connection) {
+    private synchronized void releaseConnection(Connection connection) {
         try {
             if (connection.isClosed()) {
                 connection = createConnection();

@@ -1,40 +1,40 @@
 package com.commenau.dao;
 
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.model.Blog;
 import com.commenau.paging.PageRequest;
 import com.commenau.util.PagingUtil;
 
 import java.util.List;
 
-import com.commenau.connectionPool.ConnectionPool;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BlogDao {
     public Blog getBlogById(int id) {
-        Optional<Blog> blog = ConnectionPool.getConnection().withHandle(handle -> {
+        Optional<Blog> blog = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select * from blogs where id = ?").bind(0, id).mapToBean(Blog.class).stream().findFirst();
         });
         return blog.orElse(null);
     }
 
     public Blog getFirstBlog() {
-        Optional<Blog> blog = ConnectionPool.getConnection().withHandle(handle -> {
+        Optional<Blog> blog = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("SELECT id, title, image, shortDescription, createdAt FROM blogs ORDER BY id ASC LIMIT 1;").mapToBean(Blog.class).stream().findFirst();
         });
         return blog.orElse(null);
     }
 
     public Blog getLastBlog() {
-        Optional<Blog> blog = ConnectionPool.getConnection().withHandle(handle -> {
+        Optional<Blog> blog = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("SELECT id, title, image, shortDescription, createdAt FROM blogs ORDER BY id DESC LIMIT 1;").mapToBean(Blog.class).stream().findFirst();
         });
         return blog.orElse(null);
     }
 
     public List<Blog> get3BlogByDate() {
-        List<Blog> blogList = ConnectionPool.getConnection().withHandle(handle -> {
+        List<Blog> blogList = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select id, title, image, shortDescription, createdAt from blogs order by createdAt desc limit 3")
                     .mapToBean(Blog.class).collect(Collectors.toList());
         });
@@ -42,7 +42,7 @@ public class BlogDao {
     }
 
     public List<Blog> getAllBlogByDate() {
-        List<Blog> blogList = ConnectionPool.getConnection().withHandle(handle -> {
+        List<Blog> blogList = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select id from blogs")
                     .mapToBean(Blog.class).collect(Collectors.toList());
         });
@@ -50,7 +50,7 @@ public class BlogDao {
     }
 
     public List<Blog> getBlogs(int pageIndex, int pageSize) {
-        List<Blog> blogList = ConnectionPool.getConnection().withHandle(handle -> {
+        List<Blog> blogList = JDBIConnector.getInstance().withHandle(handle -> {
             String sql1 = "select b.*, count(br.id) as numReviews from blogs b left join blog_reviews br on b.id = br.blogId " +
                     "group by b.id LIMIT ? OFFSET ?";
             return handle.createQuery(sql1)
@@ -63,7 +63,7 @@ public class BlogDao {
     }
 
     public int countAll() {
-        int blogCount = ConnectionPool.getConnection().withHandle(handle -> {
+        int blogCount = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("SELECT COUNT(id) FROM blogs")
                     .mapTo(Integer.class)
                     .one();
@@ -73,7 +73,7 @@ public class BlogDao {
     }
 
     public List<Blog> findBlogByInput(String input) {
-        return ConnectionPool.getConnection().withHandle(handle -> {
+        return JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select id,title,image,shortDescription,createdAt from blogs where title like :title")
                     .bind("title", "%" + input + "%")
                     .mapToBean(Blog.class)
@@ -83,7 +83,7 @@ public class BlogDao {
 
     public int countByKeyWord(String keyWord) {
         String sql = "SELECT COUNT(id) FROM blogs WHERE title LIKE :keyWord OR shortDescription LIKE :keyWord OR content LIKE :keyWord";
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).bind("keyWord", "%" + keyWord + "%")
                         .mapTo(Integer.class)
                         .stream().findFirst().orElse(0)
@@ -94,7 +94,7 @@ public class BlogDao {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT id, image, title, shortDescription, content FROM blogs ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).mapToBean(Blog.class).stream().toList());
     }
 
@@ -103,13 +103,13 @@ public class BlogDao {
         builder.append("SELECT id, image, title, shortDescription, content FROM blogs ");
         builder.append("WHERE title LIKE :keyWord OR shortDescription LIKE :keyWord OR content LIKE :keyWord ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).bind("keyWord", "%" + keyWord + "%")
                         .mapToBean(Blog.class).stream().toList());
     }
 
     public boolean delete(int id) throws Exception {
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("DELETE FROM blogs WHERE id = :id")
                         .bind("id", id).execute()
         );
@@ -119,7 +119,7 @@ public class BlogDao {
     public boolean save(Blog blog) {
         String sql = "INSERT INTO blogs(id,title,shortDescription,content,image,createdBy) VALUES " +
                 "(:id,:title,:shortDescription,:content,:image,:createdBy)";
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate(sql).bindBean(blog).execute());
         return result > 0;
     }
@@ -132,7 +132,7 @@ public class BlogDao {
             sql = "UPDATE blogs SET title=:title,shortDescription=:shortDescription,content=:content,image=:image WHERE id=:id";
 
 
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate(sql).bindBean(blog).execute());
         return result > 0;
     }

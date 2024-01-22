@@ -1,16 +1,16 @@
 package com.commenau.dao;
 
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.Invoice;
 import org.jdbi.v3.core.statement.Update;
 
 import java.sql.Types;
 import java.util.List;
-import com.commenau.connectionPool.ConnectionPool;
 public class InvoiceDAO {
 
     public List<Invoice> getAllInvoiceById(Long userId) {
-        List<Invoice> invoices = ConnectionPool.getConnection().withHandle(handle -> {
+        List<Invoice> invoices = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select id from invoices where userId = ?")
                     .bind(0, userId)
                     .mapToBean(Invoice.class)
@@ -20,7 +20,7 @@ public class InvoiceDAO {
     }
 
     public List<Invoice> get10InvoiceById(Long userId) {
-        List<Invoice> invoices = ConnectionPool.getConnection().withHandle(handle -> {
+        List<Invoice> invoices = JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("SELECT id FROM invoices WHERE userId = ? ORDER BY createdAt DESC LIMIT 10 ")
                     .bind(0, userId)
                     .mapToBean(Invoice.class)
@@ -30,7 +30,7 @@ public class InvoiceDAO {
     }
 
     public Invoice getInvoiceById(int invoiceId) {
-        return ConnectionPool.getConnection().withHandle(handle -> {
+        return JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select userId,fullName,email ,shippingFee,address,phoneNumber,paymentMethod,createdAt from invoices where id = ?")
                     .bind(0, invoiceId)
                     .mapToBean(Invoice.class)
@@ -39,7 +39,7 @@ public class InvoiceDAO {
     }
 
     public List<Invoice> getAllInvoicePaged(int nextPage, int pageSize) {
-        return ConnectionPool.getConnection().withHandle(handle -> {
+        return JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select i.* from invoices i JOIN invoice_status s ON i.id = s.invoiceId ORDER BY s.status DESC ,i.createdAt desc limit ? offset ?")
                     .bind(0, pageSize)
                     .bind(1, (nextPage - 1) * pageSize)
@@ -49,7 +49,7 @@ public class InvoiceDAO {
     }
 
     public List<Invoice> getAllInvoice() {
-        return ConnectionPool.getConnection().withHandle(handle -> {
+        return JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select id from invoices")
                     .mapToBean(Invoice.class)
                     .list();
@@ -79,7 +79,7 @@ public class InvoiceDAO {
     }
 
     private <T> T calculate(String sql, Class<T> tClass) {
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
                         .mapTo(tClass)
                         .findFirst()
@@ -101,7 +101,7 @@ public class InvoiceDAO {
     public int save(Invoice invoice) {
         String sql = "INSERT INTO invoices(userId,fullName,shippingFee,note,address,phoneNumber,email, paymentMethod) VALUES " +
                 "(:userId,:fullName,:shippingFee,:note,:address,:phoneNumber,:email, :paymentMethod)";
-        int invoceId = ConnectionPool.getConnection().inTransaction(handle -> {
+        int invoceId = JDBIConnector.getInstance().inTransaction(handle -> {
             Update update = handle.createUpdate(sql)
                     .bind("fullName", invoice.getFullName())
                     .bind("shippingFee", invoice.getShippingFee())

@@ -1,6 +1,6 @@
 package com.commenau.dao;
 
-import com.commenau.connectionPool.ConnectionPool;
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.dto.CartItemDTO;
 import com.commenau.dto.ProductViewDTO;
 import com.commenau.model.Cart;
@@ -20,7 +20,7 @@ public class CartDAO {
                 .append("INNER JOIN products AS p ON ci.productId = p.id ")
                 .append("INNER JOIN product_images AS pi ON pi.productId = p.id ")
                 .append("WHERE c.userId = :userId AND isAvatar = :isAvatar");
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql.toString())
                         .bind("userId", userId)
                         .bind("isAvatar", 1)
@@ -43,7 +43,7 @@ public class CartDAO {
     }
 
     public Cart findCartByUserId(long userId) {
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery("SELECT * FROM carts WHERE userId = :userId")
                         .bind("userId", userId)
                         .mapToBean(Cart.class)
@@ -52,7 +52,7 @@ public class CartDAO {
     }
 
     public Cart findOneById(int id) {
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery("SELECT * FROM carts WHERE id = :id")
                         .bind("id", id)
                         .mapToBean(Cart.class)
@@ -61,7 +61,7 @@ public class CartDAO {
 
     public CartItem findCartItemByProductAndCart(int productId, int cartId) {
         String sql = "SELECT * FROM cart_items WHERE productId = :productId AND cartId=:cartId";
-        Optional<CartItem> first = ConnectionPool.getConnection().withHandle(handle ->
+        Optional<CartItem> first = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("productId", productId)
                         .bind("cartId", cartId)
@@ -71,7 +71,7 @@ public class CartDAO {
     }
 
     public Cart save(Cart cart) {
-        int cartId = ConnectionPool.getConnection().inTransaction(handle ->
+        int cartId = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("INSERT INTO carts(userId) VALUES(:userId)")
                         .bind("userId", cart.getUserId())
                         .executeAndReturnGeneratedKeys().mapTo(Integer.class).one());
@@ -80,7 +80,7 @@ public class CartDAO {
 
     public boolean saveCartItem(CartItem item) {
         String sql = "INSERT INTO cart_items(cartId, productId, quantity) VALUES(:cartId, :productId, :quantity)";
-        Integer result = ConnectionPool.getConnection().inTransaction(handle ->
+        Integer result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate(sql)
                         .bind("cartId", item.getCartId())
                         .bind("productId", item.getProductId())
@@ -92,7 +92,7 @@ public class CartDAO {
     public boolean updateCartItem(CartItem itemEntity, long userId) {
         Cart cart = findCartByUserId(userId);
         String sql = "UPDATE cart_items SET quantity =:quantity WHERE productId=:productId AND cartId = :cartId";
-        Integer result = ConnectionPool.getConnection().inTransaction(handle ->
+        Integer result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate(sql)
                         .bind("productId", itemEntity.getProductId())
                         .bind("quantity", itemEntity.getQuantity())
@@ -104,7 +104,7 @@ public class CartDAO {
     public boolean deleteProduct(int productId, long userId) {
         Cart cart = findCartByUserId(userId);
         String sql = "DELETE FROM cart_items WHERE productId = :productId AND cartId = :cartId";
-        int result = ConnectionPool.getConnection().withHandle(handle ->
+        int result = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createUpdate(sql)
                         .bind("cartId", cart.getId())
                         .bind("productId", productId)
@@ -114,7 +114,7 @@ public class CartDAO {
 
     public boolean deleteByProductId(int productId) throws Exception {
         try {
-            int result = ConnectionPool.getConnection().inTransaction(handle ->
+            int result = JDBIConnector.getInstance().inTransaction(handle ->
                     handle.createUpdate("DELETE FROM cart_items WHERE productId = :productId")
                             .bind("productId", productId)
                             .execute()
@@ -128,7 +128,7 @@ public class CartDAO {
 
     public boolean deleteAll(long userId) {
         String sql = "DELETE ci FROM cart_items ci INNER JOIN carts c ON c.id = ci.cartId WHERE c.userId = :userId";
-        int result = ConnectionPool.getConnection().withHandle(handle ->
+        int result = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createUpdate(sql)
                         .bind("userId", userId)
                         .execute());

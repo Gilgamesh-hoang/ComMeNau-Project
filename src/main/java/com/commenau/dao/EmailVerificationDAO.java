@@ -1,6 +1,6 @@
 package com.commenau.dao;
 
-import com.commenau.connectionPool.ConnectionPool;
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.model.EmailVerification;
 
 import java.util.Optional;
@@ -9,7 +9,7 @@ public class EmailVerificationDAO {
     public boolean insert(EmailVerification verification) {
         try {
             String sql = "INSERT INTO email_verifications(userId, token, expriedAt) VALUES (:userId, :token, :expriedAt)";
-            boolean success = ConnectionPool.getConnection().inTransaction(handle -> {
+            boolean success = JDBIConnector.getInstance().inTransaction(handle -> {
                 handle.createUpdate(sql)
                         .bindBean(verification)
                         .execute();
@@ -26,7 +26,7 @@ public class EmailVerificationDAO {
 
     public EmailVerification findOneByUserIdAndToken(long userId, String token) {
         String sql = "SELECT * FROM email_verifications WHERE userId = :userId AND token = :token";
-        Optional<EmailVerification> verification = ConnectionPool.getConnection().withHandle(handle ->
+        Optional<EmailVerification> verification = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
                         .bind("userId", userId)
                         .bind("token", token)
@@ -38,7 +38,7 @@ public class EmailVerificationDAO {
 
     public boolean deleteToken(EmailVerification verification) {
         String sql = "DELETE FROM email_verifications WHERE userId = :userId AND token = :token";
-        int result = ConnectionPool.getConnection().withHandle(handle ->
+        int result = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createUpdate(sql)
                         .bindBean(verification)
                         .execute());

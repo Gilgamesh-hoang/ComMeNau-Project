@@ -1,6 +1,6 @@
 package com.commenau.dao;
 
-import com.commenau.connectionPool.Connection;
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.ProductViewDTO;
 import com.commenau.model.Product;
@@ -21,13 +21,13 @@ public class ProductDAO {
 
     public Product findOneById(int productId) {
         String sql = "SELECT id,name,description,price,discount,status,rate,available FROM products WHERE id = :id";
-        Product product = ConnectionPool.getConnection(). withHandle(handle ->
+        Product product = JDBIConnector.getInstance(). withHandle(handle ->
                 handle.createQuery(sql).bind("id", productId).mapToBean(Product.class).stream().findFirst().orElse(new Product()));
         return product;
     }
 
     public Product getById(int id) {
-        Product product = ConnectionPool.getConnection().withHandle(n -> {
+        Product product = JDBIConnector.getInstance().withHandle(n -> {
             Product p = n.createQuery("select id, categoryId , name , description, price , discount, available, status from products where id = ?").bind(0, id).mapToBean(Product.class).stream().findFirst().get();
             return p;
         });
@@ -35,28 +35,27 @@ public class ProductDAO {
     }
 
     public int averageRating(int id) {
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             return n.createQuery(averageRatingSql).bind(0, id).mapTo(Double.class).findOne().orElse(0d).intValue();
         });
     }
 
     public int countProductReviewsById(int id) {
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             return n.createQuery(countProductReviewsSql).bind(0, id).mapTo(Integer.class).findOne().orElse(0);
         });
     }
 
 
     public List<Product> getRelativeProductViewByID(int productID) {
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             int categoryId = n.createQuery("select categoryId from products where id = ? and status = 1").bind(0, productID).mapTo(Integer.class).one();
             return n.createQuery("select id, categoryId ,description , name , price , discount from products where categoryId = ? order by createdAt desc limit 4").bind(0, categoryId).mapToBean(Product.class).stream().toList();
         });
     }
 
     public List<Product> getAllIdAndName() {
-        Connection connection = ConnectionPool.getConnection();
-        return connection.withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             return n.createQuery("select id , name from products where  status = 1").mapToBean(Product.class).stream().toList();
         });
     }
@@ -66,7 +65,7 @@ public class ProductDAO {
             sortBy = "price_discount";
         }
         String sortby = sortBy;
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             String sql = null;
 
             if (categoryId == 0) {
@@ -87,7 +86,7 @@ public class ProductDAO {
     }
 
     public List<Product> getProductViewPage(int categoryId, int size, int page) {
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             String sql = null;
             if (categoryId == 0) {
                 sql = "select p.id, p.createdAt , p.categoryId, p.name , p.description , p.price , p.discount , p.status , p.available, avg(pr.rating) as rate from products  as p left join product_reviews as pr on p.id = pr.productId where p.status = 1 group by p.id   limit ? offset ?";
@@ -100,7 +99,7 @@ public class ProductDAO {
     }
 
     public List<Product> getProductViewPageSortByRating(int categoryId, int size, int page, String sort) {
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             String sql = null;
             if (categoryId == 0) {
                 sql = "select p.id, p.createdAt,p.name , p.categoryId, p.description , p.price , p.discount, p.available , p.status, avg(pr.rating) as rate from products  as p left join product_reviews as pr on p.id = pr.productId where p.status = 1 group by p.id   order by rating  " + sort + "  limit ? offset ? ";
@@ -113,13 +112,13 @@ public class ProductDAO {
     }
 
     public int countProductsInCategory(int categoryId) {
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             return n.createQuery("select count(*) from products where status = 1 and categoryId = ?").bind(0, categoryId).mapTo(Integer.class).findOne().orElse(0);
         });
     }
 
     public void test() {
-        ConnectionPool.getConnection().withHandle(n -> {
+        JDBIConnector.getInstance().withHandle(n -> {
             Product p = n.createQuery("select id , name from products limit 1").mapToBean(Product.class).stream().findFirst().get();
             System.out.println(p.getName());
             return null;
@@ -127,14 +126,14 @@ public class ProductDAO {
     }
 
     public List<Product> getNewRelativeProductView() {
-        return ConnectionPool.getConnection().withHandle(n -> {
+        return JDBIConnector.getInstance().withHandle(n -> {
             return n.createQuery("select id, categoryId ,description , name , price , discount from products where status = 1 and categoryId = 1 order by createdAt desc limit 8").mapToBean(Product.class).stream().toList();
         });
     }
 
     public int countAll() {
 
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                         handle.createQuery("SELECT COUNT(id) FROM products"))
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
     }
@@ -142,7 +141,7 @@ public class ProductDAO {
     public int countByKeyWord(String keyWord) {
         String sql = "SELECT COUNT(DISTINCT p.id) FROM products p LEFT JOIN categories c ON p.categoryId = c.id " +
                 "WHERE c.name LIKE :keyWord OR p.name LIKE :keyWord OR CONVERT(price, CHAR) LIKE :keyWord OR CONVERT(available, CHAR) LIKE :keyWord";
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                         handle.createQuery(sql))
                 .bind("keyWord", "%" + keyWord + "%")
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
@@ -155,7 +154,7 @@ public class ProductDAO {
         builder.append("LEFT JOIN categories c ON p.categoryId = c.id ");
         builder.append("LEFT JOIN product_images pi ON p.id = pi.productId AND pi.isAvatar = 1 ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
                         .map((rs, ctx) -> {
                             return ProductViewDTO.builder()
@@ -179,7 +178,7 @@ public class ProductDAO {
         builder.append("WHERE c.name LIKE :keyWord OR p.name LIKE :keyWord ");
         builder.append("OR CONVERT(price, CHAR) LIKE :keyWord OR CONVERT(available, CHAR) LIKE :keyWord ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
-        return ConnectionPool.getConnection().withHandle(handle ->
+        return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).bind("keyWord", "%" + keyWord + "%")
                         .mapToBean(Product.class).stream().toList()
         );
@@ -189,7 +188,7 @@ public class ProductDAO {
         String sql = "INSERT INTO products(name,description,price,discount,status,available,categoryId) " +
                 "VALUES (:name,:description,:price,:discount,:status,:available,:categoryId)";
         try {
-            return ConnectionPool.getConnection().inTransaction(handle -> {
+            return JDBIConnector.getInstance().inTransaction(handle -> {
                         Update update = handle.createUpdate(sql).bindBean(product);
                         return update.bind("status", product.isStatus() ? SystemConstant.IN_BUSINESS : SystemConstant.STOP_BUSINESS)
                                 .executeAndReturnGeneratedKeys("id")
@@ -207,7 +206,7 @@ public class ProductDAO {
                 ",discount=:discount, status=:status, available=:available, categoryId=:categoryId " +
                 "WHERE id=:id";
         try {
-            return ConnectionPool.getConnection().inTransaction(handle -> {
+            return JDBIConnector.getInstance().inTransaction(handle -> {
                         Update update = handle.createUpdate(sql).bindBean(product);
                         return update.bind("status", product.isStatus() ? SystemConstant.IN_BUSINESS : SystemConstant.STOP_BUSINESS)
                                 .execute();
@@ -220,7 +219,7 @@ public class ProductDAO {
     }
 
     public boolean deleteById(int productId) throws Exception {
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("DELETE FROM products WHERE id = :productId")
                         .bind("productId", productId)
                         .execute()
@@ -231,7 +230,7 @@ public class ProductDAO {
 
     public void setAvailableToZero() {
         try {
-            ConnectionPool.getConnection().inTransaction(handle ->
+            JDBIConnector.getInstance().inTransaction(handle ->
                     handle.createUpdate("UPDATE products SET available = 0 WHERE status = :status AND available > 0")
                             .bind("status", SystemConstant.IN_BUSINESS)
                             .execute()
@@ -242,7 +241,7 @@ public class ProductDAO {
     }
 
     public boolean setDefaultAvailable() {
-        return ConnectionPool.getConnection().inTransaction(handle ->
+        return JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("UPDATE products SET available = 60 WHERE status = :status ")
                         .bind("status", SystemConstant.IN_BUSINESS)
                         .execute()
@@ -250,7 +249,7 @@ public class ProductDAO {
     }
 
     public boolean setDefaultAvailable(Integer[] ids) {
-        int result = ConnectionPool.getConnection().inTransaction(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("UPDATE products SET available = 60 WHERE status = :status AND id IN (<ids>)")
                         .bindList("ids", Arrays.asList(ids))
                         .bind("status", SystemConstant.IN_BUSINESS)
@@ -260,7 +259,7 @@ public class ProductDAO {
     }
 
     public void updateAvailable(Map<Product, Integer> map) {
-        ConnectionPool.getConnection().inTransaction(handle -> {
+        JDBIConnector.getInstance().inTransaction(handle -> {
             map.keySet().forEach(key -> {
                 handle.createUpdate("UPDATE products SET available = available - :quantity WHERE id = :id")
                         .bind("quantity", map.get(key))
@@ -274,7 +273,7 @@ public class ProductDAO {
 
     public boolean updateCategory(Integer oldCategoryId, Integer newCategoryId) throws Exception {
         String sql = "UPDATE products SET categoryId = :newCategoryId WHERE categoryId = :oldCategoryId";
-        int result = ConnectionPool.getConnection().inTransaction(handle -> {
+        int result = JDBIConnector.getInstance().inTransaction(handle -> {
             Update update = handle.createUpdate(sql).bind("oldCategoryId", oldCategoryId);
             if (newCategoryId != null) {
                 update.bind("newCategoryId", newCategoryId);
