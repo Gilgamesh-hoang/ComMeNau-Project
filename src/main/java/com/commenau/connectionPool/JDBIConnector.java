@@ -1,4 +1,4 @@
-package com.commenau.dao;
+package com.commenau.connectionPool;
 
 import org.jdbi.v3.core.ConnectionFactory;
 import org.jdbi.v3.core.Jdbi;

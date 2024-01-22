@@ -1,6 +1,5 @@
 package com.commenau.dao;
 
-import com.commenau.model.Invoice;
 import com.commenau.model.InvoiceStatus;
 import com.commenau.connectionPool.ConnectionPool;
 public class InvoiceStatusDAO {

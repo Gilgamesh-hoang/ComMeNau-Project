@@ -1,13 +1,10 @@
 package com.commenau.dao;
 
 import com.commenau.constant.SystemConstant;
-import com.commenau.dto.CancelProductDTO;
 import com.commenau.model.CancelProduct;
 import com.commenau.paging.PageRequest;
 import com.commenau.util.PagingUtil;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.management.Query;
 import java.util.Arrays;
 import java.util.List;
 import com.commenau.connectionPool.ConnectionPool;

@@ -1,9 +1,10 @@
 package com.commenau.dao;
 
+import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.model.WishlistItem;
 
 import java.util.List;
-import com.commenau.connectionPool.ConnectionPool;
+
 public class WishListDAO {
     public boolean existsItem(int productId, int userId) {
         return JDBIConnector.getInstance().withHandle(n -> {

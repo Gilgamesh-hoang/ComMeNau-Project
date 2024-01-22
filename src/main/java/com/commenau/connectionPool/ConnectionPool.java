@@ -1,71 +1,104 @@
 package com.commenau.connectionPool;
 
 import com.commenau.util.DBProperties;
+import org.jdbi.v3.core.ConnectionFactory;
 
-import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ConnectionPool {
-    int poolSize = Integer.parseInt(DBProperties.initialPoolSize);
-    int maxSize = Integer.parseInt(DBProperties.maxConnections);
-    AtomicInteger using = new AtomicInteger(0);
-    private ArrayBlockingQueue<Connection> pool;
 
-    private static ConnectionPool connectionPool = null;
+public class ConnectionPool implements ConnectionFactory {
+    private static ConnectionPool pool;
+    private List<Connection> connectionPool;
+    private int usingConnectionNumber;
 
-    private ConnectionPool() {
-        pool = new ArrayBlockingQueue<>(maxSize);
-        for (int i = 0; i < poolSize; i++) {
-            pool.add(createConection());
-        }
+    private ConnectionPool(List<Connection> connectionPool) {
+        this.connectionPool = connectionPool;
+        this.usingConnectionNumber = 0;
     }
 
-    private static Connection createConection() {
+    public synchronized static ConnectionPool getInstance() {
+        if (pool == null)
+            pool = createPool();
+        return pool;
+    }
+
+    private static ConnectionPool createPool() {
+        int poolSize = Integer.parseInt(DBProperties.initialPoolSize);
+        List<Connection> pool = new ArrayList<>(poolSize);
+        for (int i = 0; i < poolSize; i++) {
+            pool.add(createConnection());
+        }
+        return new ConnectionPool(pool);
+    }
+
+    private static Connection createConnection() {
+
+        String url = "jdbc:mysql://" + DBProperties.host + ":" + DBProperties.port + "/" + DBProperties.dbName;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://" + DBProperties.host + ":" + DBProperties.port + "/" + DBProperties.dbName;
-            return new Connection(Jdbi.create(url, DBProperties.username, DBProperties.password).open());
-        } catch (ClassNotFoundException e) {
+            return DriverManager.getConnection(url, DBProperties.username, DBProperties.password);
+        } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public synchronized static Connection getConnection() {
-        if (connectionPool == null) {
-            connectionPool = new ConnectionPool();
-        }
-        try {
-            if (connectionPool.pool.isEmpty() && connectionPool.using.get() < connectionPool.maxSize) {
-                connectionPool.using.incrementAndGet();
-                return createConection();
+    public synchronized Connection getConnection() {
+        int maxSize = Integer.parseInt(DBProperties.maxConnections);
+        if (connectionPool.isEmpty()) {
+            if (usingConnectionNumber < maxSize) {
+                connectionPool.add(createConnection());
+            } else {
+                while (connectionPool.isEmpty()) {
+                    // Wait for an existing connection to be freed up.
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
-            var con = connectionPool.pool.take();
-            connectionPool.using.incrementAndGet();
-            return con;
-        } catch (InterruptedException e) {
-            return null;
         }
+
+        Connection connection = connectionPool.remove(connectionPool.size() - 1);
+        usingConnectionNumber++;
+        return connection;
     }
 
-    public  static void realseConnection(Connection connection) {
-        connectionPool.using.decrementAndGet();
-        connectionPool.pool.add(connection);
+    public synchronized void releaseConnection(Connection connection) {
+        try {
+            if (connection.isClosed()) {
+                connection = createConnection();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        connectionPool.add(connection);
+        usingConnectionNumber--;
+        notifyAll();
     }
 
     public synchronized String toString() {
         StringBuilder sb = new StringBuilder()
                 .append("Max=" + DBProperties.maxConnections)
-                .append(" | Available=" + pool.size())
-                .append(" | Busy=" + using.get());
+                .append(" | Available=" + connectionPool.size())
+                .append(" | Busy=" + usingConnectionNumber);
         return sb.toString();
     }
 
-    public static ConnectionPool getInstance() {
-        return connectionPool;
+    @Override
+    public Connection openConnection() {
+        return getConnection();
     }
+
+    @Override
+    public void closeConnection(Connection connection) {
+        if (connection != null) {
+            releaseConnection(connection);
+        }
+    }
+
 }

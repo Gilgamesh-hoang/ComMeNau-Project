@@ -1,7 +1,5 @@
 package com.commenau.connectionPool;
 
-import com.commenau.dao.JDBIConnector;
-
 import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
 
@@ -39,7 +37,7 @@ public class TestCP extends Thread {
     private void execute() {
 //        int s = JDBIConnector.getInstance().withHandle(handle ->
 //                handle.createQuery("SELECT COUNT(*) AS total FROM cancel_products").mapTo(Integer.class).one());
-//        System.out.println("Pool status of task " + taskName + ": " + com.commenau.dao.ConnectionPool.getInstance().toString());
+//        System.out.println("Pool status of task " + taskName + ": " + com.commenau.connectionPool.ConnectionPool.getInstance().toString());
 //        System.out.println("Task = " + taskName + ": Run SQL successfully " + s);
 
         int s = ConnectionPool.getConnection().withHandle(handle ->

@@ -1,6 +1,5 @@
 package com.commenau.dao;
 
-import com.commenau.model.ChatMessage;
 import com.commenau.model.Conversation;
 import com.commenau.model.Message;
 
