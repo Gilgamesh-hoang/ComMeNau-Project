@@ -11,7 +11,7 @@ public class InvoiceDAO {
 
     public List<Invoice> getAllInvoiceById(Long userId) {
         List<Invoice> invoices = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id from invoices where userId = ?")
+            return handle.createQuery("SELECT id FROM invoices WHERE userId = ?")
                     .bind(0, userId)
                     .mapToBean(Invoice.class)
                     .list();

@@ -26,9 +26,6 @@ public class InvoiceController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute(SystemConstant.AUTH);
-//        if (sortOption == null) {
-//            invoicedtos = invoiceService.get10InvoiceDTOById(user.getId());
-//        }
         List<InvoiceDTO> invoicedtos = null;
         String sortOption = req.getParameter("sortOption");
         if ("option10".equals(sortOption)) {

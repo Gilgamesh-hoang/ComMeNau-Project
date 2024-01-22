@@ -25,29 +25,27 @@ public class InvoiceService {
     @Inject
     private ProductImageDAO productImageDAO;
     @Inject
-    private UserDAO userDAO;
-    @Inject
     private CartDAO cartDAO;
     @Inject
     private MailService mail;
 
     public List<InvoiceDTO> getAllInvoiceDTOById(Long userId) {
-        List<InvoiceDTO> re = new ArrayList<>();
-        for (Invoice in : invoiceDAO.getAllInvoiceById(userId)) {
+        List<InvoiceDTO> result = new ArrayList<>();
+        for (Invoice invoice : invoiceDAO.getAllInvoiceById(userId)) {
             double total = 0;
-            double shippingFee = (invoiceDAO.getInvoiceById(in.getId()).getShippingFee() == null) ? 0 : invoiceDAO.getInvoiceById(in.getId()).getShippingFee();
-            for (InvoiceItem invoiceItem : invoiceItemDAO.getAllInvoiceItemById(in.getId())) {
+            double shippingFee = (invoiceDAO.getInvoiceById(invoice.getId()).getShippingFee() == null) ? 0 : invoiceDAO.getInvoiceById(invoice.getId()).getShippingFee();
+            for (InvoiceItem invoiceItem : invoiceItemDAO.getAllInvoiceItemById(invoice.getId())) {
                 total += invoiceItem.getPrice() * invoiceItem.getQuantity();
             }
             InvoiceDTO invoicedto = InvoiceDTO.builder()
-                    .id(in.getId())
-                    .createdAt(invoiceStatusDAO.getStatusByInvoice(in.getId()).getCreatedAt())
-                    .status(invoiceStatusDAO.getStatusByInvoice(in.getId()).getStatus())
+                    .id(invoice.getId())
+                    .createdAt(invoiceStatusDAO.getStatusByInvoice(invoice.getId()).getCreatedAt())
+                    .status(invoiceStatusDAO.getStatusByInvoice(invoice.getId()).getStatus())
                     .total(total + shippingFee)
                     .build();
-            re.add(invoicedto);
+            result.add(invoicedto);
         }
-        return re;
+        return result;
     }
 
     public List<InvoiceItemDTO> getAllInvoiceItemDTOByInvoiceId(int invoiceId) {

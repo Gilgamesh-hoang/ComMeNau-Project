@@ -29,8 +29,6 @@ public class CheckoutController extends HttpServlet {
     private CartService cartService;
     @Inject
     private InvoiceService invoiceService;
-    @Inject
-    private ProductService productService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -59,16 +57,9 @@ public class CheckoutController extends HttpServlet {
             request.setAttribute("email", user.getEmail());
         } else {
             //get products from cookie
-            List<CartItemDTO> items = new ArrayList<>();
             Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().startsWith("productId")) {
-                    int productId = Integer.parseInt(cookie.getName().substring("productId".length()));
-                    int quantity = Integer.parseInt(cookie.getValue());
-                    ProductDTO product = productService.getByIdWithAvatar(productId);
-                    items.add(CartItemDTO.builder().product(product).quantity(quantity).build());
-                }
-            }
+            List<CartItemDTO> items = cartService.getItemFromCookies(cookies);
+
             if (items.isEmpty()) {
                 response.sendRedirect("carts");
                 return;
@@ -83,11 +74,9 @@ public class CheckoutController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String action = request.getParameter("action");
         User user = (User) request.getSession().getAttribute(SystemConstant.AUTH);
         Invoice invoice = FormUtil.toModel(Invoice.class, request);
         boolean hasError = validate(invoice);
-
 
         boolean isVnPayAction = !StringUtils.isBlank(invoice.getPaymentMethod()) && invoice.getPaymentMethod().equals("VNPAY");
 
@@ -103,12 +92,7 @@ public class CheckoutController extends HttpServlet {
                 if (isSuccess) {
                     // Delete all cart items in cookie
                     Cookie[] cookies = request.getCookies();
-                    for (Cookie cookie : cookies) {
-                        if (cookie.getName().startsWith("productId")) {
-                            cookie.setMaxAge(0);
-                            response.addCookie(cookie);
-                        }
-                    }
+                    cartService.removeItemsInCookies(cookies, null);
                 }
             }
         }
