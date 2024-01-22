@@ -51,7 +51,7 @@ public class ProductCancellationSchedule implements ServletContextListener {
     private long getDelayToNextDay() {
         LocalDateTime now = LocalDateTime.now();
         // set time at 23:59 everyday
-        LocalDateTime nextRun = now.toLocalDate().atTime(10, 56,59);
+        LocalDateTime nextRun = now.toLocalDate().atTime(23, 59,59);
 
         // Calculate the remaining time until 23:59
         long initialDelay = ChronoUnit.SECONDS.between(now, nextRun);
