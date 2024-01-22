@@ -6,16 +6,14 @@ import com.commenau.paging.PageRequest;
 import com.commenau.util.PagingUtil;
 
 import java.util.List;
-
-
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BlogDao {
-    public Blog getBlogById(int id) {
-        Optional<Blog> blog = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select * from blogs where id = ?").bind(0, id).mapToBean(Blog.class).stream().findFirst();
-        });
+    public Blog findOneById(int id) {
+        Optional<Blog> blog = JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT * FROM blogs WHERE id = ?").bind(0, id).mapToBean(Blog.class).stream().findFirst()
+        );
         return blog.orElse(null);
     }
 
@@ -130,7 +128,6 @@ public class BlogDao {
             sql = "UPDATE blogs SET title=:title,shortDescription=:shortDescription,content=:content WHERE id=:id";
         else
             sql = "UPDATE blogs SET title=:title,shortDescription=:shortDescription,content=:content,image=:image WHERE id=:id";
-
 
         int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate(sql).bindBean(blog).execute());

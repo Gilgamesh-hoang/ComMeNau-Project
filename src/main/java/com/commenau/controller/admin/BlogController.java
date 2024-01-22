@@ -46,9 +46,8 @@ public class BlogController extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Integer[] ids = HttpUtil.of(request.getReader()).toModel(Integer[].class);
         String realPath = request.getServletContext().getRealPath("/images/blogs");
-        boolean result;
         if (ids.length != 0) {
-            result = blogService.delete(ids, realPath);
+            boolean result = blogService.delete(ids, realPath);
             response.setStatus(result ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

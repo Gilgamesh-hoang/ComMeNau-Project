@@ -5,32 +5,29 @@ import com.commenau.model.Category;
 import com.commenau.paging.PageRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CategoryDAO {
     public String getNameById(int id) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select name from categories where id = ?").bind(0, id).mapTo(String.class).one();
-        });
+        return JDBIConnector.getInstance().withHandle(n ->
+                n.createQuery("SELECT name FROM categories WHERE id = ?").bind(0, id).mapTo(String.class)
+                        .stream().findFirst().orElse(null)
+        );
     }
 
-    public String getCategoryNameById(int productId) {
-
-        Optional<Category> re = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select c.name from categories c join products p on c.id = p.categoryId where p.id = ?")
-                    .bind(0, productId)
-                    .mapToBean(Category.class).stream().findFirst();
-        });
-        return re.orElse(null).getName();
+    public String getNameByProductId(int productId) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT c.name FROM categories c INNER JOIN products p ON c.id = p.categoryId WHERE p.id = ?")
+                        .bind(0, productId).mapToBean(String.class).stream().findFirst().orElse(null)
+        );
     }
 
     public List<Category> findAll(PageRequest pageRequest) {
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM categories ORDER BY id DESC");
+        String sql = "SELECT * FROM categories ORDER BY id DESC";
         if (pageRequest.getMaxPageItem() != 0)
-            sql.append(" LIMIT " + pageRequest.getOffset() + "," + pageRequest.getMaxPageItem());
+            sql += " LIMIT " + pageRequest.getOffset() + "," + pageRequest.getMaxPageItem();
+        String finalSql = sql;
         return JDBIConnector.getInstance().withHandle(handle ->
-                handle.createQuery(sql.toString()).mapToBean(Category.class).stream().toList());
+                handle.createQuery(finalSql).mapToBean(Category.class).stream().toList());
     }
 
     public int totalItem() {
@@ -62,8 +59,8 @@ public class CategoryDAO {
 
 
     public List<Category> getAllCategory() {
-        return JDBIConnector.getInstance().withHandle(n -> {
-           return n.createQuery("select id , name from categories").mapToBean(Category.class).stream().toList();
-        });
+        return JDBIConnector.getInstance().withHandle(n ->
+                n.createQuery("SELECT id , name FROM categories").mapToBean(Category.class).list()
+        );
     }
 }

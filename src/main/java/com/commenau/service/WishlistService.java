@@ -26,7 +26,7 @@ public class WishlistService {
         for (WishlistItem wi : wishlistDAO.getAllWishlistItemById(userId)) {
             WishlistItemDTO wishlistDTO = WishlistItemDTO.builder()
                     .product(productDAO.findOneById(wi.getProductId()))
-                    .categoryName(categoryDAO.getCategoryNameById(wi.getProductId()))
+                    .categoryName(categoryDAO.getNameByProductId(wi.getProductId()))
                     .image(productImageDAO.findAvatarByProductId(wi.getProductId()))
                     .build();
             result.add(wishlistDTO);

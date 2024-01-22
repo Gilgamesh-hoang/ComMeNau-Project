@@ -17,7 +17,7 @@ public class BlogService {
     private BlogReviewDao reviewDao;
 
     public Blog getBlogById(int id) {
-        return blogDao.getBlogById(id);
+        return blogDao.findOneById(id);
     }
 
     public Blog getFirstBlog() {
@@ -36,7 +36,7 @@ public class BlogService {
         return blogDao.getAllBlogByDate();
     }
 
-    public List<Blog> findBlogsByInput(String input){
+    public List<Blog> findBlogsByInput(String input) {
         return blogDao.findBlogByInput(input);
     }
 
@@ -52,11 +52,6 @@ public class BlogService {
 
     public List<Blog> getListBlogPaging(int pageIndex, int pageSize) {
         return blogDao.getBlogs(pageIndex, pageSize);
-    }
-
-
-    public List<Blog> getAll(PageRequest pageRequest) {
-        return blogDao.findAll(pageRequest);
     }
 
     public List<Blog> getByKeyWord(PageRequest pageRequest, String keyWord) {
@@ -99,6 +94,7 @@ public class BlogService {
             return false;
         }
     }
+
     public boolean save(Blog blog) {
         return blogDao.save(blog);
     }
