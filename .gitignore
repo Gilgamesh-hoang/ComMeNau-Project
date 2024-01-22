@@ -1,0 +1,28 @@
+target/
+
+### IntelliJ IDEA ###
+.idea/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+
+### VS Code ###
+.vscode/
+
+.idea/
+# Compiled class file
+*.class
+
+# Log file
+*.log
+*.iml
+
+# image file
+src/main/webapp/images/
