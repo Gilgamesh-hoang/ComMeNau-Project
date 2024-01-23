@@ -141,7 +141,7 @@ public class ProductDAO {
                                     .status(rs.getBoolean("status"))
                                     .rate((int) rs.getFloat("rate"))
                                     .available(rs.getInt("available"))
-                                    .images(rs.getString("image") == null ? new ArrayList<>() : List.of(rs.getString("image")))
+                                    .avatar(rs.getString("image") == null ? "" : rs.getString("image"))
                                     .build();
                         }).stream().toList()
         );

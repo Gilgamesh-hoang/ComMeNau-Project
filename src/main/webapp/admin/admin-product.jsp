@@ -125,28 +125,29 @@
                                                     <span class="lbl"></span>
                                                 </label>
                                             </td>
-                                            <td>${item.productName}</td>
+                                            <td>${item.name}</td>
                                             <td>${item.categoryName}</td>
                                             <td class="text-center">${item.available}</td>
                                             <td class="text-center">
-                                                <c:choose>
-                                                    <c:when test="${item.images != null && !item.images.isEmpty()}">
-                                                        <img class="img-product" src="<c:url value="/images/products/${item.images.get(0)}"/>">
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <img class="img-product" src="">
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                <img class="img-product" src="<c:url value="/images/products/${item.avatar}"/>">
+<%--                                                <c:choose>--%>
+<%--                                                    <c:when test="${item.images != null && !item.images.isEmpty()}">--%>
+<%--                                                        <img class="img-product" src="<c:url value="/images/products/${item.images.get(0)}"/>">--%>
+<%--                                                    </c:when>--%>
+<%--                                                    <c:otherwise>--%>
+<%--                                                        <img class="img-product" src="">--%>
+<%--                                                    </c:otherwise>--%>
+<%--                                                </c:choose>--%>
                                             </td>
                                             <td>
                                                 <fmt:formatNumber value="${item.price}" type="currency" pattern="###,### VNĐ"/>
                                             </td>
                                             <td class="text-center">
                                                 <div class="gl-rate-style">
-                                                    <c:forEach begin="1" end="${item.rating}">
+                                                    <c:forEach begin="1" end="${item.rate}">
                                                         <i class="fa-solid fa-star" style="color: #ff9600;"></i>
                                                     </c:forEach>
-                                                    <c:forEach begin="1" end="${5 - item.rating}">
+                                                    <c:forEach begin="1" end="${5 - item.rate}">
                                                         <i class="fa-regular fa-star" style="color: #ff9600;"></i>
                                                     </c:forEach>
                                                 </div>

@@ -51,22 +51,6 @@
                                             <div class="form-group">
                                                 <label class="col-form-label">Thể loại <span
                                                         class="required-check">*</span></label>
-<%--                                                <select class="form-control" name="categoryId" data-rule="required">--%>
-<%--                                                    <c:if test="${product.categoryId == 0}">--%>
-<%--                                                        <option value="0" selected></option>--%>
-<%--                                                        <c:forEach var="category" items="${categories}">--%>
-<%--                                                            <option value="${category.id}">${category.name}</option>--%>
-<%--                                                        </c:forEach>--%>
-<%--                                                    </c:if>--%>
-
-<%--                                                    <c:if test="${product.categoryId > 0}">--%>
-<%--                                                        <c:forEach var="category" items="${categories}">--%>
-<%--                                                            <option value="${category.id}"--%>
-<%--                                                                    <c:if test="${category.id == product.categoryId}">selected</c:if>--%>
-<%--                                                            >${category.name}</option>--%>
-<%--                                                        </c:forEach>--%>
-<%--                                                    </c:if>--%>
-<%--                                                </select>--%>
                                                 <select class="form-control" name="categoryId" data-rule="required">
                                                     <c:if test="${product.categoryId == 0}"><option value="0" selected></option></c:if>
                                                     <c:forEach var="category" items="${categories}">
@@ -98,7 +82,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label class="col-form-label">Tên sản phẩm <span class="required-check">*</span></label>
-                                                <input type="text" name="name" value="${product.productName}"
+                                                <input type="text" name="name" value="${product.name}"
                                                        class="form-control" data-rule="required">
                                             </div>
 
