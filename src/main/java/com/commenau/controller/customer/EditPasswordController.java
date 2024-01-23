@@ -17,7 +17,7 @@ import java.io.IOException;
 @WebServlet("/change-password")
 public class EditPasswordController extends HttpServlet {
     @Inject
-    UserService userService;
+    private UserService userService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

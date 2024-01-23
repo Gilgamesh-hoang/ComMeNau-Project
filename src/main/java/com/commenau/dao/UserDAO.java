@@ -6,6 +6,7 @@ import com.commenau.model.User;
 
 import java.util.List;
 import java.util.Optional;
+
 public class UserDAO {
     public boolean isAdmin(int id) {
         return JDBIConnector.getInstance().withHandle(n -> {
@@ -32,7 +33,7 @@ public class UserDAO {
 
     public User getUserById(Long id) {
         Optional<User> user = JDBIConnector.getInstance().withHandle(handle ->
-                handle.createQuery("select * from users where id = ?")
+                handle.createQuery("SELECT * FROM users WHERE id = ?")
                         .bind(0, id).mapToBean(User.class).stream().findFirst());
         return user.orElse(null);
     }
@@ -68,24 +69,16 @@ public class UserDAO {
     }
 
     public boolean updatePassword(User user) {
-        try {
-            int result = JDBIConnector.getInstance().inTransaction(handle ->
-                    handle.createUpdate("UPDATE users SET password = :password WHERE id = :id")
-                            .bindBean(user).execute());
-            return result > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
+                handle.createUpdate("UPDATE users SET password = :password WHERE id = :id")
+                        .bindBean(user).execute());
+        return result > 0;
     }
 
     public boolean updateProfile(User user) {
         int result = JDBIConnector.getInstance().inTransaction(handle ->
-                handle.createUpdate("UPDATE users SET firstName = :firstName" +
-                                ", lastName = :lastName , phoneNumber= :phoneNumber, address = :address " +
-                                "WHERE id = :id")
-                        .bindBean(user)
-                        .execute()
+                handle.createUpdate("UPDATE users SET firstName = :firstName, lastName = :lastName ," +
+                        " phoneNumber= :phoneNumber, address = :address WHERE id = :id").bindBean(user).execute()
         );
         return result > 0;
     }
@@ -107,27 +100,13 @@ public class UserDAO {
         });
     }
 
-    public boolean changeStatusOfCustomer(User user) {
-        try {
-            int result = JDBIConnector.getInstance().inTransaction(handle ->
-                    handle.createUpdate("UPDATE users set status = ? where id = ?")
-                            .bind(0, user.getStatus())
-                            .bind(1, user.getId())
-                            .execute());
-            return result > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public boolean lockOrUnlock(Long userId, String activated) {
-        int row = JDBIConnector.getInstance().inTransaction(handle -> {
-            return handle.createUpdate("update users set status = :status where id = :id")
-                    .bind("status", activated)
-                    .bind("id", userId)
-                    .execute();
-        });
+        int row = JDBIConnector.getInstance().inTransaction(handle ->
+                handle.createUpdate("UPDATE users SET status = :status WHERE id = :id")
+                        .bind("status", activated)
+                        .bind("id", userId)
+                        .execute()
+        );
         return row > 0;
     }
 

@@ -3,7 +3,6 @@ package com.commenau.controller.customer;
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.User;
 import com.commenau.service.UserService;
-import com.commenau.util.HttpUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -15,9 +14,8 @@ import java.io.IOException;
 
 @WebServlet("/profile")
 public class ProfileController extends HttpServlet {
-
     @Inject
-    UserService userService;
+    private UserService userService;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute(SystemConstant.AUTH);
