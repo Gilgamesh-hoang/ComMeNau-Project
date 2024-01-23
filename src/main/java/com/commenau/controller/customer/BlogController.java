@@ -2,11 +2,10 @@ package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.Blog;
-import com.commenau.model.User;
-import com.commenau.service.BlogReviewService;
+import com.commenau.paging.PageRequest;
+import com.commenau.paging.Sorter;
 import com.commenau.service.BlogService;
-import com.commenau.service.CategoryService;
-import com.commenau.service.ProductService;
+import com.commenau.util.PagingUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -21,58 +20,33 @@ import java.util.List;
 public class BlogController extends HttpServlet {
     @Inject
     BlogService blogService;
-    @Inject
-    BlogReviewService blogReviewService;
+    private static final int maxPageItem = 5;
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pageStr = request.getParameter("page");
+        String keyWord = request.getParameter("keyWord");
+
         //newest
-        List<Blog> list = blogService.getListBlog();
-        req.setAttribute("listBlog", list);
+        List<Blog> newestBlogs = blogService.getBlogNewest(3);
+        request.setAttribute("newestBlogs", newestBlogs);
 
-        String findInput = req.getParameter("inputData") == null ? "" : req.getParameter("inputData");
-        if (!findInput.equals("")) {
-            List<Blog> listBlog = blogService.findBlogsByInput(findInput);
-            req.setAttribute("inputKey", findInput);
-            req.setAttribute("listBlog", blogService.getListBlog());
-            req.setAttribute("listBlogs", listBlog);
-            req.setAttribute("maxPage", 0);
-            req.setAttribute("pageIndex", 1);
-            req.getRequestDispatcher("customer/blog.jsp").forward(req, resp);
-        } else {
-            // paging
-            int pageSize = 4;
-            int totalItem = blogService.countAll();
-            int maxPage = (totalItem % pageSize == 0) ? (totalItem / pageSize) : (totalItem / pageSize) + 1;
-            req.setAttribute("maxPage", maxPage);
+        //paging
+        int totalItem = blogService.countByKeyWord(keyWord);
+        int maxPage = PagingUtil.maxPage(totalItem, maxPageItem);
+        int page = PagingUtil.convertToPageNumber(pageStr, maxPage);
+        List<Sorter> sorters = List.of(new Sorter("createdAt", "DESC"));
+        PageRequest pageRequest = PageRequest.builder().page(page).maxPageItem(maxPageItem)
+                .sorters(sorters).build();
 
-            String pageIndex = req.getParameter("pageIndex");
-            int index = 0;
-            if (pageIndex == null)
-                pageIndex = "1";
-            try {
-                index = Integer.parseInt(pageIndex);
-            } catch (IllegalArgumentException e) {
-                index = 1;
-            }
-            if (index <= 0 || index > maxPage)
-                index = 1;
-            req.setAttribute("pageIndex", index);
-            List<Blog> listBlogs = blogService.getListBlogPaging(index, pageSize);
-            req.setAttribute("listBlogs", listBlogs);
-            String currentPage = req.getRequestURL().toString();
-            req.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
-            req.getRequestDispatcher("/customer/blog.jsp").forward(req, resp);
-        }
+        request.setAttribute("maxPage", maxPage);
+        request.setAttribute("page", page);
+        request.setAttribute("keyWord", keyWord);
+        request.setAttribute("blogs", blogService.getByKeyWord(pageRequest, keyWord));
+        String currentPage = request.getRequestURL().toString();
+        request.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
+        request.getRequestDispatcher("/customer/blog.jsp").forward(request, response);
+
     }
 
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        String findInput = req.getParameter("inputData") == null ? "" : req.getParameter("inputData");
-//        if (!findInput.equals("")) {
-//            List<Blog> listBlog = blogService.findBlogsByInput(findInput);
-//            req.setAttribute("listBlog", blogService.getListBlog());
-//            req.setAttribute("listBlogs", listBlog);
-//            req.getRequestDispatcher("customer/blog.jsp").forward(req, resp);
-//        }
-//    }
 }

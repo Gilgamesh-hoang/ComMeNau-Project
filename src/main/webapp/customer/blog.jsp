@@ -50,8 +50,8 @@
                                     <form class="blog-search-form" method="get" action="<c:url value="/blogs"/> ">
                                         <label for="post-search"></label>
                                         <input class="input-text input-text--primary-style" type="text"
-                                               value="${inputKey}"
-                                               id="post-search" name="inputData" placeholder="Search" required>
+                                               value="${keyWord}"
+                                               id="post-search" name="keyWord" placeholder="Search" required>
                                         <button class="btn btn--icon" type="submit">
                                             <i class="fas fa-search"></i>
                                         </button>
@@ -63,7 +63,7 @@
 
                                     <span class="blog-w__h">BÀI ĐĂNG GẦN ĐÂY</span>
                                     <ul class="blog-w__b-l">
-                                        <c:forEach var="blog" items="${requestScope.listBlog}">
+                                        <c:forEach var="blog" items="${requestScope.newestBlogs}">
                                             <li>
                                                 <div class="b-l__block">
                                                     <div class="b-1__head">
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-12">
-                        <c:forEach var="blogs" items="${requestScope.listBlogs}">
+                        <c:forEach var="blogs" items="${requestScope.blogs}">
                             <div class="bp bp--img u-s-m-b-30">
                                 <div class="bp__wrap">
                                     <div class="bp__thumbnail">
@@ -114,30 +114,22 @@
 
                                                 <span class="bp__publish-date">
 
-                                                    <a href="<c:url value="/blog-detail?id=${blogs.id}"></c:url>">
                                                         <fmt:formatDate value="${blogs.createdAt}"
-                                                                        pattern="dd 'Tháng' MM yyyy"
-                                                                        var="formattedDate"/>
-                                                            <span>${formattedDate}</span>
-                                                        </a></span></span>
+                                                                        pattern="dd 'Tháng' MM yyyy"/>
+                                                        </span></span>
 
                                             <span class="bp__stat-wrap">
                                                 <span class="bp__comment">
-                                                    <a href="<c:url value="/blog-detail?id=${blogs.id}"></c:url>"><i
-                                                            class="far fa-comments u-s-m-r-4"></i>
-                                                        <span>${blogs.numReviews}</span></a></span></span>
+                                                    <i class="far fa-comments u-s-m-r-4"></i>
+                                                        <span>${blogs.numReviews}</span></span></span>
 
                                         </div>
-
-                                        <span class="bp__h1">
-
-                                            <a href="<c:url value="/blog-detail?id=${blogs.id}"/>">${blogs.title}</a></span>
+                                        <span class="bp__h1">${blogs.title}</span>
                                         <p class="bp__p">${blogs.shortDescription}</p>
                                         <div class="gl-l-r">
                                             <div>
 
                                                 <span class="bp__read-more">
-
                                                     <a href="<c:url value="/blog-detail?id=${blogs.id}"></c:url>">ĐỌC THÊM</a></span>
                                             </div>
                                         </div>
@@ -146,41 +138,24 @@
                             </div>
                         </c:forEach>
                         <nav class="post-center-wrap u-s-p-y-60">
-
                             <!--====== Pagination ======-->
                             <ul class="blog-pg">
-                                <c:set var="currentPage" value="${pageIndex}"/>
-                                <c:set var="begin"
-                                       value="${currentPage<=3 ? 1 : (maxPage <= 4 ? 1 : (currentPage>maxPage-3 ? maxPage-4 : currentPage-2))}"/>
-                                <c:forEach var="index" begin="${begin}" end="${maxPage}"
-                                           step="1">
-                                    <c:if test="${index < (begin + 5)}">
-                                        <li class="<c:if test="${pageIndex == index}">blog-pg--active</c:if>">
-                                            <a href="<c:url value="/blogs?pageIndex=${index}"/>">${index}</a>
-                                        </li>
-                                    </c:if>
-                                </c:forEach>
-                                <%--<c:forEach var="num" begin = "1" end="${maxPage}">
-                                    <li class="<c:if test="${(num)==pageIndex}">blog-pg--active</c:if>">
-                                        <a href="<c:url value="/blogs?pageIndex=${num}"/>">${num}</a>
+                                <c:forEach var="index" begin = "1" end="${maxPage}">
+                                    <li class="<c:if test="${index==page}">blog-pg--active</c:if>">
+                                        <a href="<c:url value="/blogs?page=${index}&keyWord=${keyWord}"/>">${index}</a>
                                     </li>
-                                </c:forEach>--%>
+                                </c:forEach>
                             </ul>
-                            <!--====== End - Pagination ======-->
                         </nav>
                     </div>
                 </div>
             </div>
         </div>
-        <!--====== End - Section 1 ======-->
     </div>
-    <!--====== End - App Content ======-->
-
 
     <!--====== Main Footer ======-->
     <%@include file="/customer/common/footer.jsp" %>
 </div>
-<!--====== End - Main App ======-->
 
 </body>
 

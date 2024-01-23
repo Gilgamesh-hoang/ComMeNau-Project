@@ -31,12 +31,12 @@ public class BlogDao {
         return blog.orElse(null);
     }
 
-    public List<Blog> get3BlogByDate() {
-        List<Blog> blogList = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id, title, image, shortDescription, createdAt from blogs order by createdAt desc limit 3")
-                    .mapToBean(Blog.class).collect(Collectors.toList());
-        });
-        return blogList;
+    public List<Blog> findByNewest(int limit) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT id, title, image, shortDescription, createdAt FROM blogs " +
+                                "ORDER BY createdAt DESC limit :limit").bind("limit", limit)
+                        .mapToBean(Blog.class).list()
+        );
     }
 
     public List<Blog> getAllBlogByDate() {
@@ -47,18 +47,6 @@ public class BlogDao {
         return blogList;
     }
 
-    public List<Blog> getBlogs(int pageIndex, int pageSize) {
-        List<Blog> blogList = JDBIConnector.getInstance().withHandle(handle -> {
-            String sql1 = "select b.*, count(br.id) as numReviews from blogs b left join blog_reviews br on b.id = br.blogId " +
-                    "group by b.id LIMIT ? OFFSET ?";
-            return handle.createQuery(sql1)
-                    .bind(0, pageSize)
-                    .bind(1, (pageIndex - 1) * pageSize)
-                    .mapToBean(Blog.class)
-                    .list();
-        });
-        return blogList;
-    }
 
     public int countAll() {
         int blogCount = JDBIConnector.getInstance().withHandle(handle -> {
@@ -70,14 +58,6 @@ public class BlogDao {
         return blogCount;
     }
 
-    public List<Blog> findBlogByInput(String input) {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id,title,image,shortDescription,createdAt from blogs where title like :title")
-                    .bind("title", "%" + input + "%")
-                    .mapToBean(Blog.class)
-                    .list();
-        });
-    }
 
     public int countByKeyWord(String keyWord) {
         String sql = "SELECT COUNT(id) FROM blogs WHERE title LIKE :keyWord OR shortDescription LIKE :keyWord OR content LIKE :keyWord";
@@ -90,7 +70,8 @@ public class BlogDao {
 
     public List<Blog> findAll(PageRequest pageRequest) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT id, image, title, shortDescription, content FROM blogs ");
+        builder.append("SELECT blogs.*, COUNT(br.id) AS numReviews FROM blogs ")
+                .append("LEFT JOIN blog_reviews br ON blogs.id = br.blogId GROUP BY blogs.id ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
         return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).mapToBean(Blog.class).stream().toList());
@@ -98,8 +79,10 @@ public class BlogDao {
 
     public List<Blog> findByKeyWord(PageRequest pageRequest, String keyWord) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT id, image, title, shortDescription, content FROM blogs ");
-        builder.append("WHERE title LIKE :keyWord OR shortDescription LIKE :keyWord OR content LIKE :keyWord ");
+        builder.append("SELECT blogs.*, COUNT(br.id) AS numReviews FROM blogs ")
+                .append("LEFT JOIN blog_reviews br ON blogs.id = br.blogId ")
+                .append("WHERE title LIKE :keyWord OR shortDescription LIKE :keyWord OR blogs.content LIKE :keyWord ")
+                .append("GROUP BY blogs.id ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
         return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).bind("keyWord", "%" + keyWord + "%")

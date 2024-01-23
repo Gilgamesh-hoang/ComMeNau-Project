@@ -28,17 +28,24 @@ public class BlogService {
         return blogDao.getLastBlog();
     }
 
-    public List<Blog> getListBlog() {
-        return blogDao.get3BlogByDate();
+    public List<Blog> getBlogNewest(int limit) {
+        List<Blog> blogs = blogDao.findByNewest(limit);
+        blogs.forEach(blog -> {
+            String description = blog.getShortDescription();
+            // display description only 400 character
+            if (description.length() > 200) {
+                int lastSpaceLast = description.indexOf(" ", 200);
+                description = description.substring(0, lastSpaceLast) + "......";
+                blog.setShortDescription(description);
+            }
+        });
+        return blogs;
     }
 
     public List<Blog> getListAllBlog() {
         return blogDao.getAllBlogByDate();
     }
 
-    public List<Blog> findBlogsByInput(String input) {
-        return blogDao.findBlogByInput(input);
-    }
 
     public int countAll() {
         return blogDao.countAll();
@@ -50,9 +57,6 @@ public class BlogService {
         return blogDao.countByKeyWord(keyWord);
     }
 
-    public List<Blog> getListBlogPaging(int pageIndex, int pageSize) {
-        return blogDao.getBlogs(pageIndex, pageSize);
-    }
 
     public List<Blog> getByKeyWord(PageRequest pageRequest, String keyWord) {
         List<Blog> list = null;
@@ -61,6 +65,7 @@ public class BlogService {
         } else {
             list = blogDao.findByKeyWord(pageRequest, keyWord.trim());
         }
+
         list.forEach(blog -> {
             String description = blog.getShortDescription();
             // display description only 400 character
