@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class GoogleUtil {
-    public static String GOOGLE_CLIENT_ID = "242043083837-0dnh8k440350sb2bdh9sbpobbm3usqhi.apps.googleusercontent.com";//v2
-    public static String GOOGLE_CLIENT_SECRET = "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";//v2
+    public static String GOOGLE_CLIENT_ID = "";
+    public static String GOOGLE_CLIENT_SECRET = "";
     public static String GOOGLE_REDIRECT_URI = "http://localhost:8080/login-google";
     public static final String GOOGLE_LINK_GET_TOKEN = "https://accounts.google.com/o/oauth2/token";
     public static final String GOOGLE_LINK_GET_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";

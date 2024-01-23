@@ -85,16 +85,13 @@
                                 <form id="signin-form" class="l-f-o__form" method="post" action="<c:url value="/login"/>">
                                     <div class="gl-s-api">
                                         <div class="m-b-15">
-                                            <a class="gl-s-api__btn gl-s-api__btn--fb"
-                                               href="https://www.facebook.com/dialog/oauth?client_id=764147465729528&redirect_uri=http://localhost:8080/login-facebook&scope=email,public_profile">
-                                                <i class="fab fa-facebook-f"></i>
+                                            <a class="gl-s-api__btn gl-s-api__btn--fb"><i class="fab fa-facebook-f"></i>
                                                 <span>Đăng nhập với Facebook</span>
                                             </a>
                                         </div>
                                         <div class="m-b-15">
 
-                                            <a class="gl-s-api__btn gl-s-api__btn--gplus" href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile%20openid&redirect_uri=http://localhost:8080/login-google&response_type=code
-                                                                 &client_id=242043083837-0dnh8k440350sb2bdh9sbpobbm3usqhi.apps.googleusercontent.com&approval_prompt=force"><i
+                                            <a class="gl-s-api__btn gl-s-api__btn--gplus" ><i
                                                     class="fab fa-google"></i>
 
                                                 <span>Đăng nhập với Google</span></a>

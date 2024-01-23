@@ -19,7 +19,6 @@ public class Blog {
     private String image;
     private String createdBy;
     private int numReviews;
-    private Timestamp updatedAt;
     private Timestamp createdAt;
 
 }

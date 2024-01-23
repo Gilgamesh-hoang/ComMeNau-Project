@@ -17,20 +17,6 @@ public class BlogDao {
         return blog.orElse(null);
     }
 
-    public Blog getFirstBlog() {
-        Optional<Blog> blog = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("SELECT id, title, image, shortDescription, createdAt FROM blogs ORDER BY id ASC LIMIT 1;").mapToBean(Blog.class).stream().findFirst();
-        });
-        return blog.orElse(null);
-    }
-
-    public Blog getLastBlog() {
-        Optional<Blog> blog = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("SELECT id, title, image, shortDescription, createdAt FROM blogs ORDER BY id DESC LIMIT 1;").mapToBean(Blog.class).stream().findFirst();
-        });
-        return blog.orElse(null);
-    }
-
     public List<Blog> findByNewest(int limit) {
         return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery("SELECT id, title, image, shortDescription, createdAt FROM blogs " +
@@ -38,15 +24,6 @@ public class BlogDao {
                         .mapToBean(Blog.class).list()
         );
     }
-
-    public List<Blog> getAllBlogByDate() {
-        List<Blog> blogList = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id from blogs")
-                    .mapToBean(Blog.class).collect(Collectors.toList());
-        });
-        return blogList;
-    }
-
 
     public int countAll() {
         int blogCount = JDBIConnector.getInstance().withHandle(handle -> {

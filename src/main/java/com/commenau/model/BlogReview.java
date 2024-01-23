@@ -18,10 +18,4 @@ public class BlogReview {
     private String content;
     private Timestamp createdAt;
 
-//    public String userCreated() {
-//        return user.fullName();
-//    }
-//	public String getImage(long userId){
-//		return userDAO.getUserById(userId).get();
-//	}
 }

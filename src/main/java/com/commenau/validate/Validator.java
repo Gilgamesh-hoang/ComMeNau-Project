@@ -48,15 +48,4 @@ public class Validator {
         return input.trim().isEmpty();
     }
 
-    public static String validEmail(String email) {
-        if (isValidEmail(email))
-            return "Email không đúng định dạng";
-        return null;
-    }
-
-    public static String validPhoneNumber(String phoneNumber) {
-        if (isValidPhoneNumber(phoneNumber))
-            return "SĐT không đúng định dạng";
-        return null;
-    }
 }

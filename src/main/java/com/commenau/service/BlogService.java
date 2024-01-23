@@ -20,14 +20,6 @@ public class BlogService {
         return blogDao.findOneById(id);
     }
 
-    public Blog getFirstBlog() {
-        return blogDao.getFirstBlog();
-    }
-
-    public Blog getLastBlog() {
-        return blogDao.getLastBlog();
-    }
-
     public List<Blog> getBlogNewest(int limit) {
         List<Blog> blogs = blogDao.findByNewest(limit);
         blogs.forEach(blog -> {
@@ -40,10 +32,6 @@ public class BlogService {
             }
         });
         return blogs;
-    }
-
-    public List<Blog> getListAllBlog() {
-        return blogDao.getAllBlogByDate();
     }
 
 

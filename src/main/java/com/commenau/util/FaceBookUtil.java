@@ -11,8 +11,8 @@ import org.apache.http.client.fluent.Request;
 import java.io.IOException;
 
 public class FaceBookUtil {
-    private final static String FACEBOOK_APP_ID = "764147465729528";
-    private final static String FACEBOOK_APP_SECRET = "b6a174ced02ca6be03fc7bc65ee72bc7";
+    private final static String FACEBOOK_APP_ID = "";
+    private final static String FACEBOOK_APP_SECRET = "";
     private final static String FACEBOOK_REDIRECT_URL = "http://localhost:8080/login-facebook";
     private final static String FACEBOOK_LINK_GET_TOKEN = "https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&redirect_uri=%s&code=%s";
 

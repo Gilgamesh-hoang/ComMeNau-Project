@@ -7,7 +7,6 @@ import com.commenau.model.BlogReview;
 import com.commenau.model.User;
 import com.commenau.service.BlogReviewService;
 import com.commenau.service.BlogService;
-import com.commenau.service.ProductService;
 import com.commenau.util.FormUtil;
 
 import javax.inject.Inject;
@@ -31,38 +30,18 @@ public class BlogDetailController extends HttpServlet {
         try {
             int blogId = Integer.parseInt(idParam);
             Blog blog = blogService.getBlogById(blogId);
-            List<Blog> listBlog = blogService.getListAllBlog();
-            List<BlogReviewDTO> blreviews = blogReviewService.getBlogReviewToTime(blogId);
             if (blog != null) {
-                req.setAttribute("blog", blog);
-                Blog lastBlog = blogService.getLastBlog();
-                Blog firstBlog = blogService.getFirstBlog();
-                if (lastBlog.getId() == blogId) {
-                    req.setAttribute("lastBlog", "end");
-                }
-                if (firstBlog.getId() == blogId) {
-                    req.setAttribute("firstBlog", "end");
-                }
-                req.setAttribute("listBlogReview", blreviews);
-                for(int i = 0; i < listBlog.size(); i++){
-                    if (i == 0 && listBlog.get(0).getId() == blogId) {
-                        req.setAttribute("nextblog", listBlog.get(i+1));
-                    }else if (i == listBlog.size() - 1 && listBlog.get(listBlog.size() - 1).getId() == blogId) {
-                        req.setAttribute("preblog", listBlog.get(i-1));
-                    }else if (i != 0 && i != listBlog.size() - 1 && listBlog.get(i).getId() == blogId) {
-                        req.setAttribute("nextblog", listBlog.get(i+1));
-                        req.setAttribute("preblog", listBlog.get(i-1));
-                        break;
-                    }
-                }
+                List<BlogReviewDTO> reviews = blogReviewService.getReviewByBlogId(blogId);
+
                 String currentPage = req.getRequestURL().toString();
                 req.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
-                req.setAttribute("lengthListBlogReview", blogReviewService.getAllBlogReviews(blogId));
-                req.getRequestDispatcher("/customer/blog-detail.jsp").forward(req, resp);
+                req.setAttribute("blog", blog);
+                req.setAttribute("listBlogReview", reviews);
+                req.setAttribute("numberReviews", blogReviewService.numberReviews(blogId));
             }
+            req.getRequestDispatcher("/customer/blog-detail.jsp").forward(req, resp);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            resp.getWriter().write("ID không hợp lệ.");
         }
     }
 
@@ -70,10 +49,8 @@ public class BlogDetailController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         BlogReview blogReview = FormUtil.toModel(BlogReview.class, request);
         User user = (User) request.getSession().getAttribute(SystemConstant.AUTH);
-        int blogId = Integer.parseInt(request.getParameter("blogId"));
         blogReview.setUserId(user.getId());
-        blogReview.setBlogId(blogId);
-        blogReviewService.insertBlogReview(blogReview);
-        response.sendRedirect("blog-detail?id=" + blogId);
+        blogReviewService.saveReview(blogReview);
+        response.sendRedirect("blog-detail?id=" + blogReview.getBlogId());
     }
 }

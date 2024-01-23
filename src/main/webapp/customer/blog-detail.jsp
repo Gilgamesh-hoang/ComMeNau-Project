@@ -69,22 +69,6 @@
 
                     <div class="bp-detail__p"> ${blog.content} </div>
 
-                    <div class="d-flex align-items-center justify-content-between  bp-detail__postnp">
-                        <c:if test="${requestScope.firstBlog == null}">
-                            <div>
-                                <a href="<c:url value="/blog-detail?id=${requestScope.preblog.id}"/>"> <i
-                                        class="fa-solid fa-caret-left"></i> Bài đăng
-                                    trước</a>
-                            </div>
-                        </c:if>
-                        <c:if test="${requestScope.lastBlog == null}">
-                            <div>
-                                <a href="<c:url value="/blog-detail?id=${requestScope.nextblog.id}"/>">Bài đăng tiếp
-                                    theo <i class="fa-solid fa-caret-right"></i> </a>
-                            </div>
-                        </c:if>
-
-                    </div>
                 </div>
             </div>
         </div>
@@ -96,7 +80,7 @@
     padding: 0 15px;
     margin: 0 auto">
 
-            <span class="d-meta__text u-s-m-b-36">${lengthListBlogReview} bình luận trong bài viết này</span>
+            <span class="d-meta__text u-s-m-b-36">${numberReviews} bình luận trong bài viết này</span>
             <div class="d-meta__comments u-s-m-b-30">
                 <ol>
                     <li>
@@ -110,7 +94,7 @@
                                     </div>
                                 </div>
                                 <div class="p-comment__wrap2">
-                                    <span class="p-comment__author"> ${blr.user.fullName()} </span>
+                                    <span class="p-comment__author"> ${blr.fullName} </span>
                                     <span class="p-comment__timestamp">
                                                 <fmt:formatDate value="${blr.createdAt}"
                                                                 pattern="dd-MM-yyyy 'lúc' hh:mma"

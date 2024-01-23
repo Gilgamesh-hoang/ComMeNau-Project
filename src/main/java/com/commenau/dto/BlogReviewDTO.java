@@ -1,6 +1,5 @@
 package com.commenau.dto;
 
-import com.commenau.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BlogReviewDTO {
-    private User user;
+    private String fullName;
     private String content;
     private Timestamp createdAt;
 }
