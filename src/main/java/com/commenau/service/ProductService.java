@@ -36,7 +36,7 @@ public class ProductService implements Pageable<ProductDTO> {
     public ProductDTO getByIdWithAvatar(int id) {
         Product product = productDAO.findOneById(id);
         ProductDTO productDTO = ProductMapper.INSTANCE.toDTO(product);
-        productDTO.setImages(List.of(productImageDAO.findAvatarByProductId(product.getId())));
+        productDTO.setAvatar(productImageDAO.findAvatarByProductId(product.getId()));
         return productDTO;
 
     }

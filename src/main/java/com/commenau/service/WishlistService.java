@@ -1,37 +1,28 @@
 package com.commenau.service;
 
 import com.commenau.dao.CategoryDAO;
-import com.commenau.dao.ProductDAO;
-import com.commenau.dao.ProductImageDAO;
 import com.commenau.dao.WishListDAO;
+import com.commenau.dto.ProductDTO;
 import com.commenau.dto.WishlistItemDTO;
-import com.commenau.model.WishlistItem;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WishlistService {
     @Inject
     private WishListDAO wishlistDAO;
     @Inject
-    private ProductDAO productDAO;
-    @Inject
-    private ProductImageDAO productImageDAO;
+    private ProductService productService;
     @Inject
     private CategoryDAO categoryDAO;
 
-    public List<WishlistItemDTO> getAllWishlistItemById(Long userId) {
-        List<WishlistItemDTO> result = new ArrayList<>();
-        for (WishlistItem wi : wishlistDAO.getAllWishlistItemById(userId)) {
-            WishlistItemDTO wishlistDTO = WishlistItemDTO.builder()
-                    .product(productDAO.findOneById(wi.getProductId()))
-                    .categoryName(categoryDAO.getNameByProductId(wi.getProductId()))
-                    .image(productImageDAO.findAvatarByProductId(wi.getProductId()))
-                    .build();
-            result.add(wishlistDTO);
-        }
-        return result;
+    public List<WishlistItemDTO> getWishlist(Long userId) {
+        return wishlistDAO.findWishListByUser(userId).stream().map(item -> {
+            ProductDTO product = productService.getByIdWithAvatar(item.getProductId());
+            product.setCategoryName(categoryDAO.getNameById(product.getCategoryId()));
+            return WishlistItemDTO.builder().product(product).build();
+        }).collect(Collectors.toList());
     }
 
     public boolean existsItem(int userId, int productId) {
@@ -42,9 +33,10 @@ public class WishlistService {
         wishlistDAO.saveItem(userID, productId);
     }
 
-    public boolean deleteItem(int userID, int productId) {
+    public boolean deleteItem(long userID, int productId) {
         return wishlistDAO.deleteItem(userID, productId);
     }
+
     public boolean resetAll(Long userId) {
         return wishlistDAO.resetAll(userId);
     }

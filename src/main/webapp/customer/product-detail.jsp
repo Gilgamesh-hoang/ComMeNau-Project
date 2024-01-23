@@ -525,9 +525,9 @@
             if ($("#wishlisticon").hasClass("fas")) {
                 $.ajax({
                     type: "DELETE",
-                    url: "http://localhost:8080/wishlist?productId=" + idProduct + "&userId=" + userId,
-                    contentType: "application/x-www-form-urlencoded; charset=UTF-16",
-                    // Serialize dữ liệu biểu mẫu
+                    url: "<c:url value="/wishlist"/>",
+                    data: JSON.stringify(idProduct),
+                    contentType: "application/json;",
                     success: function (response) {
                         $("#wishlisticon").addClass("far");
                         $("#wishlisticon").removeClass("fas");
@@ -536,7 +536,6 @@
                     error: function (error) {
                         toastr.error("Xóa khỏi danh sách yêu thích thất bại", '', { timeOut: 700 });
                     }
-
                 });
 
             } else {

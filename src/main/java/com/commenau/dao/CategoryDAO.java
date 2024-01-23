@@ -14,13 +14,6 @@ public class CategoryDAO {
         );
     }
 
-    public String getNameByProductId(int productId) {
-        return JDBIConnector.getInstance().withHandle(handle ->
-                handle.createQuery("SELECT c.name FROM categories c INNER JOIN products p ON c.id = p.categoryId WHERE p.id = ?")
-                        .bind(0, productId).mapToBean(String.class).stream().findFirst().orElse(null)
-        );
-    }
-
     public List<Category> findAll(PageRequest pageRequest) {
         String sql = "SELECT * FROM categories ORDER BY id DESC";
         if (pageRequest.getMaxPageItem() != 0)

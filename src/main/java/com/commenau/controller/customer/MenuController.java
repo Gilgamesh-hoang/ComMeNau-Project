@@ -20,8 +20,6 @@ public class MenuController extends HttpServlet {
     ProductService productService;
     @Inject
     CategoryService categoryService;
-    @Inject
-    WishlistService wishlistService;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String currentPage = req.getRequestURL().toString();

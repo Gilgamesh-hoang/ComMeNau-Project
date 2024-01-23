@@ -61,7 +61,7 @@
                                             <div class="table-p__box">
                                                 <div class="table-p__img-wrap">
                                                     <img class="u-img-fluid"
-                                                         src="<c:url value="/images/products/${item.product.images.get(0)}"/>" alt="">
+                                                         src="<c:url value="/images/products/${item.product.avatar}"/>" alt="">
                                                 </div>
                                                 <div class="table-p__info">
                                                     <span class="table-p__name"><a

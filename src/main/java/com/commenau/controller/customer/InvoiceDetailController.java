@@ -1,7 +1,6 @@
 package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
-import com.commenau.dao.InvoiceItemDAO;
 import com.commenau.dto.InvoiceDTO;
 import com.commenau.dto.InvoiceItemDTO;
 import com.commenau.model.User;
@@ -51,7 +50,7 @@ public class InvoiceDetailController extends HttpServlet {
             for (InvoiceDTO i : invoicedtos) {
                 if (i.getStatus().equals(SystemConstant.INVOICE_CANCEL)) count++;
             }
-            req.setAttribute("numWishlistItems", wishlistService.getAllWishlistItemById(user.getId()).size());
+            req.setAttribute("numWishlistItems", wishlistService.getWishlist(user.getId()).size());
             req.setAttribute("numInvoiceCanceled", count);
             req.setAttribute("states", states);
             req.setAttribute("sizeListInvoiceDTO", invoicedtos.size());

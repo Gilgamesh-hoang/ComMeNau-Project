@@ -5,7 +5,6 @@ import com.commenau.dto.InvoiceDTO;
 import com.commenau.model.User;
 import com.commenau.service.InvoiceService;
 import com.commenau.service.WishlistService;
-import com.google.gson.Gson;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -40,7 +39,7 @@ public class InvoiceController extends HttpServlet {
             if (invoiceDTO.getStatus().equals(SystemConstant.INVOICE_CANCEL)) count++;
         }
         //nav-left
-        req.setAttribute("numWishlistItems", wishlistService.getAllWishlistItemById(user.getId()).size());
+        req.setAttribute("numWishlistItems", wishlistService.getWishlist(user.getId()).size());
         req.setAttribute("numInvoiceCanceled", count);
         req.setAttribute("sizeListInvoiceDTO", invoicedtos.size());
         //main

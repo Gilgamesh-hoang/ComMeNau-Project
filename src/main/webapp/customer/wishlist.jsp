@@ -3,7 +3,6 @@
 <fmt:setLocale value="vi_VN"/>
 <%@ page import="com.commenau.util.RoundUtil" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%--<!DOCTYPE html>--%>
 <html class="no-js" lang="en">
 
 <head>
@@ -34,14 +33,10 @@
     <jsp:include page="common/chat.jsp"></jsp:include>
     <!--====== End - Main Header ======-->
 
-
-    <!--====== App Content ======-->
     <div class="app-content">
 
-        <!--====== Section ======-->
         <div class="u-s-p-b-60">
 
-            <!--====== Section Intro ======-->
             <div class="section__intro u-s-m-b-60">
                 <div class="container">
                     <div class="row">
@@ -51,55 +46,47 @@
                     </div>
                 </div>
             </div>
-            <!--====== End - Section Intro ======-->
-
-
-            <!--====== Section Content ======-->
             <div class="section__content">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
 
                             <!--====== Wishlist Product ======-->
-                            <c:forEach var="wishlistItemDTO" items="${requestScope.listWishlistItemDTO}">
+                            <c:forEach var="item" items="${requestScope.wishlist}">
                                 <div class="w-r u-s-m-b-30">
                                     <div class="w-r__container">
                                         <div class="w-r__wrap-1">
                                             <div class="w-r__img-wrap">
                                                 <img class="u-img-fluid"
-                                                     src="<c:url value="/images/products/${wishlistItemDTO.image}"/>"
+                                                     src="<c:url value="/images/products/${item.product.avatar}"/>"
                                                      alt="">
                                             </div>
                                             <div class="w-r__info">
                                                 <span class="w-r__name">
-                                                    <a href="<c:url value="/product/${wishlistItemDTO.product.id}"/>">${wishlistItemDTO.product.name}</a></span>
+                                                    <a href="<c:url value="/product/${item.product.id}"/>">${item.product.name}</a></span>
                                                 <span class="w-r__category">
-                                                    <a>${wishlistItemDTO.categoryName}</a></span>
-                                                <fmt:formatNumber value="${RoundUtil.roundPrice(wishlistItemDTO.product.price * (1 - wishlistItemDTO.product.discount))}"
+                                                    <a>${item.product.categoryName}</a></span>
+                                                <fmt:formatNumber value="${RoundUtil.roundPrice(item.product.price * (1 - item.product.discount))}"
                                                                   type="currency"
                                                                   var="formattedPrice"/>
                                                 <span class="w-r__price">${formattedPrice}
                                                     <span class="w-r__discount">
                                                         <fmt:formatNumber
-                                                                value="${wishlistItemDTO.product.price}"
+                                                                value="${item.product.price}"
                                                                 type="currency" pattern="###,### đ"/>
                                                     </span></span>
                                             </div>
                                         </div>
                                         <div class="w-r__wrap-2">
-                                            <button class="w-r__link btn--e-brand-b-2 btn-add-cart" data-input-id="${wishlistItemDTO.product.id}">THÊM VÀO GIỎ HÀNG</button>
-<%--                                            <a class="w-r__link btn--e-transparent-platinum-b-2" href="#">XÓA</a>--%>
+                                            <button class="w-r__link btn--e-brand-b-2 btn-add-cart" data-input-id="${item.product.id}">THÊM VÀO GIỎ HÀNG</button>
                                             <button class="w-r__link btn-delete"
                                                     style="background: none; color: #ff4500;border: 2px solid #ff4500;"
-                                                    data-input-id="${wishlistItemDTO.product.id}" data="input-id">XÓA
+                                                    data-input-id="${item.product.id}" data="input-id">XÓA
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </c:forEach>
-                            <!--====== End - Wishlist Product ======-->
-
-                            <!--====== End - Wishlist Product ======-->
                         </div>
                         <div class="col-lg-12">
                             <div class="route-box">
@@ -111,29 +98,16 @@
                                 <div class="route-box__g">
                                     <button class="route-box__link btn-delete__all">
                                         <i class="fas fa-trash"></i><span>ĐẶT LẠI DANH SÁCH</span></button>
-                                    <%--                                    <a class="route-box__link" href="wishlist.html"><i class="fas fa-trash"></i>--%>
-                                    <%--                                        <span>ĐẶT LẠI DANH SÁCH</span></a>--%>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--====== End - Section Content ======-->
         </div>
-        <!--====== End - Section ======-->
     </div>
-    <!--====== End - App Content ======-->
-
-
-    <!--====== Main Footer ======-->
     <%@include file="/customer/common/footer.jsp" %>
-
-    <!--====== Modal Section ======-->
-    <!--====== End - Modal Section ======-->
 </div>
-<!--====== End - Main App ======-->
-<%--<script src="<c:url value="/jquey/jquery.min.js"/>"></script>--%>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
@@ -195,16 +169,12 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 var inputData = $(this).data('input-id');
-                // using Ajax to send data to server
                 $.ajax({
                     type: "DELETE",
                     url: "<c:url value="/wishlist"/>",
                     data: JSON.stringify(inputData),
                     contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (response) {
-                        <%--window.location.href = "<c:url value="/gio-hang"/>";--%>
-                        <%--console.log("xoa thanh cong");--%>
+                    success: function () {
                         Swal.fire({
                             icon: "success",
                             title: "Xóa sản phẩm thành công",
@@ -222,9 +192,7 @@
                             window.location.href = "<c:url value="/wishlist"/>";
                         }, 600);
                     },
-                    error: function (error) {
-                        <%--console.log("Đã xảy ra lỗi trong quá trình gửi dữ liệu: " + error);--%>
-                        <%--window.location.href = "<c:url value="/gio-hang"/>";--%>
+                    error: function () {
                         Swal.fire({
                             icon: "warning",
                             title: "Xóa sản phẩm thất bại",
@@ -261,9 +229,7 @@
                     url: "<c:url value="/wishlist"/>",
                     data: JSON.stringify("-1"),
                     contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (response) {
-                        <%--window.location.href = "<c:url value="/wishlist"/>";--%>
+                    success: function () {
                         Swal.fire({
                             icon: "success",
                             title: "Đã xóa tất cả sản phẩm",
@@ -283,7 +249,6 @@
                     },
                     error: function (error) {
                         console.log("Đã xảy ra lỗi trong quá trình gửi dữ liệu: " + error);
-                        <%--window.location.href = "<c:url value="/gio-hang"/>";--%>
                         Swal.fire({
                             icon: "warning",
                             title: "Xóa sản phẩm thất bại",

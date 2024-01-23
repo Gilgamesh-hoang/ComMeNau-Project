@@ -2,17 +2,13 @@ package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.WishlistItemDTO;
-import com.commenau.model.CartItem;
 import com.commenau.model.User;
-import com.commenau.util.HttpUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.commenau.service.WishlistService;
-import com.google.gson.Gson;
+import com.commenau.util.HttpUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,87 +18,45 @@ import java.util.List;
 @WebServlet("/wishlist")
 public class WishlistController extends HttpServlet {
     @Inject
-    WishlistService wishlistService;
+    private WishlistService wishlistService;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String currentPage = req.getRequestURL().toString();
         req.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
+
+        User user = (User) req.getSession().getAttribute(SystemConstant.AUTH);
+        List<WishlistItemDTO> wishlist = wishlistService.getWishlist(user.getId());
+
+        if (wishlist.isEmpty()) {
+            req.getRequestDispatcher("/customer/empty-wishlist.jsp").forward(req, resp);
+        } else {
+            req.setAttribute("wishlist", wishlist);
+            req.getRequestDispatcher("/customer/wishlist.jsp").forward(req, resp);
+        }
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            User user = (User) req.getSession().getAttribute(SystemConstant.AUTH);
-            List<WishlistItemDTO> wishlistDTOList = wishlistService.getAllWishlistItemById(user.getId());
-            req.setAttribute("listWishlistItemDTO", wishlistDTOList);
-            if (wishlistDTOList.size() == 0) {
-                req.getRequestDispatcher("/customer/empty-wishlist.jsp").forward(req, resp);
-            } else {
-                req.getRequestDispatcher("/customer/wishlist.jsp").forward(req, resp);
-            }
-        } catch (Exception e) {
-            resp.getWriter().write("Get Your wishlist after sign in !");
+            int userId = Integer.parseInt(req.getParameter("userId"));
+            int productId = Integer.parseInt(req.getParameter("productId"));
+            wishlistService.addItem(userId, productId);
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }
 
-    //    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        User user = ((User) req.getSession().getAttribute(SystemConstant.AUTH));
-//        ObjectMapper mapper = new ObjectMapper();
-//        CartItem cartItem = HttpUtil.of(req.getReader()).toModel(CartItem.class);
-//        if (user != null) {
-//            //use database
-//            boolean result = wishlistItemService.addProductToWishlist(user.getId(), cartItem.getProductId(), cartItem.getQuantity());
-//            // using jackson send result to browser
-//            mapper.writeValue(resp.getOutputStream(), result);
-//        } else {
-//            //use cookie
-//            Cookie[] cookies = req.getCookies();
-//            boolean found = false;
-//            for (Cookie cookie : cookies) {
-//                if (cookie.getName().equals("productId" + cartItem.getProductId())) {
-//                    int value = Integer.parseInt(cookie.getValue());
-//                    cookie.setValue(String.valueOf(value + cartItem.getQuantity()));
-//                    cookie.setMaxAge(5 * 24 * 60 * 60);
-//                    resp.addCookie(cookie);
-//                    found = true;
-//                    break;
-//                }
-//            }
-//            if (!found) {
-//                // If it isn't found in cookie, add that product
-//                Cookie cookie = new Cookie("productId" + cartItem.getProductId(), "1");
-//                cookie.setMaxAge(5 * 24 * 60 * 60);
-//                resp.addCookie(cookie);
-//                found = true;
-//            }
-//            mapper.writeValue(resp.getOutputStream(), found);
-//        }
-//    }
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int userId = Integer.valueOf(req.getParameter("userId"));
-        int productId = Integer.valueOf(req.getParameter("productId"));
-        wishlistService.addItem(userId, productId);
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter("userId");
-        String productID = req.getParameter("productId");
-        if (productID != null) {
-            wishlistService.deleteItem(Integer.valueOf(userId), Integer.valueOf(productID));
-
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        User user = ((User) req.getSession().getAttribute(SystemConstant.AUTH));
+        Integer productId = HttpUtil.of(req.getReader()).toModel(Integer.class);
+        boolean result;
+        if (productId != null && productId > 0) {
+            result = wishlistService.deleteItem(user.getId(), productId);
         } else {
-            User user = ((User) req.getSession().getAttribute(SystemConstant.AUTH));
-            Integer productId = HttpUtil.of(req.getReader()).toModel(Integer.class);
-            ObjectMapper mapper = new ObjectMapper();
-            boolean result = false;
-            if (productId != null && productId > 0) { // delete a product
-                result = wishlistService.deleteItem((int) user.getId(), productId);
-            } else { //delete all product in wishlist
-                result = wishlistService.resetAll(user.getId());
-            }
-            // using jackson send result to browser
-            mapper.writeValue(resp.getOutputStream(), result);
-            resp.getWriter().write("successfully");
+            result = wishlistService.resetAll(user.getId());
         }
+        resp.setStatus(result ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 }
