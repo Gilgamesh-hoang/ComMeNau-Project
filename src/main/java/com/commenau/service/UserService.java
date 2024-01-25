@@ -50,6 +50,15 @@ public class UserService {
             return null;
         String passwd = user.getPassword();
         user = userDao.getUserByUsername(user.getUsername());
+        boolean s = user.getStatus().equals(SystemConstant.ACTIVATED);
+        for (int i = 0; i < user.getStatus().length(); i++) {
+            char a = user.getStatus().charAt(i);
+            char b = SystemConstant.ACTIVATED.charAt(i);
+            if (a == b)
+                System.out.println();
+            else
+                System.out.println();
+        }
         if (user != null && BCrypt.checkpw(passwd, user.getPassword())&& user.getStatus().equals(SystemConstant.ACTIVATED))
             return user;
         else

@@ -1,7 +1,7 @@
 package com.commenau.util;
 
-import com.commenau.paging.PageRequest;
-import com.commenau.paging.Sorter;
+import com.commenau.pagination.PageRequest;
+import com.commenau.pagination.Sorter;
 
 public class PagingUtil {
     public static String appendSortersAndLimit(StringBuilder sql, PageRequest pageRequest) {

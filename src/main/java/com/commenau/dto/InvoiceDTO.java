@@ -16,8 +16,8 @@ public class InvoiceDTO {
     private String fullName;
     private String email;
     private String status;
-    private Double shippingFee;
-    private Double total;
+    private double shippingFee;
+    private Integer total;
     private String address;
     private String phoneNumber;
     private String paymentMethod;

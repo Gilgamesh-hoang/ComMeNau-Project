@@ -3,8 +3,11 @@ package com.commenau.controller.customer;
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.InvoiceDTO;
 import com.commenau.model.User;
+import com.commenau.pagination.PageRequest;
+import com.commenau.pagination.Sorter;
 import com.commenau.service.InvoiceService;
 import com.commenau.service.WishlistService;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -13,54 +16,44 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/invoices")
 public class InvoiceController extends HttpServlet {
     @Inject
-    InvoiceService invoiceService;
+    private InvoiceService invoiceService;
     @Inject
-    WishlistService wishlistService;
-
+    private  WishlistService wishlistService;
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = (User) req.getSession().getAttribute(SystemConstant.AUTH);
-        List<InvoiceDTO> invoicedtos = null;
-        String sortOption = req.getParameter("sortOption");
-        if ("option10".equals(sortOption)) {
-            invoicedtos = invoiceService.get10InvoiceDTOById(user.getId());
-        } else if ("optionAll".equals(sortOption)) {
-            invoicedtos = invoiceService.getAllInvoiceDTOById(user.getId());
-        } else {
-            invoicedtos = invoiceService.get10InvoiceDTOById(user.getId());
-        }
-        int count = 0;
-        for(InvoiceDTO invoiceDTO : invoicedtos){
-            if (invoiceDTO.getStatus().equals(SystemConstant.INVOICE_CANCEL)) count++;
-        }
+    protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) request.getSession().getAttribute(SystemConstant.AUTH);
+        String sortBy = request.getParameter("sortBy");
+        int totalItem = invoiceService.countAll(user.getId());
+
+        //sort
+        Sorter sorter = StringUtils.isBlank(sortBy) ? new Sorter("createdAt", "DESC") :
+                new Sorter(sortBy.split("_")[0], sortBy.split("_")[1]);
+        List<Sorter> sorters = List.of(sorter);
+        PageRequest pageRequest = PageRequest.builder().sorters(sorters).build();
+        List<InvoiceDTO> invoices = invoiceService.getAllInvoice(pageRequest, user.getId());
+
         //nav-left
-        req.setAttribute("numWishlistItems", wishlistService.getWishlist(user.getId()).size());
-        req.setAttribute("numInvoiceCanceled", count);
-        req.setAttribute("sizeListInvoiceDTO", invoicedtos.size());
+        request.setAttribute("numWishlistItems", wishlistService.countWishlist(user.getId()));
+        request.setAttribute("numInvoiceCanceled", invoiceService.countInvoiceByStatus(SystemConstant.INVOICE_CANCEL, user.getId()));
+        request.setAttribute("totalItem", totalItem);
         //main
-        req.setAttribute("option", sortOption);
-        req.setAttribute("listInvoiceDTO", invoicedtos);
-        req.getRequestDispatcher("/customer/dash-my-order.jsp").forward(req, resp);
+        request.setAttribute("sort", initSortBy());
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("invoices", invoices);
+        request.getRequestDispatcher("/customer/dash-my-order.jsp").forward(request, resp);
     }
 
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        User user = (User) req.getSession().getAttribute(SystemConstant.AUTH);
-//        List<InvoiceDTO> invoicedtos = null;
-//        String sortOption = req.getParameter("sortOption");
-//        if ("10 đơn đặt hàng cuối cùng".equals(sortOption)) {
-//            invoicedtos = invoiceService.get10InvoiceDTOById(user.getId());
-//        } else if ("Tất cả các đơn đặt hàng".equals(sortOption)) {
-//            invoicedtos = invoiceService.getAllInvoiceDTOById(user.getId());
-//        }
-//        req.setAttribute("SizelistInvoiceDTO", invoicedtos.size());
-//        req.setAttribute("listInvoiceDTO", invoicedtos);
-////        resp.sendRedirect("/dash-my-order.jsp?");
-//        req.getRequestDispatcher("/customer/dash-my-order.jsp").forward(req, resp);
-//    }
+    private Map<String, String> initSortBy() {
+        Map<String, String> sort = new LinkedHashMap<>();
+        sort.put("createdAt_DESC", "Đơn mới nhất");
+        sort.put("createdAt_ASC", "Đơn cũ nhất");
+        return sort;
+    }
 }

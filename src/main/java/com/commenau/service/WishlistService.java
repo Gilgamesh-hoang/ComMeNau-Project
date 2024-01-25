@@ -24,8 +24,10 @@ public class WishlistService {
             return WishlistItemDTO.builder().product(product).build();
         }).collect(Collectors.toList());
     }
-
-    public boolean existsItem(int userId, int productId) {
+    public int countWishlist(Long userId) {
+        return wishlistDAO.countWishlist(userId);
+    }
+    public boolean existsItem(long userId, int productId) {
         return wishlistDAO.existsItem(productId, userId);
     }
 

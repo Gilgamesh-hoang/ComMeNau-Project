@@ -130,14 +130,6 @@
                                             <td class="text-center">${item.available}</td>
                                             <td class="text-center">
                                                 <img class="img-product" src="<c:url value="/images/products/${item.avatar}"/>">
-<%--                                                <c:choose>--%>
-<%--                                                    <c:when test="${item.images != null && !item.images.isEmpty()}">--%>
-<%--                                                        <img class="img-product" src="<c:url value="/images/products/${item.images.get(0)}"/>">--%>
-<%--                                                    </c:when>--%>
-<%--                                                    <c:otherwise>--%>
-<%--                                                        <img class="img-product" src="">--%>
-<%--                                                    </c:otherwise>--%>
-<%--                                                </c:choose>--%>
                                             </td>
                                             <td>
                                                 <fmt:formatNumber value="${item.price}" type="currency" pattern="###,### VNĐ"/>

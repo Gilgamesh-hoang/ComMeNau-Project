@@ -1,7 +1,7 @@
 package com.commenau.controller.admin;
 
 import com.commenau.model.Category;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import com.commenau.service.CategoryService;
 import com.commenau.util.HttpUtil;
 import com.commenau.util.PagingUtil;

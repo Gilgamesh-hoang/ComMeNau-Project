@@ -5,7 +5,7 @@ import com.commenau.dto.ProductDTO;
 import com.commenau.dto.ProductRelativeViewDTO;
 import com.commenau.mapper.ProductMapper;
 import com.commenau.model.Product;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
@@ -32,10 +32,11 @@ public class ProductService implements Pageable<ProductDTO> {
     private ProductImageDAO productImageDAO;
     @Inject
     private CancelProductDAO cancelDAO;
-
+    @Inject
+    private ProductMapper productMapper;
     public ProductDTO getByIdWithAvatar(int id) {
         Product product = productDAO.findOneById(id);
-        ProductDTO productDTO = ProductMapper.INSTANCE.toDTO(product);
+        ProductDTO productDTO = productMapper.toDTO(product, ProductDTO.class);
         productDTO.setAvatar(productImageDAO.findAvatarByProductId(product.getId()));
         return productDTO;
 
@@ -47,7 +48,7 @@ public class ProductService implements Pageable<ProductDTO> {
 
     public ProductDTO getProductById(int id) {
         Product product = productDAO.findOneById(id);
-        ProductDTO productDTO = ProductMapper.INSTANCE.toDTO(product);
+        ProductDTO productDTO = productMapper.toDTO(product, ProductDTO.class);
 
         productDTO.setImages(productImageDAO.getAllImageByProductId(id));
         productDTO.setAmountOfReview(countProductReviewsById(Math.toIntExact(product.getId())));
@@ -152,7 +153,7 @@ public class ProductService implements Pageable<ProductDTO> {
         else {
             List<Product> products = productDAO.findByKeyWord(pageRequest, keyWord.trim());
             return products.stream().map(product -> {
-                        ProductDTO dto = ProductMapper.INSTANCE.toDTO(product);
+                        ProductDTO dto = productMapper.toDTO(product, ProductDTO.class);
                         dto.setCategoryName(categoryDao.getNameById(product.getCategoryId()));
                         dto.setAvatar(productImageDAO.findAvatarByProductId(dto.getId()));
                         return dto;

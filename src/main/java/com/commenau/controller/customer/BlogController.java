@@ -2,8 +2,8 @@ package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.Blog;
-import com.commenau.paging.PageRequest;
-import com.commenau.paging.Sorter;
+import com.commenau.pagination.PageRequest;
+import com.commenau.pagination.Sorter;
 import com.commenau.service.BlogService;
 import com.commenau.util.PagingUtil;
 

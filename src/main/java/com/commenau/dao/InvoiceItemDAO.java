@@ -8,6 +8,7 @@ import com.commenau.util.RoundUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 public class InvoiceItemDAO {
 
     public List<InvoiceItem> getAllInvoiceItemById(int invoiceId) {
@@ -19,6 +20,15 @@ public class InvoiceItemDAO {
                     .mapToBean(InvoiceItem.class)
                     .list();
         });
+    }
+
+    public Integer totalPrice(Integer invoiceId) {
+        String sql = "SELECT SUM(price * quantity) FROM invoice_items WHERE invoiceId = ?";
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind(0, invoiceId)
+                        .mapTo(Integer.class).stream().findFirst().orElse(0)
+
+        );
     }
 
     public InvoiceItem getBestSellingProduct() {
@@ -67,18 +77,18 @@ public class InvoiceItemDAO {
                 return true;
             });
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
     public boolean updateProductId(int productId) throws Exception {
-            int result = JDBIConnector.getInstance().inTransaction(handle ->
-                    handle.createUpdate("UPDATE invoice_items SET productId=NULL WHERE productId = :productId")
-                            .bind("productId", productId)
-                            .execute()
-            );
-            return result >= 0;
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
+                handle.createUpdate("UPDATE invoice_items SET productId=NULL WHERE productId = :productId")
+                        .bind("productId", productId)
+                        .execute()
+        );
+        return result >= 0;
     }
 }

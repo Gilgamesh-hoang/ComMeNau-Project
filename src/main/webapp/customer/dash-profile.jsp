@@ -57,6 +57,7 @@
 
                                     </ul>
                                 </div>
+
                             </div>
                             <!--====== End - Dashboard Features ======-->
                         </div>
@@ -123,60 +124,10 @@
                     </div>
                 </div>
             </div>
-            <!--====== End - Section Content ======-->
         </div>
-        <!--====== End - Section 1 ======-->
     </div>
 </div>
-<!--========= End-Main-Content ===========-->
-<!--====== Main Footer ======-->
 <%@include file="/customer/common/footer.jsp" %>
 </body>
-<script>
-    $(document).ready(function () {
-        $(".edit-button").on("click", function () {
-            // Lấy container chứa
-            var container = $(this).closest(".editable-container");
-
-            // Gọi hàm chuyển đổi với container tương ứng
-            toggleEdit(container);
-        });
-
-        function toggleEdit(container) {
-            // Lấy giá trị hiện tại của văn bản
-            var currentEmail = container.find(".editable-text").text();
-
-            // Tạo một trường nhập liệu và thiết lập giá trị từ văn bản hiện tại
-            var input = $("<input>").attr({
-                type: "text",
-                class: "editable-input",
-                value: currentEmail
-            });
-
-            // Thay thế văn bản bằng trường nhập liệu
-            container.find(".editable-text").replaceWith(input);
-
-            // Tạo nút lưu
-            var saveButton = $("<button>").text("Lưu").addClass("save-button btn btn-success mt-3");
-
-            // Thêm trường nhập liệu và nút lưu vào container
-            container.append(saveButton);
-
-            // Ẩn nút "Thay đổi"
-            container.find(".edit-button").hide();
-
-            // Xử lý sự kiện cho nút lưu
-            container.find(".save-button").on("click", function () {
-                // Lấy giá trị từ trường nhập liệu và hiển thị lại dưới dạng văn bản
-                var newEmail = container.find(".editable-input").val();
-                $("<span>").addClass("editable-text  dash__text").text(newEmail).replaceAll(".editable-input");
-
-                // Ẩn nút lưu và hiển thị lại nút "Thay đổi"
-                container.find(".save-button").remove();
-                container.find(".edit-button").show();
-            });
-        }
-    });
-</script>
 
 </html>

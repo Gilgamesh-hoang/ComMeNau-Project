@@ -3,7 +3,7 @@ package com.commenau.service;
 import com.commenau.dao.BlogDao;
 import com.commenau.dao.BlogReviewDao;
 import com.commenau.model.Blog;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;

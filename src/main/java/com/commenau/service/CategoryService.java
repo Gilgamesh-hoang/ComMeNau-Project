@@ -3,7 +3,7 @@ package com.commenau.service;
 import com.commenau.dao.CategoryDAO;
 import com.commenau.dao.ProductDAO;
 import com.commenau.model.Category;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 
 import javax.inject.Inject;
 import java.util.List;

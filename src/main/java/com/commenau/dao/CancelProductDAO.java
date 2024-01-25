@@ -3,7 +3,7 @@ package com.commenau.dao;
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.CancelProduct;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import com.commenau.util.PagingUtil;
 
 import java.util.Arrays;

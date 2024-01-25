@@ -1,4 +1,4 @@
-package com.commenau.paging;
+package com.commenau.pagination;
 
 import lombok.*;
 

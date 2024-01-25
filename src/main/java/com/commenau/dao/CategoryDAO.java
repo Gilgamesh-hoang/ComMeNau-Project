@@ -2,7 +2,7 @@ package com.commenau.dao;
 
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.model.Category;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 
 import java.util.List;
 

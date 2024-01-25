@@ -36,8 +36,8 @@ public class InvoiceDetailController extends HttpServlet {
             //states
             Map<String, Boolean> states = new LinkedHashMap<>();
             states.put(SystemConstant.INVOICE_PROCESSING, false);
-            states.put(SystemConstant.INVOICE_SHIPPING, false);
-            states.put(SystemConstant.INVOICE_SHIPPED, false);
+            states.put(SystemConstant.INVOICE_TRANSPORTING, false);
+            states.put(SystemConstant.INVOICE_DELIVERED, false);
             for (String key : states.keySet()) {
                 if (invoiceDTO.getStatus().equals(SystemConstant.INVOICE_CANCEL)) break;
                 if (invoiceDTO.getStatus().equals(key)) {
@@ -50,7 +50,7 @@ public class InvoiceDetailController extends HttpServlet {
             for (InvoiceDTO i : invoicedtos) {
                 if (i.getStatus().equals(SystemConstant.INVOICE_CANCEL)) count++;
             }
-            req.setAttribute("numWishlistItems", wishlistService.getWishlist(user.getId()).size());
+            req.setAttribute("numWishlistItems", wishlistService.countWishlist(user.getId()));
             req.setAttribute("numInvoiceCanceled", count);
             req.setAttribute("states", states);
             req.setAttribute("sizeListInvoiceDTO", invoicedtos.size());

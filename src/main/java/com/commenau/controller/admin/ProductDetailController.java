@@ -3,7 +3,7 @@ package com.commenau.controller.admin;
 import com.commenau.dto.ProductDTO;
 import com.commenau.model.Product;
 import com.commenau.model.ProductImage;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import com.commenau.service.CategoryService;
 import com.commenau.service.ProductImageService;
 import com.commenau.service.ProductService;

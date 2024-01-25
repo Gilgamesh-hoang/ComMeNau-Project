@@ -6,15 +6,20 @@ import com.commenau.model.WishlistItem;
 import java.util.List;
 
 public class WishListDAO {
-    public boolean existsItem(int productId, int userId) {
+    public boolean existsItem(int productId, long userId) {
         int result = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery("SELECT COUNT(*) FROM wishlists WHERE userId = ? AND productId = ? ")
                         .bind(0, userId).bind(1, productId)
                         .mapTo(Integer.class).stream().findFirst().orElse(0));
         return result > 0;
     }
-
-    public void saveItem(int userID, int productId) {
+    public int countWishlist(long userId) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM wishlists WHERE userId = ?")
+                        .bind(0, userId)
+                        .mapTo(Integer.class).stream().findFirst().orElse(0));
+    }
+    public void saveItem(long userID, int productId) {
         JDBIConnector.getInstance().inTransaction(handle ->
             handle.createUpdate("INSERT INTO wishlists(userID,productId) VALUES (?,?)")
                     .bind(0, userID).bind(1, productId).execute()

@@ -5,13 +5,16 @@ import com.commenau.dao.*;
 import com.commenau.dto.InvoiceDTO;
 import com.commenau.dto.InvoiceItemDTO;
 import com.commenau.mail.MailService;
+import com.commenau.mapper.InvoiceMapper;
 import com.commenau.model.Invoice;
 import com.commenau.model.InvoiceItem;
 import com.commenau.model.Product;
+import com.commenau.pagination.PageRequest;
 
 import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InvoiceService {
     @Inject
@@ -28,7 +31,8 @@ public class InvoiceService {
     private CartDAO cartDAO;
     @Inject
     private MailService mail;
-
+    @Inject
+    private InvoiceMapper invoiceMapper;
     public List<InvoiceDTO> getAllInvoiceDTOById(Long userId) {
         List<InvoiceDTO> result = new ArrayList<>();
         for (Invoice invoice : invoiceDAO.getAllInvoiceById(userId)) {
@@ -39,9 +43,9 @@ public class InvoiceService {
             }
             InvoiceDTO invoicedto = InvoiceDTO.builder()
                     .id(invoice.getId())
-                    .createdAt(invoiceStatusDAO.getStatusByInvoice(invoice.getId()).getCreatedAt())
-                    .status(invoiceStatusDAO.getStatusByInvoice(invoice.getId()).getStatus())
-                    .total(total + shippingFee)
+                    .createdAt(invoice.getCreatedAt())
+                    .status(invoiceStatusDAO.getStatusByInvoice(invoice.getId()))
+//                    .total(total + shippingFee)
                     .build();
             result.add(invoicedto);
         }
@@ -62,6 +66,9 @@ public class InvoiceService {
         return re;
     }
 
+    public int countInvoiceByStatus(String status, long userId) {
+        return invoiceStatusDAO.countInvoiceByStatus(status, userId);
+    }
     public InvoiceDTO getInvoiceDTOById(int invoiceId) {
         double total = 0;
         Invoice invoice = invoiceDAO.getInvoiceById(invoiceId);
@@ -72,10 +79,10 @@ public class InvoiceService {
         return InvoiceDTO.builder().id(invoiceId)
                 .fullName(invoice.getFullName())
                 .email(invoice.getEmail())
-                .status(invoiceStatusDAO.getStatusByInvoice(invoiceId).getStatus())
+                .status(invoiceStatusDAO.getStatusByInvoice(invoiceId))
                 .createdAt(invoice.getCreatedAt())
                 .shippingFee(shippingFee)
-                .total(total)
+//                .total(total)
                 .address(invoice.getAddress())
                 .phoneNumber(invoice.getPhoneNumber())
                 .paymentMethod(invoice.getPaymentMethod())
@@ -92,10 +99,10 @@ public class InvoiceService {
             double shippingFee = i.getShippingFee() == null ? 0 : i.getShippingFee();
             re.add(new InvoiceDTO().builder().id(i.getId())
                     .fullName(i.getFullName())
-                    .total(total)
+//                    .total(total)
                     .shippingFee(shippingFee)
                     .phoneNumber(i.getPhoneNumber())
-                    .status(invoiceStatusDAO.getStatusByInvoice(i.getId()).getStatus())
+                    .status(invoiceStatusDAO.getStatusByInvoice(i.getId()))
                     .build());
         }
         return re;
@@ -105,23 +112,14 @@ public class InvoiceService {
         return invoiceDAO.getAllInvoice();
     }
 
-    public List<InvoiceDTO> get10InvoiceDTOById(Long userId) {
-        List<InvoiceDTO> re = new ArrayList<>();
-        for (Invoice in : invoiceDAO.get10InvoiceById(userId)) {
-            double total = 0;
-            double shippingFee = (invoiceDAO.getInvoiceById(in.getId()).getShippingFee() == null) ? 0 : invoiceDAO.getInvoiceById(in.getId()).getShippingFee();
-            for (InvoiceItem invoiceItem : invoiceItemDAO.getAllInvoiceItemById(in.getId())) {
-                total += invoiceItem.getPrice() * invoiceItem.getQuantity();
-            }
-            InvoiceDTO invoicedto = InvoiceDTO.builder()
-                    .id(in.getId())
-                    .createdAt(invoiceStatusDAO.getStatusByInvoice(in.getId()).getCreatedAt())
-                    .status(invoiceStatusDAO.getStatusByInvoice(in.getId()).getStatus())
-                    .total(total + shippingFee)
-                    .build();
-            re.add(invoicedto);
-        }
-        return re;
+    public List<InvoiceDTO> getAllInvoice(PageRequest pageRequest, long userId) {
+        return invoiceDAO.getAllInvoice(pageRequest, userId).stream().map(invoice -> {
+            InvoiceDTO dto = invoiceMapper.toDTO(invoice, InvoiceDTO.class);
+            dto.setStatus(invoiceStatusDAO.getStatusByInvoice(invoice.getId()));
+            dto.setTotal((int) (invoiceItemDAO.totalPrice(invoice.getId()) +  dto.getShippingFee()));
+            return dto;
+        }).collect(Collectors.toList());
+
     }
 
     public Map<String, Integer> bestSaleProduct() {
@@ -200,4 +198,10 @@ public class InvoiceService {
         mail.sendMailInvoice(invoice, map);
         return isSave && isSetStatus;
     }
+
+    public int countAll(long userId) {
+        return invoiceDAO.countAll(userId);
+    }
+
+
 }

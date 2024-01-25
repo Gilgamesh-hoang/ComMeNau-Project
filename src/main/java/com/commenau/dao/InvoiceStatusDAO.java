@@ -1,16 +1,27 @@
 package com.commenau.dao;
 
 import com.commenau.connectionPool.JDBIConnector;
-import com.commenau.model.InvoiceStatus;
+
 public class InvoiceStatusDAO {
 
-    public InvoiceStatus getStatusByInvoice(int invoiceId) {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select status, createdAt from invoice_status where invoiceId = ?")
-                    .bind(0, invoiceId)
-                    .mapToBean(InvoiceStatus.class)
-                    .stream().findFirst().orElse(null);
-        });
+    public String getStatusByInvoice(int invoiceId) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT status from invoice_status where invoiceId = ?")
+                        .bind(0, invoiceId).mapTo(String.class).stream().findFirst().orElse(null)
+        );
+    }
+
+    public int countInvoiceByStatus(String status, long userId) {
+        for (int i = 0; i < status.length(); i++) {
+            char a = status.charAt(i);
+        }
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(iStatus.id) FROM invoice_status iStatus " +
+                                "INNER JOIN invoices i ON i.id = iStatus.invoiceId " +
+                                "WHERE iStatus.status = :status AND i.userId = :userId")
+                        .bind("status", status).bind("userId", userId)
+                        .mapTo(Integer.class).stream().findFirst().orElse(0)
+        );
     }
 
     public boolean setStatus(int invoiceId, String status) {
@@ -21,6 +32,7 @@ public class InvoiceStatusDAO {
                         .bind("invoiceId", invoiceId).execute());
         return result > 0;
     }
+
     public boolean changeStatus(int invoiceId, String status) {
         String sql = "UPDATE invoice_status SET status = :status WHERE invoiceId = :invoiceId";
         int result = JDBIConnector.getInstance().inTransaction(handle ->

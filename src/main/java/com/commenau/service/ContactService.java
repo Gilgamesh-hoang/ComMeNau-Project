@@ -5,7 +5,7 @@ import com.commenau.dto.ContactDTO;
 import com.commenau.mapper.ContactMapper;
 import com.commenau.model.Contact;
 import com.commenau.model.ReplyContact;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
@@ -14,7 +14,8 @@ import java.util.List;
 public class ContactService {
     @Inject
     private ContactDAO contactDAO;
-
+    @Inject
+    private ContactMapper mapper;
     public boolean insert(Contact contact) {
         return contactDAO.save(contact);
     }
@@ -53,7 +54,7 @@ public class ContactService {
 
     public ContactDTO getById(int contactId) {
         Contact contact = contactDAO.findOneById(contactId);
-        ContactDTO result = ContactMapper.INSTANCE.toDTO(contact);
+        ContactDTO result = mapper.toDTO(contact, ContactDTO.class);
         result.setReply(contactDAO.findReplyByContactId(contact.getId()));
         return result;
     }

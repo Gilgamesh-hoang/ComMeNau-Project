@@ -4,7 +4,7 @@ import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.dto.ContactDTO;
 import com.commenau.model.Contact;
 import com.commenau.model.ReplyContact;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import com.commenau.util.PagingUtil;
 import org.jdbi.v3.core.statement.Update;
 

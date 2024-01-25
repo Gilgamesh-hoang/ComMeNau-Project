@@ -79,8 +79,8 @@
                                         <td class="text-center" >${formattedFee}</td>
                                         <td class="text-center" >${item.phoneNumber}</td>
                                         <td class="text-center" ><span class="badge badge-sm
-                                            <c:if test="${item.status==SystemConstant.INVOICE_SHIPPED}">bg-success</c:if>
-                                            <c:if test="${item.status==SystemConstant.INVOICE_SHIPPING || item.status==SystemConstant.INVOICE_PROCESSING}">bg-warning</c:if>
+                                            <c:if test="${item.status==SystemConstant.INVOICE_DELIVERED}">bg-success</c:if>
+                                            <c:if test="${item.status==SystemConstant.INVOICE_TRANSPORTING || item.status==SystemConstant.INVOICE_PROCESSING}">bg-warning</c:if>
                                             <c:if test="${item.status==SystemConstant.INVOICE_CANCEL}">bg-danger</c:if>
                                         ">${item.status}</span></td>
                                         <td class="text-center" >

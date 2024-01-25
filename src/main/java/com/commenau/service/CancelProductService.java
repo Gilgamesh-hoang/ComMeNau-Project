@@ -4,7 +4,7 @@ import com.commenau.dao.CancelProductDAO;
 import com.commenau.dto.CancelProductDTO;
 import com.commenau.dto.ProductDTO;
 import com.commenau.model.CancelProduct;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;

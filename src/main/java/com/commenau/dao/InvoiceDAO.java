@@ -3,10 +3,13 @@ package com.commenau.dao;
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.Invoice;
+import com.commenau.pagination.PageRequest;
+import com.commenau.util.PagingUtil;
 import org.jdbi.v3.core.statement.Update;
 
 import java.sql.Types;
 import java.util.List;
+
 public class InvoiceDAO {
 
     public List<Invoice> getAllInvoiceById(Long userId) {
@@ -48,6 +51,23 @@ public class InvoiceDAO {
         });
     }
 
+    public List<Invoice> getAllInvoice(PageRequest pageRequest, long userId) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT * FROM invoices WHERE userId = :userId ");
+        String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind("userId", userId).mapToBean(Invoice.class).stream().toList()
+        );
+    }
+
+    public int countAll(long userId) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(id) FROM invoices WHERE userId = :userId")
+                        .bind("userId", userId).mapTo(Integer.class).stream().findFirst().orElse(0)
+        );
+    }
+
+
     public List<Invoice> getAllInvoice() {
         return JDBIConnector.getInstance().withHandle(handle -> {
             return handle.createQuery("select id from invoices")
@@ -58,13 +78,13 @@ public class InvoiceDAO {
 
     public Integer sellingOfDay() {
         String sql = "SELECT COUNT(i.id) FROM invoices i INNER JOIN invoice_status s ON i.id = s.invoiceId " +
-                "WHERE DATE(i.createdAt) = CURDATE() AND s.status = '" + SystemConstant.INVOICE_SHIPPED + "'";
+                "WHERE DATE(i.createdAt) = CURDATE() AND s.status = '" + SystemConstant.INVOICE_DELIVERED + "'";
         return calculate(sql, Integer.class);
     }
 
     public Integer sellingOfMonth() {
         String sql = "SELECT COUNT(i.id) FROM invoices i INNER JOIN invoice_status s ON i.id = s.invoiceId " +
-                "WHERE MONTH(i.createdAt) = MONTH(CURDATE()) AND s.status = '" + SystemConstant.INVOICE_SHIPPED + "'";
+                "WHERE MONTH(i.createdAt) = MONTH(CURDATE()) AND s.status = '" + SystemConstant.INVOICE_DELIVERED + "'";
         return calculate(sql, Integer.class);
     }
 
@@ -72,7 +92,7 @@ public class InvoiceDAO {
         String sql = "SELECT SUM(ii.price * ii.quantity) FROM invoices i " +
                 "INNER JOIN invoice_items ii ON i.id = ii.invoiceId " +
                 "INNER JOIN invoice_status ist ON i.id = ist.invoiceId " +
-                "WHERE ist.status = '" + SystemConstant.INVOICE_SHIPPED + "'" +
+                "WHERE ist.status = '" + SystemConstant.INVOICE_DELIVERED + "'" +
                 "AND YEAR(i.createdAt) = YEAR(CURDATE()) " +
                 "AND MONTH(i.createdAt) = MONTH(CURDATE()) ";
         return calculate(sql, Double.class);
@@ -91,7 +111,7 @@ public class InvoiceDAO {
         String sql = "SELECT SUM(ii.price * ii.quantity) FROM invoices i " +
                 "INNER JOIN invoice_items ii ON i.id = ii.invoiceId " +
                 "INNER JOIN invoice_status ist ON i.id = ist.invoiceId " +
-                "WHERE ist.status = '" + SystemConstant.INVOICE_SHIPPED + "'" +
+                "WHERE ist.status = '" + SystemConstant.INVOICE_DELIVERED + "'" +
                 "AND YEAR(i.createdAt) = YEAR(CURDATE()) " +
                 "AND MONTH(i.createdAt) = MONTH(CURDATE()) " +
                 "AND DATE(i.createdAt) = CURDATE()";
@@ -117,4 +137,6 @@ public class InvoiceDAO {
         });
         return invoceId;
     }
+
+
 }

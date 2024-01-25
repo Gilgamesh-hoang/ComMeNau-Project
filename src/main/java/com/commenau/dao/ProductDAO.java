@@ -4,12 +4,11 @@ import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.ProductDTO;
 import com.commenau.model.Product;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import com.commenau.util.PagingUtil;
 import org.jdbi.v3.core.statement.Update;
 
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

@@ -2,12 +2,11 @@ package com.commenau.dao;
 
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.model.Blog;
-import com.commenau.paging.PageRequest;
+import com.commenau.pagination.PageRequest;
 import com.commenau.util.PagingUtil;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class BlogDao {
     public Blog findOneById(int id) {

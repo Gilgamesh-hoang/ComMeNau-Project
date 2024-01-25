@@ -33,8 +33,8 @@ public class InvoiceDetailController extends HttpServlet {
         req.setAttribute("listInvoiceDetail", list);
         List<String> states = new ArrayList<>();
         states.add(SystemConstant.INVOICE_PROCESSING);
-        states.add(SystemConstant.INVOICE_SHIPPING);
-        states.add(SystemConstant.INVOICE_SHIPPED);
+        states.add(SystemConstant.INVOICE_TRANSPORTING);
+        states.add(SystemConstant.INVOICE_DELIVERED);
         states.add(SystemConstant.INVOICE_CANCEL);
         req.setAttribute("states", states);
         req.getRequestDispatcher("/admin/admin-order-detail.jsp").forward(req, resp);
