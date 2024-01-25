@@ -27,9 +27,9 @@ public class InvoiceDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int invoiceId = Integer.parseInt(req.getParameter("id"));
         req.setAttribute("invoiceActive", "");
-        InvoiceDTO invoiceDTO = invoiceService.getInvoiceDTOById(invoiceId);
+        InvoiceDTO invoiceDTO = invoiceService.getInvoiceById(invoiceId);
         req.setAttribute("invoiceOf", invoiceDTO);
-        List<InvoiceItemDTO> list = invoiceService.getAllInvoiceItemDTOByInvoiceId(invoiceId);
+        List<InvoiceItemDTO> list = invoiceService.getItemByInvoiceId(invoiceId);
         req.setAttribute("listInvoiceDetail", list);
         List<String> states = new ArrayList<>();
         states.add(SystemConstant.INVOICE_PROCESSING);
@@ -48,7 +48,7 @@ public class InvoiceDetailController extends HttpServlet {
         Integer invoiceId = Integer.valueOf(reader.nextToken()); // geted invoiceId when click button_save
         String selectedStatus = reader.nextToken(); // geted selectedStatus when click button_save
         if (invoiceId != null) {
-            boolean result = invoiceService.changeInvoiceStatus(invoiceId, selectedStatus);
+            boolean result = invoiceService.changeStatus(invoiceId, selectedStatus);
             resp.getWriter().write(gson.toJson(""));
         }
     }

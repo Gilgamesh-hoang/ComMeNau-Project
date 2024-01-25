@@ -12,9 +12,6 @@ public class InvoiceStatusDAO {
     }
 
     public int countInvoiceByStatus(String status, long userId) {
-        for (int i = 0; i < status.length(); i++) {
-            char a = status.charAt(i);
-        }
         return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery("SELECT COUNT(iStatus.id) FROM invoice_status iStatus " +
                                 "INNER JOIN invoices i ON i.id = iStatus.invoiceId " +
@@ -36,9 +33,7 @@ public class InvoiceStatusDAO {
     public boolean changeStatus(int invoiceId, String status) {
         String sql = "UPDATE invoice_status SET status = :status WHERE invoiceId = :invoiceId";
         int result = JDBIConnector.getInstance().inTransaction(handle ->
-                handle.createUpdate(sql)
-                        .bind("status", status)
-                        .bind("invoiceId", invoiceId).execute());
+                handle.createUpdate(sql).bind("status", status).bind("invoiceId", invoiceId).execute());
         return result > 0;
     }
 }

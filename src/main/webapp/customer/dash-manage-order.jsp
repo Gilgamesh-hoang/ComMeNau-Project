@@ -27,46 +27,22 @@
 </head>
 
 <body class="config">
-<!--====== Main App ======-->
 <div id="app">
 
     <!--====== Main Header ======-->
     <%@ include file="/customer/common/header.jsp" %>
     <jsp:include page="common/chat.jsp"></jsp:include>
-    <!--====== End - Main Header ======-->
     <!--====== App Content ======-->
     <div class="container-content mt-5">
         <div class="app-content">
-            <!--====== Section 2 ======-->
             <div class="u-s-p-b-60">
 
-                <!--====== Section Content ======-->
                 <div class="section__content">
                     <div class="dash">
                         <div class="container">
                             <div class="row">
                                 <div class="col-lg-3 col-md-12">
-
                                     <!--====== Dashboard Features ======-->
-                                    <div class="dash__box dash__box--bg-white dash__box--shadow u-s-m-b-30">
-                                        <div class="dash__pad-1">
-
-                                            <span class="dash__text u-s-m-b-16">Xin Chào, ${auth.fullName()}</span>
-                                            <ul class="dash__f-list">
-                                                <li>
-                                                    <a href="<c:url value="/profile"/>">Thông tin tài
-                                                        khoản</a>
-                                                </li>
-
-                                                </li>
-                                                <li>
-                                                    <a class="dash-active" href="<c:url value="/invoices"/>">Đơn đặt
-                                                        hàng</a>
-                                                </li>
-
-                                            </ul>
-                                        </div>
-                                    </div>
                                     <%@ include file="/customer/common/nav_dash.jsp" %>
                                     <!--====== End - Dashboard Features ======-->
                                 </div>
@@ -80,7 +56,7 @@
                                                     <div class="manage-o__text-2 u-c-secondary">ĐƠN HÀNG
                                                         #${requestScope.invoiceDTO.id}
                                                     </div>
-                                                    <fmt:formatDate value="${requestScope.invoiceDTO.updatedAt}"
+                                                    <fmt:formatDate value="${requestScope.invoiceDTO.createdAt}"
                                                                     pattern=" 'Ngày' dd 'tháng' MM 'năm' yyyy hh:mma"
                                                                     var="formatedDate"/>
                                                     <div class="manage-o__text u-c-silver">${formatedDate}
@@ -103,7 +79,7 @@
                                             <div class="manage-o">
 
                                                 <div class="dash-l-r">
-                                                    <fmt:formatDate value="${requestScope.invoiceDTO.updatedAt}"
+                                                    <fmt:formatDate value="${requestScope.invoiceDTO.createdAt}"
                                                                     pattern=" 'ngày' dd 'tháng' MM 'năm' yyyy"
                                                                     var="formatedDate"/>
                                                     <div class="manage-o__text u-c-secondary">Vận chuyển ${formatedDate}
@@ -134,22 +110,6 @@
                                                                 </div>
                                                             </div>
                                                         </c:forEach>
-                                                        <%--<div class="col-lg-4 u-s-m-b-30">
-                                                            <div class="timeline-step">
-                                                                <div class="timeline-l-i timeline-l-i--finish">
-                                                                    <span class="timeline-circle"></span>
-                                                                </div>
-                                                                <span class="timeline-text">Đã chuyển</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-4 u-s-m-b-30">
-                                                            <div class="timeline-step">
-                                                                <div class="timeline-l-i">
-                                                                    <span class="timeline-circle"></span>
-                                                                </div>
-                                                                <span class="timeline-text">Đã giao hàng</span>
-                                                            </div>
-                                                        </div>--%>
                                                     </div>
                                                 </div>
                                                 <c:forEach var="item" items="${requestScope.listInvoiceItemDTO}">
@@ -158,10 +118,10 @@
                                                             <div class="description__img-wrap">
 
                                                                 <img class="u-img-fluid"
-                                                                     src="<c:url value="/images/products/${item.image}"/>"
+                                                                     src="<c:url value="/images/products/${item.productImage}"/>"
                                                                      alt="">
                                                             </div>
-                                                            <div class="description-title">${item.name}
+                                                            <div class="description-title">${item.productName}
                                                             </div>
                                                         </div>
                                                         <div class="description__info-wrap">
@@ -192,7 +152,7 @@
                                                     <h2 class="dash__h2 u-s-m-b-8"
                                                         style="font-weight: 600; padding-bottom: 5px">Địa chỉ giao
                                                         hàng</h2>
-                                                    <span class="dash__text-2">${requestScope.fullNameOfUser}</span>
+                                                    <span class="dash__text-2">${requestScope.invoiceDTO.fullName}</span>
 
                                                     <span class="dash__text-2">${requestScope.invoiceDTO.address}</span>
 
@@ -204,8 +164,6 @@
                                         <div class="col-lg-6">
                                             <div class="dash__box dash__box--bg-white dash__box--shadow u-h-100">
                                                 <div class="dash__pad-3">
-<%--                                                    <h2 class="dash__h2 u-s-m-b-8"--%>
-<%--                                                        style="font-weight: 600; padding-bottom: 5px">Tổng hợp</h2>--%>
                                                     <div class="dash-l-r u-s-m-b-8">
                                                         <fmt:formatNumber var="formatedPrice"
                                                                           value="${requestScope.invoiceDTO.total}"
@@ -243,19 +201,12 @@
                         </div>
                     </div>
                 </div>
-                <!--====== End - Section Content ======-->
             </div>
-            <!--====== End - Section 2 ======-->
         </div>
     </div>
-    <!--====== End - App Content ======-->
-
-
-    <!--====== Main Footer ======-->
     <%@include file="/customer/common/footer.jsp" %>
 </div>
 <!--====== End - Main App ======-->
-<%--<script src="<c:url value="/jquey/jquery.min.js"/>"></script>--%>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $('.btn-cancel').on('click', function () {
@@ -273,12 +224,11 @@
                 var inputData = $(this).data('input-id');
                 // using Ajax to send data to server
                 $.ajax({
-                    type: "POST",
+                    type: "DELETE",
                     url: "<c:url value="/invoice-details"/>",
                     data: JSON.stringify(inputData),
                     contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (response) {
+                    success: function () {
                         Swal.fire({
                             icon: "success",
                             title: "Hủy đơn hàng thành công !",
@@ -296,7 +246,7 @@
                             window.location.href = "<c:url value="/invoice-details?id=${requestScope.invoiceDTO.id}"/>";
                         }, 700);
                     },
-                    error: function (error) {
+                    error: function () {
                         console.log('Thất bại !')
                         Swal.fire({
                             icon: "warning",

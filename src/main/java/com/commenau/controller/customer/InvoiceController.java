@@ -30,7 +30,6 @@ public class InvoiceController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute(SystemConstant.AUTH);
         String sortBy = request.getParameter("sortBy");
-        int totalItem = invoiceService.countAll(user.getId());
 
         //sort
         Sorter sorter = StringUtils.isBlank(sortBy) ? new Sorter("createdAt", "DESC") :
@@ -42,7 +41,7 @@ public class InvoiceController extends HttpServlet {
         //nav-left
         request.setAttribute("numWishlistItems", wishlistService.countWishlist(user.getId()));
         request.setAttribute("numInvoiceCanceled", invoiceService.countInvoiceByStatus(SystemConstant.INVOICE_CANCEL, user.getId()));
-        request.setAttribute("totalItem", totalItem);
+        request.setAttribute("totalItem", invoiceService.countAll(user.getId()));
         //main
         request.setAttribute("sort", initSortBy());
         request.setAttribute("sortBy", sortBy);

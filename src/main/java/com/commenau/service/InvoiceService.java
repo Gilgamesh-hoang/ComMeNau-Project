@@ -5,6 +5,7 @@ import com.commenau.dao.*;
 import com.commenau.dto.InvoiceDTO;
 import com.commenau.dto.InvoiceItemDTO;
 import com.commenau.mail.MailService;
+import com.commenau.mapper.InvoiceItemMapper;
 import com.commenau.mapper.InvoiceMapper;
 import com.commenau.model.Invoice;
 import com.commenau.model.InvoiceItem;
@@ -33,74 +34,49 @@ public class InvoiceService {
     private MailService mail;
     @Inject
     private InvoiceMapper invoiceMapper;
-    public List<InvoiceDTO> getAllInvoiceDTOById(Long userId) {
-        List<InvoiceDTO> result = new ArrayList<>();
-        for (Invoice invoice : invoiceDAO.getAllInvoiceById(userId)) {
-            double total = 0;
-            double shippingFee = (invoiceDAO.getInvoiceById(invoice.getId()).getShippingFee() == null) ? 0 : invoiceDAO.getInvoiceById(invoice.getId()).getShippingFee();
-            for (InvoiceItem invoiceItem : invoiceItemDAO.getAllInvoiceItemById(invoice.getId())) {
-                total += invoiceItem.getPrice() * invoiceItem.getQuantity();
-            }
-            InvoiceDTO invoicedto = InvoiceDTO.builder()
-                    .id(invoice.getId())
-                    .createdAt(invoice.getCreatedAt())
-                    .status(invoiceStatusDAO.getStatusByInvoice(invoice.getId()))
-//                    .total(total + shippingFee)
-                    .build();
-            result.add(invoicedto);
-        }
-        return result;
-    }
+    @Inject
+    private InvoiceItemMapper itemMapper;
 
-    public List<InvoiceItemDTO> getAllInvoiceItemDTOByInvoiceId(int invoiceId) {
-        List<InvoiceItemDTO> re = new ArrayList<>();
-        for (InvoiceItem in : invoiceItemDAO.getAllInvoiceItemById(invoiceId)) {
-            InvoiceItemDTO invoiceItemDTO = InvoiceItemDTO.builder()
-                    .image(productImageDAO.findAvatarByProductId(in.getProductId()))
-                    .name(productDAO.findOneById(in.getProductId()).getName())
-                    .quantity(in.getQuantity())
-                    .price(in.getPrice())
-                    .build();
-            re.add(invoiceItemDTO);
-        }
-        return re;
+    public List<InvoiceItemDTO> getItemByInvoiceId(int invoiceId) {
+        return invoiceItemDAO.findByInvoiceId(invoiceId).stream().map(item -> {
+            InvoiceItemDTO dto = itemMapper.toDTO(item, InvoiceItemDTO.class);
+            dto.setProductImage(productImageDAO.findAvatarByProductId(item.getProductId()));
+            dto.setProductName(productDAO.findOneById(item.getProductId()).getName());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     public int countInvoiceByStatus(String status, long userId) {
         return invoiceStatusDAO.countInvoiceByStatus(status, userId);
     }
-    public InvoiceDTO getInvoiceDTOById(int invoiceId) {
-        double total = 0;
-        Invoice invoice = invoiceDAO.getInvoiceById(invoiceId);
-        double shippingFee = invoice.getShippingFee() == null ? 0 : invoice.getShippingFee();
-        for (InvoiceItem invoiceItem : invoiceItemDAO.getAllInvoiceItemById(invoiceId)) {
+
+    public InvoiceDTO getInvoiceById(int invoiceId) {
+        InvoiceDTO result = invoiceMapper.toDTO(invoiceDAO.getInvoiceById(invoiceId), InvoiceDTO.class);
+        result.setTotal(calculateTotalPrice(invoiceId) + result.getShippingFee());
+        result.setStatus(invoiceStatusDAO.getStatusByInvoice(invoiceId));
+        return result;
+    }
+
+    private int calculateTotalPrice(int invoiceId) {
+        int total = 0;
+        for (InvoiceItem invoiceItem : invoiceItemDAO.findByInvoiceId(invoiceId)) {
             total += invoiceItem.getPrice() * invoiceItem.getQuantity();
         }
-        return InvoiceDTO.builder().id(invoiceId)
-                .fullName(invoice.getFullName())
-                .email(invoice.getEmail())
-                .status(invoiceStatusDAO.getStatusByInvoice(invoiceId))
-                .createdAt(invoice.getCreatedAt())
-                .shippingFee(shippingFee)
-//                .total(total)
-                .address(invoice.getAddress())
-                .phoneNumber(invoice.getPhoneNumber())
-                .paymentMethod(invoice.getPaymentMethod())
-                .build();
+        return total;
     }
 
     public List<InvoiceDTO> getAllInvoicePaged(int nextPage, int pageSize) {
         List<InvoiceDTO> re = new ArrayList<>();
         for (Invoice i : invoiceDAO.getAllInvoicePaged(nextPage, pageSize)) {
             double total = 0;
-            for (InvoiceItem invoiceItem : invoiceItemDAO.getAllInvoiceItemById(i.getId())) {
+            for (InvoiceItem invoiceItem : invoiceItemDAO.findByInvoiceId(i.getId())) {
                 total += invoiceItem.getPrice() * invoiceItem.getQuantity();
             }
             double shippingFee = i.getShippingFee() == null ? 0 : i.getShippingFee();
             re.add(new InvoiceDTO().builder().id(i.getId())
                     .fullName(i.getFullName())
 //                    .total(total)
-                    .shippingFee(shippingFee)
+                    .shippingFee((int) shippingFee)
                     .phoneNumber(i.getPhoneNumber())
                     .status(invoiceStatusDAO.getStatusByInvoice(i.getId()))
                     .build());
@@ -116,7 +92,7 @@ public class InvoiceService {
         return invoiceDAO.getAllInvoice(pageRequest, userId).stream().map(invoice -> {
             InvoiceDTO dto = invoiceMapper.toDTO(invoice, InvoiceDTO.class);
             dto.setStatus(invoiceStatusDAO.getStatusByInvoice(invoice.getId()));
-            dto.setTotal((int) (invoiceItemDAO.totalPrice(invoice.getId()) +  dto.getShippingFee()));
+            dto.setTotal(invoiceItemDAO.totalPrice(invoice.getId()) + dto.getShippingFee());
             return dto;
         }).collect(Collectors.toList());
 
@@ -172,7 +148,7 @@ public class InvoiceService {
         return isTranferInvoiceItem && isSetStatus;
     }
 
-    public boolean changeInvoiceStatus(Integer invoiceId, String selectedStatus) {
+    public boolean changeStatus(Integer invoiceId, String selectedStatus) {
         return invoiceStatusDAO.changeStatus(invoiceId, selectedStatus);
     }
 

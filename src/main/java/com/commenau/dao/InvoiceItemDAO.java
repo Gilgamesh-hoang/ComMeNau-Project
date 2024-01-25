@@ -11,15 +11,11 @@ import java.util.Optional;
 
 public class InvoiceItemDAO {
 
-    public List<InvoiceItem> getAllInvoiceItemById(int invoiceId) {
-        String sql = "select sum(ii.price) + i.shippingFee from invoice_items ii JOIN invoices i ON ii.invoiceId = i.id where invoiceId = ?";
-        String sql1 = "select productId,quantity, price from invoice_items where invoiceId = ?";
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery(sql1)
-                    .bind(0, invoiceId)
-                    .mapToBean(InvoiceItem.class)
-                    .list();
-        });
+    public List<InvoiceItem> findByInvoiceId(int invoiceId) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT productId,quantity,price FROM invoice_items WHERE invoiceId = ?")
+                        .bind(0, invoiceId).mapToBean(InvoiceItem.class).list()
+        );
     }
 
     public Integer totalPrice(Integer invoiceId) {

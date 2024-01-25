@@ -12,29 +12,9 @@ import java.util.List;
 
 public class InvoiceDAO {
 
-    public List<Invoice> getAllInvoiceById(Long userId) {
-        List<Invoice> invoices = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("SELECT id FROM invoices WHERE userId = ?")
-                    .bind(0, userId)
-                    .mapToBean(Invoice.class)
-                    .list();
-        });
-        return invoices;
-    }
-
-    public List<Invoice> get10InvoiceById(Long userId) {
-        List<Invoice> invoices = JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("SELECT id FROM invoices WHERE userId = ? ORDER BY createdAt DESC LIMIT 10 ")
-                    .bind(0, userId)
-                    .mapToBean(Invoice.class)
-                    .list();
-        });
-        return invoices;
-    }
-
     public Invoice getInvoiceById(int invoiceId) {
         return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select userId,fullName,email ,shippingFee,address,phoneNumber,paymentMethod,createdAt from invoices where id = ?")
+            return handle.createQuery("select id,userId,fullName,email ,shippingFee,address,phoneNumber,paymentMethod,createdAt from invoices where id = ?")
                     .bind(0, invoiceId)
                     .mapToBean(Invoice.class)
                     .first();
