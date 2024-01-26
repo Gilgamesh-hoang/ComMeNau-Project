@@ -64,40 +64,26 @@ public class InvoiceService {
         }
         return total;
     }
-
-    public List<InvoiceDTO> getAllInvoicePaged(int nextPage, int pageSize) {
-        List<InvoiceDTO> re = new ArrayList<>();
-        for (Invoice i : invoiceDAO.getAllInvoicePaged(nextPage, pageSize)) {
-            double total = 0;
-            for (InvoiceItem invoiceItem : invoiceItemDAO.findByInvoiceId(i.getId())) {
-                total += invoiceItem.getPrice() * invoiceItem.getQuantity();
-            }
-            double shippingFee = i.getShippingFee() == null ? 0 : i.getShippingFee();
-            re.add(new InvoiceDTO().builder().id(i.getId())
-                    .fullName(i.getFullName())
-//                    .total(total)
-                    .shippingFee((int) shippingFee)
-                    .phoneNumber(i.getPhoneNumber())
-                    .status(invoiceStatusDAO.getStatusByInvoice(i.getId()))
-                    .build());
-        }
-        return re;
-    }
-
-    public List<Invoice> getAllInvoice() {
-        return invoiceDAO.getAllInvoice();
+    public List<InvoiceDTO> getAllInvoice(PageRequest pageRequest) {
+        return invoiceDAO.getAllInvoice(pageRequest)
+                .stream()
+                .map(this::mapToInvoiceDTO)
+                .collect(Collectors.toList());
     }
 
     public List<InvoiceDTO> getAllInvoice(PageRequest pageRequest, long userId) {
-        return invoiceDAO.getAllInvoice(pageRequest, userId).stream().map(invoice -> {
-            InvoiceDTO dto = invoiceMapper.toDTO(invoice, InvoiceDTO.class);
-            dto.setStatus(invoiceStatusDAO.getStatusByInvoice(invoice.getId()));
-            dto.setTotal(invoiceItemDAO.totalPrice(invoice.getId()) + dto.getShippingFee());
-            return dto;
-        }).collect(Collectors.toList());
-
+        return invoiceDAO.getAllInvoice(pageRequest, userId)
+                .stream()
+                .map(this::mapToInvoiceDTO)
+                .collect(Collectors.toList());
     }
 
+    private InvoiceDTO mapToInvoiceDTO(Invoice invoice) {
+        InvoiceDTO dto = invoiceMapper.toDTO(invoice, InvoiceDTO.class);
+        dto.setStatus(invoiceStatusDAO.getStatusByInvoice(invoice.getId()));
+        dto.setTotal(calculateTotalPrice(invoice.getId()) + dto.getShippingFee());
+        return dto;
+    }
     public Map<String, Integer> bestSaleProduct() {
         Map<String, Integer> map = new HashMap<>();
         InvoiceItem item = invoiceItemDAO.getBestSellingProduct();
@@ -180,4 +166,7 @@ public class InvoiceService {
     }
 
 
+    public int countAll() {
+        return invoiceDAO.countAll();
+    }
 }

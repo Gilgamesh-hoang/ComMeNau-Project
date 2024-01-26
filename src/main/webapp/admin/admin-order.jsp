@@ -19,14 +19,9 @@
 </head>
 
 <body class="no-skin">
-<!-- navbar main-->
 <%@ include file="/admin/common/header.jsp" %>
-<!-- end navbar main-->
 <div class="fix">
-    <!-- navbar left-->
     <%@ include file="/admin/common/nav-left.jsp" %>
-    <!-- end navbar left-->
-
     <!-- main-content -->
     <div class="main-content">
         <div class="main-content-inner">
@@ -36,11 +31,7 @@
                     <li>
                         <h5>Quản lý đơn hàng</h5>
                     </li>
-
-                    <!-- <li><a href="#">Tables</a></li>
-                <li class="active">Simple &amp; Dynamic</li> -->
                 </ul>
-                <!-- /.breadcrumb -->
             </div>
 
             <div class="page-content p-t-20">
@@ -63,12 +54,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="item" items="${listInvoice}">
+                                <c:forEach var="item" items="${invoices}">
                                     <tr>
                                         <td class="text-center" >
                                             <p>${item.id}</p>
                                         </td>
-                                        <td>${item.userFullName}</td>
+                                        <td>${item.fullName}</td>
                                         <fmt:formatNumber value="${item.total}"
                                                           type="currency"
                                                           var="formattedTotal"/>
@@ -96,43 +87,57 @@
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.span -->
                     </div>
-                    <!-- /.row -->
                     <!-- paginatation -->
-                    <nav aria-label="Page navigation example" style="text-align: center;">
-                        <ul class="pagination">
-                            <c:set var="currentPage" value="${nextPage}"/>
-                            <c:set var="begin" value="${currentPage<=3 ? 1 : (maxPage <= 4 ? 1 : (currentPage>maxPage-3 ? maxPage-4 : currentPage-2))}"/>
-                            <c:forEach var="index" begin="${begin}" end="${maxPage}"
-                                       step="1">
-                                <c:if test="${index < (begin + 5)}">
-                                    <li class="page-item">
-                                        <a class="page-link <c:if test="${nextPage == index}">active</c:if>"
-                                           href="<c:url value="/admin/invoices?nextPage=${index}"/>">${index}</a>
-                                    </li>
-                                </c:if>
-                            </c:forEach>
-                        </ul>
+<%--                    <nav aria-label="Page navigation example" style="text-align: center;">--%>
+<%--                        <ul class="pagination">--%>
+<%--                            <c:set var="currentPage" value="${nextPage}"/>--%>
+<%--                            <c:set var="begin" value="${currentPage<=3 ? 1 : (maxPage <= 4 ? 1 : (currentPage>maxPage-3 ? maxPage-4 : currentPage-2))}"/>--%>
+<%--                            <c:forEach var="index" begin="${begin}" end="${maxPage}"--%>
+<%--                                       step="1">--%>
+<%--                                <c:if test="${index < (begin + 5)}">--%>
+<%--                                    <li class="page-item">--%>
+<%--                                        <a class="page-link <c:if test="${nextPage == index}">active</c:if>"--%>
+<%--                                           href="<c:url value="/admin/invoices?nextPage=${index}"/>">${index}</a>--%>
+<%--                                    </li>--%>
+<%--                                </c:if>--%>
+<%--                            </c:forEach>--%>
+<%--                        </ul>--%>
+<%--                    </nav>--%>
+                    <form id="formPaging" action="<c:url value="/admin/invoices"/>" method="get">
+                        <input type="hidden" value="" id="page" name="page"/>
+                    </form>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="pagination"></ul>
                     </nav>
-                    <!--hết-->
-
-                    <!-- PAGE CONTENT ENDS -->
                 </div>
-                <!-- /.col -->
-
-                <!-- /.row -->
             </div>
-            <!-- /.page-content -->
         </div>
     </div>
-    <!-- /.main-content -->
 </div>
 <%@ include file="/admin/common/footer.jsp" %>
-<script>
-    function nextNav() {
+<script src="<c:url value="/jquery/jquery.twbsPagination.js"/>"></script>
 
-    }
+<script>
+    $(document).ready(function () {
+        //paging
+        $(function () {
+            var totalPages = ${maxPage};
+            var currentPage = ${page};
+            window.pagObj = $('#pagination').twbsPagination({
+                totalPages: totalPages,
+                visiblePages: 10,
+                startPage: currentPage,
+                onPageClick: function (event, page) {
+                    // console.info(page + ' (from options)');
+                    if (currentPage !== page) {
+                        $('#page').val(page);
+                        $('#formPaging').submit();
+                    }
+                }
+            });
+        });
+    });
 </script>
 
 </body>

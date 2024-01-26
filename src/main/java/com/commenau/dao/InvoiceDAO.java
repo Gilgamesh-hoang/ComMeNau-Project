@@ -13,22 +13,27 @@ import java.util.List;
 public class InvoiceDAO {
 
     public Invoice getInvoiceById(int invoiceId) {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id,userId,fullName,email ,shippingFee,address,phoneNumber,paymentMethod,createdAt from invoices where id = ?")
-                    .bind(0, invoiceId)
-                    .mapToBean(Invoice.class)
-                    .first();
-        });
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT * FROM invoices where id = ?")
+                        .bind(0, invoiceId).mapToBean(Invoice.class).stream().findFirst().orElse(null)
+        );
     }
 
-    public List<Invoice> getAllInvoicePaged(int nextPage, int pageSize) {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select i.* from invoices i JOIN invoice_status s ON i.id = s.invoiceId ORDER BY s.status DESC ,i.createdAt desc limit ? offset ?")
-                    .bind(0, pageSize)
-                    .bind(1, (nextPage - 1) * pageSize)
-                    .mapToBean(Invoice.class)
-                    .list();
-        });
+
+    public int countAll(long userId) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(id) FROM invoices WHERE userId = :userId")
+                        .bind("userId", userId).mapTo(Integer.class).stream().findFirst().orElse(0)
+        );
+    }
+
+    public List<Invoice> getAllInvoice(PageRequest pageRequest) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT * FROM invoices ");
+        String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).mapToBean(Invoice.class).stream().toList()
+        );
     }
 
     public List<Invoice> getAllInvoice(PageRequest pageRequest, long userId) {
@@ -40,20 +45,11 @@ public class InvoiceDAO {
         );
     }
 
-    public int countAll(long userId) {
+    public int countAll() {
         return JDBIConnector.getInstance().withHandle(handle ->
-                handle.createQuery("SELECT COUNT(id) FROM invoices WHERE userId = :userId")
-                        .bind("userId", userId).mapTo(Integer.class).stream().findFirst().orElse(0)
+                handle.createQuery("SELECT COUNT(id) FROM invoices")
+                        .mapTo(Integer.class).stream().findFirst().orElse(0)
         );
-    }
-
-
-    public List<Invoice> getAllInvoice() {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id from invoices")
-                    .mapToBean(Invoice.class)
-                    .list();
-        });
     }
 
     public Integer sellingOfDay() {
