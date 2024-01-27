@@ -3,6 +3,8 @@ package com.commenau.dao;
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
 import com.commenau.model.User;
+import com.commenau.pagination.PageRequest;
+import com.commenau.util.PagingUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,8 +61,7 @@ public class UserDAO {
             int result = JDBIConnector.getInstance().inTransaction(handle ->
                     handle.createUpdate("UPDATE users SET status = :status WHERE id = :id")
                             .bind("status", SystemConstant.ACTIVATED)
-                            .bind("id", userId)
-                            .execute());
+                            .bind("id", userId).execute());
             return result > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,55 +90,49 @@ public class UserDAO {
         });
     }
 
-    public List<User> getAllCustomerPaged(int pageIndex, int pageSize) {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id,firstName, lastName, username, email, phoneNumber, address, status from users where roleId = 1 " +
-                            "order by firstName asc limit ? offset ?")
-                    .bind(0, pageSize)
-                    .bind(1, (pageIndex - 1) * pageSize)
-                    .mapToBean(User.class)
-                    .list();
-        });
-    }
-
     public boolean lockOrUnlock(Long userId, String activated) {
         int row = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("UPDATE users SET status = :status WHERE id = :id")
-                        .bind("status", activated)
-                        .bind("id", userId)
-                        .execute()
+                        .bind("status", activated).bind("id", userId).execute()
         );
         return row > 0;
     }
 
-    public List<User> findUserByInput(String input) {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id,firstName, lastName, username, email, phoneNumber, address, status from users " +
-                            "where (firstName like :input or " +
-                            "lastName like :input or " +
-                            "username like :input or " +
-                            "phoneNumber like :input or " +
-                            "email like :input or " +
-                            "address like :input) and " +
-                            "roleId = 1")
-                    .bind("input", "%" + input + "%")
-                    .mapToBean(User.class)
-                    .list();
-        });
-    }
-
-    public List<User> getAllCustomer() {
-        return JDBIConnector.getInstance().withHandle(handle -> {
-            return handle.createQuery("select id from users where roleId = 1")
-                    .mapToBean(User.class)
-                    .list();
-        });
-    }
-
     public int countAll() {
         Optional<Integer> total = JDBIConnector.getInstance().withHandle(handle ->
-                        handle.createQuery("SELECT COUNT(u.id) FROM users u INNER JOIN roles r ON u.roleId = r.id WHERE r.name = :name"))
-                .bind("name", SystemConstant.USER).mapTo(Integer.class).stream().findFirst();
+                        handle.createQuery("SELECT COUNT(u.id) FROM users u INNER JOIN roles r ON u.roleId = r.id WHERE r.name = :roleName"))
+                .bind("roleName", SystemConstant.USER).mapTo(Integer.class).stream().findFirst();
         return total.orElse(0);
+    }
+
+    public int countByKeyWord(String keyWord) {
+        String sql = "SELECT COUNT(DISTINCT u.id) FROM users u INNER JOIN roles r ON u.roleId = r.id " +
+                "WHERE r.name = :roleName AND (firstName like :keyWord or lastName like :keyWord or " +
+                "username like :keyWord or phoneNumber like :keyWord or email like :keyWord or " +
+                "address like :keyWord)";
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind("keyWord", "%" + keyWord + "%")
+                        .bind("roleName", SystemConstant.USER)
+                        .mapTo(Integer.class).stream().findFirst().orElse(0)
+        );
+    }
+
+    public List<User> findAll(PageRequest pageRequest) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT users.* FROM users INNER JOIN roles ON roleId = ROLES.id WHERE roles.name = :roleName ");
+        String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind("roleName", SystemConstant.USER).mapToBean(User.class).stream().toList());
+    }
+
+    public List<User> findByKeyWord(PageRequest pageRequest, String keyWord) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT users.* FROM users INNER JOIN roles ON roleId = ROLES.id WHERE roles.name = :roleName ")
+                .append("AND (firstName like :keyWord or lastName like :keyWord or email like :keyWord or ")
+                .append("username like :keyWord or phoneNumber like :keyWord or address like :keyWord)");
+        String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind("keyWord", "%" + keyWord + "%")
+                        .bind("roleName", SystemConstant.USER).mapToBean(User.class).stream().toList());
     }
 }

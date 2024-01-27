@@ -5,7 +5,9 @@ import com.commenau.dao.RoleDAO;
 import com.commenau.dao.UserDAO;
 import com.commenau.model.Role;
 import com.commenau.model.User;
+import com.commenau.pagination.PageRequest;
 import com.commenau.util.EncryptUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Inject;
@@ -109,22 +111,10 @@ public class UserService {
         }
     }
 
-    public List<User> getAllCustomerPaged(int pageIndex, int pageSize) {
-        return userDao.getAllCustomerPaged(pageIndex, pageSize);
-    }
-
-    public int getNumCustomer() {
-        return userDao.getAllCustomer().size();
-    }
-
-    public List<User> findUserByInput(String input) {
-        return userDao.findUserByInput(input);
-    }
-
 
     public boolean lockOrUnlock(Long userId) {
-        User u = userDao.getUserById(userId);
-        String status = u.getStatus();
+        User user = userDao.getUserById(userId);
+        String status = user.getStatus();
         if (status.equals(SystemConstant.LOCKED)) {
             return userDao.lockOrUnlock(userId, SystemConstant.ACTIVATED);
         } else if (status.equals(SystemConstant.ACTIVATED)) {
@@ -141,4 +131,19 @@ public class UserService {
         return userDao.countAll();
     }
 
+    public int countByKeyWord(String keyWord) {
+        if (StringUtils.isBlank(keyWord))
+            return this.countAll();
+        return userDao.countByKeyWord(keyWord);
+    }
+
+    public List<User> getByKeyWord(PageRequest pageRequest, String keyWord) {
+        List<User> list = null;
+        if (StringUtils.isBlank(keyWord)) {
+            list = userDao.findAll(pageRequest);
+        } else {
+            list = userDao.findByKeyWord(pageRequest, keyWord.trim());
+        }
+        return list;
+    }
 }

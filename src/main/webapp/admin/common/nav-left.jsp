@@ -7,7 +7,7 @@
                 class="menu-text <c:if test="${blogActive != null}">active</c:if>">Quản lý bài viết </span></a></li>
         <li class="flex-fill"><a class="d-flex align-items-center" href="<c:url value="/admin/categories"/>"> <span
                 class="menu-text <c:if test="${categoryActive != null}">active</c:if>">Quản lý thể loại </span></a></li>
-        <li class="flex-fill"><a class="d-flex align-items-center" href="<c:url value="/admin/findUser"/>"> <span
+        <li class="flex-fill"><a class="d-flex align-items-center" href="<c:url value="/admin/user"/>"> <span
                 class="menu-text <c:if test="${userActive != null}">active</c:if>  ">Quản lý khách hàng </span></a></li>
         <li class="flex-fill"><a class="d-flex align-items-center" href="<c:url value="/admin/invoices"/>"> <span
                 class="menu-text <c:if test="${invoiceActive != null}">active</c:if>">Quản lý đơn hàng </span></a></li>

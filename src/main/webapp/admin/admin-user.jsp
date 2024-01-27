@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <%--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>--%>
 
     <link rel="stylesheet" href="<c:url value="/admin/css/common.css"/>">
     <link rel="stylesheet" href="<c:url value="/admin/css/admin-product.css"/>">
@@ -40,13 +39,13 @@
                 <!-- /.breadcrumb -->
 
                 <div class="nav-search" id="nav-search">
-                    <form class="form-search" action="<c:url value="/admin/findUser"/>" method="get">
+                    <form class="form-search" action="<c:url value="/admin/user"/>" method="get">
                             <span class="input-icon">
                             <button style="border: none; background: none;position: absolute" type="submit">
                                 <i class="ace-icon fa fa-search nav-search-icon"></i>
                             </button>
-                                <input type="text" placeholder="Search ..." name="inputData" value="${inputKey}"
-                                       class="nav-search-input" id="nav-search-input" autocomplete="off" required/>
+                                <input type="text" placeholder="Search ..." name="keyWord" value="${keyWord}"
+                                       class="nav-search-input" id="nav-search-input" autocomplete="off" />
                             </span>
                     </form>
                 </div>
@@ -109,100 +108,105 @@
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.span -->
                     </div>
-                    <!-- /.row -->
                     <!-- paginatation -->
-                    <nav aria-label="Page navigation example" style="text-align: center;">
-                        <ul class="pagination">
-                            <c:set var="currentPage" value="${nextPage}"/>
-                            <c:set var="begin" value="${currentPage<=3 ? 1 : (maxPage <= 4 ? 1 : (currentPage>maxPage-3 ? maxPage-4 : currentPage-2))}"/>
-                            <c:forEach var="index" begin="${begin}" end="${maxPage}"
-                                       step="1">
-                                <c:if test="${index < (begin + 5)}">
-                                    <li class="page-item">
-                                        <a class="page-link <c:if test="${nextPage == index}">active</c:if>"
-                                           href="<c:url value="/admin/findUser?nextPage=${index}"/>">${index}</a>
-                                    </li>
-                                </c:if>
-                            </c:forEach>
-                        </ul>
+                    <form id="formPaging" action="<c:url value="/admin/user"/>" method="get">
+                        <input type="hidden" value="" id="page" name="page"/>
+                        <input type="hidden" value="${keyWord}" id="keyWord" name="keyWord"/>
+                    </form>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination" id="pagination"></ul>
                     </nav>
-                    <!--hết-->
-
-                    <!-- PAGE CONTENT ENDS -->
                 </div>
-                <!-- /.col -->
-
-
-                <!-- /.row -->
             </div>
-            <!-- /.page-content -->
         </div>
     </div>
-    <!-- /.main-content -->
 </div>
 <%@ include file="/admin/common/footer.jsp" %>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<c:url value="/jquery/jquery.twbsPagination.js"/>"></script>
+
 <script>
-    $('.btn-lock').on('click', function () {
-        var inputData = $(this).data('input-id');
-        var iconLock = $(this).find("i");
-        var status = $(".status-" + inputData);
-        var message = '';
-        console.log(inputData);
-        // using Ajax to send data to server
-        $.ajax({
-            type: "POST",
-            url: "<c:url value="/admin/updateUser"/>",
-            data: JSON.stringify(inputData),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (iconLock.hasClass("fa-user-lock")) {
-                    iconLock.removeClass("fa-user-lock");
-                    iconLock.addClass("fa-lock-open");
-                    status.html(`<span class="badge badge-sm bg-danger">Đã khóa</span>`);
-                    message = 'Đã khóa thành công';
-                } else {
-                    iconLock.removeClass("fa-lock-open");
-                    iconLock.addClass("fa-user-lock");
-                    status.html(`<span class="badge badge-sm bg-success">Đã kích hoạt</span>`);
-                    message = 'Mở khóa thành công';
+
+    $(document).ready(function () {
+        //paging
+        $(function () {
+            var totalPages = ${maxPage};
+            var currentPage = ${page};
+            window.pagObj = $('#pagination').twbsPagination({
+                totalPages: totalPages,
+                visiblePages: 10,
+                startPage: currentPage,
+                onPageClick: function (event, page) {
+                    // console.info(page + ' (from options)');
+                    if (currentPage !== page) {
+                        $('#page').val(page);
+                        $('#formPaging').submit();
+                    }
                 }
-                Swal.fire({
-                    icon: "success",
-                    title: message,
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
+            });
+        });
+
+        $('.btn-lock').on('click', function () {
+            var inputData = $(this).data('input-id');
+            var iconLock = $(this).find("i");
+            var status = $(".status-" + inputData);
+            var message = '';
+            console.log(inputData);
+            // using Ajax to send data to server
+            $.ajax({
+                type: "POST",
+                url: "<c:url value="/admin/user"/>",
+                data: JSON.stringify(inputData),
+                contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                    if (iconLock.hasClass("fa-user-lock")) {
+                        iconLock.removeClass("fa-user-lock");
+                        iconLock.addClass("fa-lock-open");
+                        status.html(`<span class="badge badge-sm bg-danger">${SystemConstant.LOCKED}</span>`);
+                        message = 'Đã khóa thành công';
+                    } else {
+                        iconLock.removeClass("fa-lock-open");
+                        iconLock.addClass("fa-user-lock");
+                        status.html(`<span class="badge badge-sm bg-success">${SystemConstant.ACTIVATED}</span>`);
+                        message = 'Mở khóa thành công';
                     }
-                });
-            },
-            error: function (error) {
-                console.log('that bai')
-                Swal.fire({
-                    icon: "warning",
-                    title: "Thay đổi không thành công!",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
-            }
+                    Swal.fire({
+                        icon: "success",
+                        title: message,
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.log('that bai')
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Thay đổi không thành công!",
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                }
+            });
         });
     });
+
+
 </script>
 </body>
 
