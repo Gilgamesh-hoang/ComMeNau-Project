@@ -37,18 +37,15 @@
                         <h5 href="#">Quản lý đơn hàng</h5>
                     </li>
                 </ul>
-                <!-- /.breadcrumb -->
             </div>
 
             <div class="page-content">
-                <c:set var="invoice" value="${invoiceOf}"/>
                 <div class="content">
                     <div class="status">
                         <div class="date">
                                 <span>
                                     <i class="fa-solid fa-calendar"></i>
                                     <b>
-<%--                                        Thứ Tư, Ngày 10 Tháng 10, 2023 16:00 chiều--%>
                                         <fmt:formatDate value="${invoice.createdAt}"
                                                         pattern="dd-MM-yyy hh:mma"/>
                                     </b>
@@ -61,8 +58,8 @@
                                                        style="color: rgb(67, 142, 185)"></i></div>
                                 <div class="status-content">
                                     <p><b>Khách hàng</b> <br>
-                                        ${invoice.userFullName}<br>
-                                        ${invoice.userEmail}
+                                        ${invoice.fullName}<br>
+                                        ${invoice.email}
                                     </p>
                                 </div>
                             </div>
@@ -96,12 +93,12 @@
                                 <td style="width: 20%;">Số lượng</td>
                                 <td class="f-right">Tổng</td>
                             </tr>
-                            <c:forEach var="item" items="${listInvoiceDetail}">
+                            <c:forEach var="item" items="${listItems}">
                                 <tr class="item">
                                     <td style="display: flex;">
                                         <img class="img-product" src="" alt="">
                                         <div class="product-name">
-                                                ${item.name}
+                                                ${item.productName}
                                         </div>
                                     </td>
                                     <td>
@@ -140,10 +137,10 @@
                     <div class="operation">
                         <select name="" id="select">
                             <c:forEach var="item" items="${states}">
-                                <option value="${item}" <c:if test="${item.equals(invoiceOf.status)}"> selected </c:if> >${item}</option>
+                                <option value="${item}" <c:if test="${item.equals(invoice.status)}"> selected </c:if> >${item}</option>
                             </c:forEach>
                         </select>
-                        <button class="change-state" data-id="${invoice.id}" <c:if test="${invoiceOf.status.equals('Đã hủy')}"> disabled</c:if>>Lưu thay đổi</button>
+                        <button class="change-state" data-id="${invoice.id}" <c:if test="${invoice.status.equals('Đã hủy')}"> disabled</c:if>>Lưu thay đổi</button>
                     </div>
                 </div>
 
@@ -159,19 +156,16 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $('.change-state').on('click', function () {
-        // var operation = document.querySelector('.operation');
         var button = $(this);
         var invoiceId = button.data('id');
-        var selectedState = $('#select').val();
+        var selectedStatus = $('#select').val();
         $.ajax({
             type: "POST",
             url: "<c:url value="/admin/invoiceDetail"/>",
-            data: JSON.stringify(invoiceId + "-" + selectedState),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
+            data: {invoiceId: invoiceId, selectedStatus: selectedStatus},
+            success: function () {
                 var statusSpan = button.closest('.operation').prev('.information').find('.final .status');
-                statusSpan.text(selectedState);
+                statusSpan.text(selectedStatus);
                 Swal.fire({
                     icon: "success",
                     title : "Đổi trạng thái thành công",
@@ -186,8 +180,7 @@
                     }
                 });
             },
-            error: function (error) {
-                console.log('that bai')
+            error: function () {
                 Swal.fire({
                     icon: "warning",
                     title: "Đổi trạng thái thất bại!",
