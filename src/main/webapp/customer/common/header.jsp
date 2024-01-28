@@ -33,8 +33,6 @@
                     <ul style="width: 100%;
                         position: absolute;
                         background: white;
-                        /*border: 1px solid lightgray;*/
-                        /*border-top: 0px;*/
                         z-index: 1000;"
                         id="searchResults">
                     </ul>
@@ -82,12 +80,10 @@
                             <a href="mailto:contact@domain.com"><i class="far fa-envelope"></i></a>
                         </li>
                     </ul>
-                    <!--====== End - List ======-->
                 </div>
             </div>
         </div>
     </nav>
-    <!--====== End - Nav 1 ======-->
 
     <!--====== Nav 2 ======-->
     <nav class="secondary-nav-wrapper">
@@ -100,12 +96,6 @@
                         <li>
                             <a href="<c:url value="/menu"/>">THỰC ĐƠN</a>
                         </li>
-<%--                        <li>--%>
-<%--                            <a href="filter.jsp">MÓN ĂN KÈM</a>--%>
-<%--                        </li>--%>
-<%--                        <li>--%>
-<%--                            <a href="filter.jsp">NƯỚC GIẢI KHÁT</a>--%>
-<%--                        </li>--%>
                         <li>
                             <a href="<c:url value="/blogs"/>">BÀI VIẾT</a>
                         </li>
@@ -139,15 +129,6 @@
         var $searchInput = $("#main-search");
         var $searchResults = $("#searchResults");
 
-        // Event listener for the input field
-        $(document).on("mousedown", function (event) {
-            // Kiểm tra xem phần tử được click có là con của #yourDiv hay không
-            if ((!$searchResults.is(event.target) && ! $searchResults.has(event.target).length) || ($searchInput.is(event.target) && !$searchInput.has(event.target).length)){
-                $searchInput.val("");
-                $searchResults.empty();
-            }
-        });
-
         $searchInput.on("input", function () {
             // Clear previous results
             $searchResults.empty();
@@ -156,22 +137,31 @@
             if (query !== '') {
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost:8080/search?query=" + query,
-                    contentType: "application/x-www-form-urlencoded; charset=UTF-16",
+                    url: "${pageContext.request.contextPath}/search?query="+ query,
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     // Serialize dữ liệu biểu mẫu
                     success: function (response) {
-
                         var data = JSON.parse(response);
                         data.forEach(element => {
-
-                            var link =  "/product/" + element.productId;
-                            $searchResults.append("<a href='${pageContext.request.contextPath}"+  link + "' class='product-link'>" + element.productName + "</a>");
-                            $('#searchResults li:gt(7)').remove();
+                            var link = "${pageContext.request.contextPath}/product/" + element.id;
+                            $searchResults.append("<a href="+  link + " class=product-link>" + element.name + "</a>");
+                            // $('#searchResults li:gt(7)').remove();
                         });
-                  }
+                    }
                 });
             }
         });
+        // Event listener for the input field
+        $(document).on("mousedown", function (event) {
+            // Kiểm tra xem phần tử được click có là con của #yourDiv hay không
+            if ((!$searchResults.is(event.target) && ! $searchResults.has(event.target).length)
+                    || ($searchInput.is(event.target) && !$searchInput.has(event.target).length)){
+                $searchInput.val("");
+                $searchResults.empty();
+            }
+        });
+
+
     });
 
 </script>

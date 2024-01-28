@@ -16,7 +16,7 @@ import java.util.Map;
 public class ProductDAO {
 
     public Product findOneById(int productId) {
-        String sql = "SELECT id,categoryId,name,description,price,discount,status,rate,available FROM products WHERE id = :id";
+        String sql = "SELECT id,categoryId,name,description,price,discount,status,available FROM products WHERE id = :id";
         Product product = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).bind("id", productId).mapToBean(Product.class).stream().findFirst().orElse(new Product()));
         return product;
@@ -43,10 +43,12 @@ public class ProductDAO {
         });
     }
 
-    public List<Product> getAllIdAndName() {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select id , name from products where  status = 1").mapToBean(Product.class).stream().toList();
-        });
+    public List<Product> searchByName(String productName) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT id,name FROM products WHERE status = :status AND name LIKE :productName")
+                        .bind("status", SystemConstant.IN_BUSINESS).bind("productName", "%" + productName + "%")
+                        .mapToBean(Product.class).stream().toList()
+        );
     }
 
     public List<Product> getProductViewPage(int categoryId, int size, int page, String sortBy, String sort) {
@@ -127,7 +129,7 @@ public class ProductDAO {
 
     public List<ProductDTO> findAll(PageRequest pageRequest) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT p.id AS productId,c.name AS categoryName,p.name AS productName,price,status,rate,available,image ");
+        builder.append("SELECT p.id AS productId,c.name AS categoryName,p.name AS productName,price,status,available,image ");
         builder.append("FROM products p ");
         builder.append("LEFT JOIN categories c ON p.categoryId = c.id ");
         builder.append("LEFT JOIN product_images pi ON p.id = pi.productId AND pi.isAvatar = 1 ");
@@ -141,7 +143,6 @@ public class ProductDAO {
                                     .name(rs.getString("productName"))
                                     .price(rs.getDouble("price"))
                                     .status(rs.getBoolean("status"))
-                                    .rate((int) rs.getFloat("rate"))
                                     .available(rs.getInt("available"))
                                     .avatar(rs.getString("image") == null ? "" : rs.getString("image"))
                                     .build();
@@ -151,7 +152,7 @@ public class ProductDAO {
 
     public List<Product> findByKeyWord(PageRequest pageRequest, String keyWord) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT p.id AS id, p.name AS name,c.id AS categoryId, price,status,rate,available ");
+        builder.append("SELECT p.id AS id, p.name AS name,c.id AS categoryId, price,status,available ");
         builder.append("FROM products p LEFT JOIN categories c ON p.categoryId = c.id ");
         builder.append("WHERE c.name LIKE :keyWord OR p.name LIKE :keyWord ");
         builder.append("OR CONVERT(price, CHAR) LIKE :keyWord OR CONVERT(available, CHAR) LIKE :keyWord ");
