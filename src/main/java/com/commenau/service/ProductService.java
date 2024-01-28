@@ -79,26 +79,16 @@ public class ProductService implements Pageable<ProductDTO> {
         }).collect(Collectors.toList());
     }
 
-    public List<ProductRelativeViewDTO> getRelativeProductViewByID(int productId) {
-        List<Product> products = productDAO.getRelativeProductViewByID(productId);
-        if (products == null) return null;
-        List<ProductRelativeViewDTO> views = new ArrayList<>();
-        for (var x : products) {
-            ProductRelativeViewDTO productViewDTO =
-                    ProductRelativeViewDTO.builder()
-                            .id(Math.toIntExact(x.getId()))
-                            .productName(x.getName())
-                            .price(x.getPrice())
-                            .discount(x.getDiscount())
-                            .build();
-            String categoryName = categoryDao.getNameById(Math.toIntExact(x.getCategoryId()));
-            productViewDTO.setCategoryName(categoryName);
-            productViewDTO.setRating(averageRating(Math.toIntExact(x.getId())));
-            productViewDTO.setAmountOfReview(countProductReviewsById(Math.toIntExact(x.getId())));
-            productViewDTO.setImage(productImageDAO.findAvatarByProductId(x.getId()));
-            views.add(productViewDTO);
-        }
-        return views;
+    public List<ProductDTO> getRelativeProducts(int productId) {
+        List<Product> products = productDAO.findRelativeProductsById(productId);
+        return products.stream().map(product -> {
+            ProductDTO dto = productMapper.toDTO(product, ProductDTO.class);
+            dto.setCategoryName(categoryDao.getNameById(product.getCategoryId()));
+            dto.setAvatar(productImageDAO.findAvatarByProductId(dto.getId()));
+            dto.setRate(averageRating(product.getId()));
+            dto.setAmountOfReview(countProductReviewsById(product.getId()));
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Override

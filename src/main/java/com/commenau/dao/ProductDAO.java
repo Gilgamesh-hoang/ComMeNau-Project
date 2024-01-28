@@ -36,11 +36,17 @@ public class ProductDAO {
     }
 
 
-    public List<Product> getRelativeProductViewByID(int productID) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            int categoryId = n.createQuery("select categoryId from products where id = ? and status = 1").bind(0, productID).mapTo(Integer.class).one();
-            return n.createQuery("select id, categoryId ,description , name , price , discount from products where categoryId = ? order by createdAt desc limit 4").bind(0, categoryId).mapToBean(Product.class).stream().toList();
-        });
+    public List<Product> findRelativeProductsById(int productID) {
+        String getCategoryIdSQL = "SELECT categoryId FROM products WHERE id = :id and status = :status";
+        String getRelativeProducts = "SELECT id,categoryId,description,name,price,discount FROM products " +
+                "WHERE categoryId = ? ORDER BY createdAt DESC limit 4";
+        return JDBIConnector.getInstance().withHandle(handle -> {
+                    int categoryId = handle.createQuery(getCategoryIdSQL)
+                            .bind("id", productID).bind("status", SystemConstant.IN_BUSINESS)
+                            .mapTo(Integer.class).stream().findFirst().orElse(0);
+                    return handle.createQuery(getRelativeProducts).bind(0, categoryId).mapToBean(Product.class).stream().toList();
+                }
+        );
     }
 
     public List<Product> searchByName(String productName) {

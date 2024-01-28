@@ -8,9 +8,6 @@
     <meta charset="UTF-16">
     <title>Chi Tiết Sản Phẩm</title>
     <link href="<c:url value="/customer/images/favicon.png"/>" rel="shortcut icon">
-    <link rel="stylesheet" href="<c:url value="/customer/css/common.css"/>">
-    <link rel="stylesheet" href="<c:url value="/customer/css/product-detail.css"/>">
-    <link rel="stylesheet" href="<c:url value="/customer/css/pagination.css"/>">
 
     <!-- for chat -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -30,6 +27,10 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="<c:url value="/customer/css/common.css"/>">
+    <link rel="stylesheet" href="<c:url value="/customer/css/product-detail.css"/>">
+    <link rel="stylesheet" href="<c:url value="/customer/css/pagination.css"/>">
 
 
 </head>
@@ -116,7 +117,6 @@
                         </div>
                     </div>
                     <div class="u-s-m-b-15 ">
-<%--                        <form id="add-to-cart" class="pd-detail__form">--%>
                             <input type="hidden" id="productId" value="${product.id}">
                             <div class="pd-detail-inline-2">
                                 <div class="u-s-m-b-15 me-3">
@@ -162,12 +162,9 @@
                         </ul>
                     </div>
                 </div>
-                <!--====== End - Product Right Side Details ======-->
             </div>
         </div>
     </div>
-    <!--==== End Section 1 ====-->
-    <!--==== Section 2 ====-->
     <div class="container mt-5">
         <!--==== Sub-Section 1 ====-->
         <div class="u-s-m-b-30">
@@ -178,8 +175,6 @@
                 </li>
             </ul>
         </div>
-        <!-- ===== End Sub-Section 1 ==== -->
-        <!--==== Sub-Section 2 ====-->
 
         <div class="u-s-m-b-30">
             <div class="d-flex flex-column">
@@ -228,14 +223,11 @@
 
                             </div>
                             <div id="pagination-container">
-                                <!-- Các nút phân trang sẽ được hiển thị ở đây -->
                             </div>
                         </form>
                     </div>
 
                 </div>
-                <!--==== End Section Review ====-->
-
                 <!--====== Section Feed Back =====-->
                 <c:if test="${not empty sessionScope.auth}">
                     <div>
@@ -300,8 +292,6 @@
                                             <tbody>
                                             <tr>
                                                 <td>
-
-                                                    <!--====== Radio Box ======-->
                                                     <div class="radio-box">
 
                                                         <input type="radio" value="1" id="star-1" name="rating">
@@ -310,12 +300,8 @@
                                                             <label class="radio-box__label" for="star-1"></label>
                                                         </div>
                                                     </div>
-                                                    <!--====== End - Radio Box ======-->
                                                 </td>
-
                                                 <td>
-
-                                                    <!--====== Radio Box ======-->
                                                     <div class="radio-box">
 
                                                         <input type="radio" value="2" id="star-2" name="rating">
@@ -324,40 +310,26 @@
                                                             <label class="radio-box__label" for="star-2"></label>
                                                         </div>
                                                     </div>
-                                                    <!--====== End - Radio Box ======-->
                                                 </td>
-
                                                 <td>
-
-                                                    <!--====== Radio Box ======-->
                                                     <div class="radio-box">
-
                                                         <input type="radio" value="3" id="star-3" name="rating">
                                                         <div class="radio-box__state radio-box__state--primary">
 
                                                             <label class="radio-box__label" for="star-3"></label>
                                                         </div>
                                                     </div>
-                                                    <!--====== End - Radio Box ======-->
                                                 </td>
-
                                                 <td>
-
-                                                    <!--====== Radio Box ======-->
                                                     <div class="radio-box">
-
                                                         <input type="radio" value="4" id="star-4" name="rating">
                                                         <div class="radio-box__state radio-box__state--primary">
 
                                                             <label class="radio-box__label" for="star-4"></label>
                                                         </div>
                                                     </div>
-                                                    <!--====== End - Radio Box ======-->
                                                 </td>
-
                                                 <td>
-
-                                                    <!--====== Radio Box ======-->
                                                     <div class="radio-box">
 
                                                         <input type="radio" value="5" id="star-5" name="rating">
@@ -366,7 +338,6 @@
                                                             <label class="radio-box__label" for="star-5"></label>
                                                         </div>
                                                     </div>
-                                                    <!--====== End - Radio Box ======-->
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -391,17 +362,11 @@
                         </div>
                     </div>
                 </c:if>
-                <!--==== End Section Feed Back ====-->
             </div>
         </div>
-        <!-- =====End Sub-Section 2 ==== -->
     </div>
-    <!--==== End Section 2 ====-->
     <!--======= Relative Product Section ========-->
-
     <div class="section__content mb-5">
-
-        <!--====== Section Intro NEW MENU ======-->
         <div class="section__intro u-s-m-b-46">
             <div class="container">
                 <div class="row">
@@ -415,11 +380,7 @@
                 </div>
             </div>
         </div>
-        <!--====== End -Section Intro NEW MENU======-->
-
-
         <!--====== Section NEW MENU ======-->
-
         <div class="list-product mt-5">
             <c:forEach var="item" items="${requestScope.relativeProducts}">
 
@@ -428,8 +389,8 @@
                         <div class="product-o product-o--hover-on">
                             <div class="product-o__wrap">
                                 <div class="aspect aspect--bg-grey aspect--square u-d-block">
-                                    <c:if test="${not empty item.image}">
-                                        <img class="aspect__img" src="<c:url value="/images/products/${item.image}"/> "
+                                    <c:if test="${not empty item.avatar}">
+                                        <img class="aspect__img" src="<c:url value="/images/products/${item.avatar}"/> "
                                              alt="No Image">
                                     </c:if>
                                 </div>
@@ -439,14 +400,14 @@
                                 <a style="font-size: 14px;">${item.categoryName}</a>
                             </span>
                             <span class="product-o__name">
-                                <a>${item.productName}</a>
+                                <a>${item.name}</a>
                             </span>
                             <div class="product-o__rating gl-rating-style">
-                                <c:forEach begin="1" end="${item.rating}">
+                                <c:forEach begin="1" end="${item.rate}">
                                     <i class="fas fa-star"></i>
                                 </c:forEach>
 
-                                <c:forEach begin="1" end="${5 - item.rating}">
+                                <c:forEach begin="1" end="${5 - item.rate}">
                                     <i class="far fa-star"></i>
                                 </c:forEach>
 
@@ -468,14 +429,8 @@
 
             </c:forEach>
         </div>
-
-
-        <!--====== End - Section NEW MENU ======-->
     </div>
-
-    <!--======= Relative Product Section ========-->
 </div>
-<!--====== End Main Content =====-->
 <!--====== Main Footer ======-->
 <jsp:include page="common/footer.jsp"></jsp:include>
 <script>

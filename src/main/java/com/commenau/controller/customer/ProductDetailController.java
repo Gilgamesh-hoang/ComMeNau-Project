@@ -1,10 +1,7 @@
 package com.commenau.controller.customer;
-
-
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.ProductDTO;
 import com.commenau.model.User;
-import com.commenau.service.ProductReviewService;
 import com.commenau.service.ProductService;
 import com.commenau.service.WishlistService;
 
@@ -19,30 +16,37 @@ import java.io.IOException;
 @WebServlet("/product/*")
 public class ProductDetailController extends HttpServlet {
     @Inject
-    ProductService productService;
+    private ProductService productService;
     @Inject
-    WishlistService wishlistService;
+    private WishlistService wishlistService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String[] pathInfo = req.getPathInfo().split("/");
-        int productId = Integer.valueOf(pathInfo[1]);
-
-        if (req.getSession(false) != null && req.getSession(false).getAttribute("auth") != null) {
-            int userId = Math.toIntExact(((User) req.getSession(false).getAttribute("auth")).getId());
-            req.setAttribute("userId", userId);
-            if (wishlistService.existsItem(userId, Integer.valueOf(productId))) {
-                req.setAttribute("inWishlists", true);
-            }
+        int productId = 0;
+        try {
+            productId = Integer.valueOf(pathInfo[1]);
+        }catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
-        ProductDTO productDTO = productService.getProductById(productId);
+        if (productId != 0 ) {
+            if (req.getSession(false) != null && req.getSession(false).getAttribute("auth") != null) {
+                long userId = ((User) req.getSession(false).getAttribute(SystemConstant.AUTH)).getId();
+                req.setAttribute("userId", userId);
+                if (wishlistService.existsItem(userId, productId)) {
+                    req.setAttribute("inWishlists", true);
+                }
+            }
 
-        req.setAttribute("product", productDTO);
-        req.setAttribute("relativeProducts", productService.getRelativeProductViewByID(productDTO.getId()));
-        String currentPage = req.getRequestURL().toString();
-        req.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
+            ProductDTO productDTO = productService.getProductById(productId);
+
+            req.setAttribute("product", productDTO);
+            req.setAttribute("relativeProducts", productService.getRelativeProducts(productDTO.getId()));
+            String currentPage = req.getRequestURL().toString();
+            req.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
+        }
         req.getRequestDispatcher("/customer/product-detail.jsp").forward(req, resp);
 
     }
