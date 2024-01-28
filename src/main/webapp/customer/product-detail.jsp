@@ -232,7 +232,7 @@
                 <c:if test="${not empty sessionScope.auth}">
                     <div>
                         <div class="u-s-m-b-30 pd-tab-feedback">
-                            <form id="review" accept-charset="UTF-16">
+                            <form id="review" accept-charset="UTF-8">
                                 <input type="hidden" name="productId" value="${product.id}">
                                 <h2 class="u-s-m-b-15">Thêm một đánh giá</h2>
                                 <span class="gl-text u-s-m-b-15">Tài khoản email của bạn sẽ không được công bố trong
@@ -350,7 +350,7 @@
                                         <label class="gl-label" for="reviewer-text">Bình luận của bạn <span
                                                 class="required-check">*</span></label>
                                         <textarea class="text-area text-area--primary-style" id="reviewer-text"
-                                                  name="reviewer-text" required></textarea>
+                                                  name="content" required></textarea>
                                     </div>
 
                                 </div>
@@ -496,7 +496,7 @@
             } else {
                 $.ajax({
                     type: "POST",
-                    url: "http://localhost:8080/wishlist?productId=" + idProduct + "&userId=" + userId,
+                    url: "${pageContext.request.contextPath}/wishlist?productId=" + idProduct + "&userId=" + userId,
                     contentType: "application/x-www-form-urlencoded; charset=UTF-16",
                     // Serialize dữ liệu biểu mẫu
                     success: function (response) {
@@ -519,7 +519,7 @@
         // Cấu hình và kích hoạt Pagination.js
         $('#pagination-container').pagination({
             dataSource: data,
-            pageSize: 3,  // Số lượng mục trên mỗi trang
+            pageSize: 5,  // Số lượng mục trên mỗi trang
             callback: function (data, pagination) {
                 // Hiển thị dữ liệu trên trang hiện tại
                 displayData(pagination.pageNumber);
@@ -556,7 +556,7 @@
             const container = $('.rev-f1__review');
             container.empty();
             $.ajax({
-                url: "http://localhost:8080/review?id=" + idProduct + "&size=3&page=" + pageNumber + "&sortBy=rating&sort=" + document.getElementById("sort-review").value,
+                url: "${pageContext.request.contextPath}/review?id=" + idProduct + "&page=" + pageNumber + "&sortBy=rating&sort=" + document.getElementById("sort-review").value,
                 type: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -601,18 +601,15 @@
             // Sử dụng AJAX để gửi biểu mẫu
             $.ajax({
                 type: "POST",
-                url: "http://localhost:8080/review",
-                contentType: "application/x-www-form-urlencoded; charset=UTF-16",
+                url: "<c:url value="/review"/>",
                 data: $("#review").serialize(), // Serialize dữ liệu biểu mẫu
                 success: function (response) {
                     displayData(1)
                     $('#reviewer-text').val("");
                     $("input[name='rating']").prop("checked", false)
-                    // toastr.success('Đánh giá thành công !', {timeout: 3000});
                     toastr.success("Bình luận thành công ", '', { timeOut: 700 });
                 },
                 error: function (error) {
-                    // toastr.error('Đánh giá thất bại !', {timeout: 3000});
                     toastr.error("Bình luận thất bại", '', { timeOut: 700 });
                 }
 

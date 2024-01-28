@@ -2,40 +2,33 @@ package com.commenau.dao;
 
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.model.ProductReview;
+import com.commenau.pagination.PageRequest;
+import com.commenau.util.PagingUtil;
 
 import java.util.List;
+
 public class ProductReviewDAO {
-    private static String getAllPropertiesProductReviewsById = "select * from product_reviews where productId = ? ";
-    private static String getAllPropertiesPageProductReviewsById = "select p.rating , p.content , p.createdAt , p.userId  from product_reviews as p  where  p.productId =  ? \n" +
-            "limit ? offset ?";
-
-
-    public List<ProductReview> getProdudctReviewsByProductId(int id) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery(getAllPropertiesProductReviewsById).bind(0, id).mapToBean(ProductReview.class).stream().toList();
-        });
+    public boolean save(ProductReview review) {
+        String sql = "INSERT INTO product_reviews(productId,userId,rating,content) VALUES (:productId,:userId,:rating,:content)";
+        int affectedRow = JDBIConnector.getInstance().inTransaction(handle ->
+                handle.createUpdate(sql).bind("productId", review.getProductId()).bind("userId", review.getUserId())
+                        .bind("rating", review.getRating()).bind("content", review.getContent()).execute()
+        );
+        return affectedRow > 0;
     }
 
-    public void save(int productId, int userId, int rating, String content) {
-        JDBIConnector.getInstance().withHandle(n -> {
-            return n.createUpdate("insert into product_reviews(productId,userId , rating , content) values (?,?,?,?)").bind(0, productId).bind(1, userId).bind(2, rating).bind(3, content).execute();
-        });
+    public List<ProductReview> getReviewByProductId(int productId, PageRequest pageRequest) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT rating,content,createdAt,userId FROM product_reviews ")
+                .append("WHERE productId = :productId ");
+        String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind("productId", productId)
+                        .mapToBean(ProductReview.class).stream().toList()
+        );
     }
 
-    public List<ProductReview> getProdudctPageReviewsByProductId(int id, int size, int page) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery(getAllPropertiesPageProductReviewsById).bind(0, id).bind(1, size).bind(2, (page - 1) * size).mapToBean(ProductReview.class).stream().toList();
-        });
-    }
-
-    public List<ProductReview> getProdudctPageReviewsByProductId(int id, int size, int page, String sortBy, String sort) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            String getAllPropertiesPageSortableProductReviewsById = "select p.rating , p.content , p.createdAt , p.userId  from product_reviews as p where p.productId =  ? order by " + sortBy + " " + sort + "  limit ? offset ?";
-            return n.createQuery(getAllPropertiesPageSortableProductReviewsById).bind(0, id).bind(1, size).bind(2, (page - 1) * size).mapToBean(ProductReview.class).stream().toList();
-        });
-    }
-
-    public boolean deleteByProductId(int productId) throws Exception{
+    public boolean deleteByProductId(int productId) throws Exception {
         int result = JDBIConnector.getInstance().inTransaction(handle ->
                 handle.createUpdate("DELETE FROM product_reviews WHERE productId = :productId")
                         .bind("productId", productId)
@@ -43,10 +36,5 @@ public class ProductReviewDAO {
         );
         return result >= 0;
     }
-
-    public static void main(String[] args) {
-        new ProductReviewDAO().getProdudctPageReviewsByProductId(38, 3, 1, "rating", "asc");
-    }
-
 
 }

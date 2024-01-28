@@ -3,76 +3,46 @@ package com.commenau.service;
 import com.commenau.dao.ProductReviewDAO;
 import com.commenau.dao.UserDAO;
 import com.commenau.dto.ProductReviewDTO;
+import com.commenau.mapper.ProductReviewMapper;
 import com.commenau.model.ProductReview;
 import com.commenau.model.User;
+import com.commenau.pagination.PageRequest;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductReviewService implements Pageable<ProductReviewDTO> {
     @Inject
-    ProductReviewDAO dao;
+    private ProductReviewDAO reviewDAO;
     @Inject
-    UserDAO userDAO;
+    private UserDAO userDAO;
+    @Inject
+    private ProductReviewMapper reviewMapper;
 
-
-    public List<ProductReview> getProductReviewsByProductId(int id) {
-        return dao.getProdudctReviewsByProductId(id);
+    public boolean save(ProductReview review) {
+        return reviewDAO.save(review);
     }
-
-    public void save(int productId, int userId, int rating, String content) {
-        dao.save(productId, userId, rating, content);
-    }
-
 
     @Override
     public List<ProductReviewDTO> getPage(int id, int size, int page, String sortBy, String sort) {
-        List<ProductReview> productReviews = dao.getProdudctPageReviewsByProductId(id, size, page, sortBy, sort);
-        List<ProductReviewDTO> productReviewDTOS = new ArrayList<>();
-        System.out.println(productReviews);
-        for (var x : productReviews) {
-            ProductReviewDTO dto = ProductReviewDTO.builder().build();
-
-            dto.setRating(x.getRating());
-            dto.setContent(x.getContent());
-            dto.setCreatedAt(x.getCreatedAt());
-
-            User user = userDAO.getFirstNameAndLastName(x.getUserId());
-
-            dto.setLastName(user.getLastName());
-            dto.setFirstName(user.getFirstName());
-
-            productReviewDTOS.add(dto);
-
-        }
-
-
-        return productReviewDTOS;
+        return null;
     }
 
     @Override
     public List<ProductReviewDTO> getPage(int id, int size, int page) {
-        List<ProductReview> productReviews = dao.getProdudctPageReviewsByProductId(id, size, page);
-        List<ProductReviewDTO> productReviewDTOS = new ArrayList<>();
+        return null;
+    }
 
-        for (var x : productReviews) {
-            ProductReviewDTO dto = ProductReviewDTO.builder().build();
-
-            dto.setRating(x.getRating());
-            dto.setContent(x.getContent());
-            dto.setCreatedAt(x.getCreatedAt());
-
-            User user = userDAO.getFirstNameAndLastName((x.getUserId()));
-
+    public List<ProductReviewDTO> getReviewByProductId(int productId, PageRequest pageRequest) {
+        return reviewDAO.getReviewByProductId(productId, pageRequest).stream().map(review -> {
+            ProductReviewDTO dto = reviewMapper.toDTO(review, ProductReviewDTO.class);
+            User user = userDAO.getFirstNameAndLastName(review.getUserId());
             dto.setLastName(user.getLastName());
             dto.setFirstName(user.getFirstName());
-
-            productReviewDTOS.add(dto);
-
-        }
-
-
-        return productReviewDTOS;
+            return dto;
+        }).collect(Collectors.toList());
     }
+
 }

@@ -85,9 +85,10 @@ public class UserDAO {
     }
 
     public User getFirstNameAndLastName(Long userId) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select firstName , lastName from users where id = ?").bind(0, userId).mapToBean(User.class).stream().findFirst().orElse(null);
-        });
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT firstName,lastName FROM users WHERE id = ?")
+                        .bind(0, userId).mapToBean(User.class).stream().findFirst().orElse(null)
+        );
     }
 
     public boolean lockOrUnlock(Long userId, String activated) {
