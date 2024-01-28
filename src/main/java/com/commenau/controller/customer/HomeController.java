@@ -14,17 +14,13 @@ import java.io.IOException;
 @WebServlet("/home")
 public class HomeController extends HttpServlet {
     @Inject
-    ProductService productService;
-    private static final long serialVersionUID = 1L;
+    private ProductService productService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String currentPage = request.getRequestURL().toString();
         request.getSession().setAttribute(SystemConstant.PRE_PAGE, currentPage);
-        request.setAttribute("products", productService.getNewRelativeProductView());
+        request.setAttribute("products", productService.getNewestProducts(8));
         request.getRequestDispatcher("/customer/home.jsp").forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
 
 }

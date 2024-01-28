@@ -17,7 +17,7 @@ public class ProductDAO {
 
     public Product findOneById(int productId) {
         String sql = "SELECT id,categoryId,name,description,price,discount,status,rate,available FROM products WHERE id = :id";
-        Product product = JDBIConnector.getInstance(). withHandle(handle ->
+        Product product = JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql).bind("id", productId).mapToBean(Product.class).stream().findFirst().orElse(new Product()));
         return product;
     }
@@ -50,7 +50,7 @@ public class ProductDAO {
     }
 
     public List<Product> getProductViewPage(int categoryId, int size, int page, String sortBy, String sort) {
-        if (sortBy.equals("price")){
+        if (sortBy.equals("price")) {
             sortBy = "price_discount";
         }
         String sortby = sortBy;
@@ -100,10 +100,13 @@ public class ProductDAO {
     }
 
 
-    public List<Product> getNewRelativeProductView() {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select id, categoryId ,description , name , price , discount from products where status = 1 and categoryId = 1 order by createdAt desc limit 8").mapToBean(Product.class).stream().toList();
-        });
+    public List<Product> findNewestProducts(int limit) {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT id,categoryId,description,name,price,discount " +
+                                "FROM products WHERE status = :status ORDER BY createdAt DESC limit :limit")
+                        .bind("status", SystemConstant.IN_BUSINESS).bind("limit", limit)
+                        .mapToBean(Product.class).stream().toList()
+        );
     }
 
     public int countAll() {

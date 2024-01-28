@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<%--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>--%>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     <!-- for chat -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -28,8 +28,6 @@
 <%@ include file="/customer/common/header.jsp" %>
 <jsp:include page="common/chat.jsp"></jsp:include>
 <fmt:setLocale value="vi_VN"/>
-<!--====== End - Main Header ======-->
-<!--========= Main  Content  ==========-->
 <content class="container-content">
 
     <!--========= Section Product Image Introduce  ==========-->
@@ -67,9 +65,6 @@
             <span class="carousel-control-next-icon"></span>
         </button>
     </div>
-    <!--========= End Product Image Introduce  ==========-->
-
-    <!--====== Content Section 1 ======-->
     <div class="section__content">
 
         <!--====== Section Intro NEW MENU ======-->
@@ -86,8 +81,6 @@
                 </div>
             </div>
         </div>
-        <!--====== End -Section Intro NEW MENU======-->
-
 
         <!--====== Section NEW MENU ======-->
         <div class="section__content container-content">
@@ -99,7 +92,7 @@
                                 <a class="aspect aspect--bg-grey aspect--square u-d-block"
                                    href="<c:url value="/product/${product.id}"/>">
 
-                                    <img class="aspect__img" src="<c:url value="/images/products/${product.image}"/> " alt=""></a>
+                                    <img class="aspect__img" src="<c:url value="/images/products/${product.avatar}"/> " alt=""></a>
 
                             </div>
 
@@ -109,12 +102,12 @@
 
                             <span class="product-o__name">
 
-                                <a href="<c:url value="/product/${product.id}"/>">${product.productName}</a></span>
-                            <div class="product-o__rating gl-rating-style"><c:forEach begin="1" end="${product.rating}">
+                                <a href="<c:url value="/product/${product.id}"/>">${product.name}</a></span>
+                            <div class="product-o__rating gl-rating-style"><c:forEach begin="1" end="${product.rate}">
                                 <i class="fas fa-star"></i>
                             </c:forEach>
 
-                                <c:forEach begin="1" end="${5 - product.rating}">
+                                <c:forEach begin="1" end="${5 - product.rate}">
                                     <i class="far fa-star"></i>
                                 </c:forEach>
 
@@ -133,14 +126,11 @@
                     </div>
                 </c:forEach>
             </div>
-
-
         </div>
 
         <!--=========  Feed-Back Section   ========-->
         <div class="u-s-p-b-90 u-s-m-b-30">
 
-            <!--====== Section Intro ======-->
             <div class="section__intro u-s-m-b-46">
                 <div class="container">
                     <div class="row">
@@ -154,8 +144,6 @@
                     </div>
                 </div>
             </div>
-            <!--====== End - Section Intro ======-->
-
 
             <!--====== Section Content ======-->
             <div class="section__content">
@@ -280,17 +268,10 @@
                         </button>
                     </div>
                     <div style="height: 50px;"></div>
-
-                    <!--====== End - Testimonial Slider ======-->
                 </div>
             </div>
-            <!--====== End - Section Content ======-->
         </div>
-        <!--========   End Feed-Back Section        ===========-->
-        <!--====== End - Section NEW MENU ======-->
     </div>
-    <!--====== End - Content Section ======-->
-
 </content>
 <!--========= End - Main Content  ================-->
 <%@ include file="/customer/common/footer.jsp" %>
