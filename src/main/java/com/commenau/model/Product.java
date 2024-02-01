@@ -20,9 +20,7 @@ public class Product {
     private float discount;
     private int available;
     private boolean status;
-    private float rate;
     private Timestamp updatedAt;
     private Timestamp createAt;
-
 
 }

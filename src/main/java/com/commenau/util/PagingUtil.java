@@ -7,13 +7,13 @@ public class PagingUtil {
     public static String appendSortersAndLimit(StringBuilder sql, PageRequest pageRequest) {
         if (!pageRequest.getSorters().isEmpty()) {
             sql.append("ORDER BY ");
-            int size = pageRequest.getSorters().size();
-            for (int i = 0; i < size; i++) {
-                Sorter sorter = pageRequest.getSorters().get(i);
-                sql.append(sorter.getSortName() + " " + sorter.getSortBy());
-                if (i < size - 1)
-                    sql.append(", ");
-            }
+                int size = pageRequest.getSorters().size();
+                for (int i = 0; i < size; i++) {
+                    Sorter sorter = pageRequest.getSorters().get(i);
+                    sql.append(sorter.getSortName() + " " + sorter.getSortBy());
+                    if (i < size - 1)
+                        sql.append(", ");
+                }
         }
         if (pageRequest.getMaxPageItem() != 0)
             sql.append(" LIMIT " + pageRequest.getOffset() + "," + pageRequest.getMaxPageItem());

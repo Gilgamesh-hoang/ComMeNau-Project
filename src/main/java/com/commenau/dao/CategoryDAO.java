@@ -30,14 +30,14 @@ public class CategoryDAO {
     }
 
     public boolean update(Category category) {
-        int result = JDBIConnector.getInstance().withHandle(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                         handle.createUpdate("UPDATE categories SET name=:name, code=:code WHERE id=:id"))
                 .bindBean(category).execute();
         return result > 0;
     }
 
     public boolean save(Category category) {
-        int result = JDBIConnector.getInstance().withHandle(handle ->
+        int result = JDBIConnector.getInstance().inTransaction(handle ->
                         handle.createUpdate("INSERT INTO categories(name, code) VALUES(:name,:code)"))
                 .bindBean(category).execute();
         return result > 0;
@@ -51,9 +51,9 @@ public class CategoryDAO {
     }
 
 
-    public List<Category> getAllCategory() {
-        return JDBIConnector.getInstance().withHandle(n ->
-                n.createQuery("SELECT id , name FROM categories").mapToBean(Category.class).list()
+    public List<Category> findAll() {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT id,name FROM categories").mapToBean(Category.class).list()
         );
     }
 }

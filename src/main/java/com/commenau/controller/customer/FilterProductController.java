@@ -1,52 +1,63 @@
 package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
+import com.commenau.dto.ProductDTO;
 import com.commenau.model.User;
+import com.commenau.pagination.PageRequest;
+import com.commenau.pagination.Sorter;
 import com.commenau.service.ProductService;
 import com.commenau.service.WishlistService;
+import com.commenau.util.PagingUtil;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/menu/filter")
 public class FilterProductController extends HttpServlet {
     @Inject
-    ProductService productService;
+    private ProductService productService;
     @Inject
-    WishlistService wishlistService;
+    private WishlistService wishlistService;
+    private static final int maxPageItem = 9;
 
-    Gson gson = new Gson();
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        User user = (User) req.getSession().getAttribute(SystemConstant.AUTH);
-        int id ;
-        int size;
-        int page ;
-        if(req.getParameter("id") == null ){
-            id = 0;
-            size = 9;
-            page = 1;
-        }
-        else{
-             id = Integer.valueOf(req.getParameter("id"));
-             size = Integer.valueOf(req.getParameter("size"));
-             page = Integer.valueOf(req.getParameter("page"));
-        }
-        String sortBy = req.getParameter("sortBy");
-        String sort = req.getParameter("sort");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        User user = (User) request.getSession().getAttribute(SystemConstant.AUTH);
+        String pageStr = request.getParameter("page");
+        String sortName = request.getParameter("sortName");
+        String sortBy = request.getParameter("sortBy");
 
-        var result = productService.getPage(id,size,page,sortBy,sort);
-        if(user != null){
-            for(var x : result){
-                x.setWishlist(wishlistService.existsItem((int) user.getId(),x.getId()));
+        int categoryId = 1;
+        try {
+            categoryId = Integer.parseInt(request.getParameter("id"));
+            categoryId = (categoryId <= 0) ? 1 : categoryId;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        //paging
+        int totalItem = productService.countProductsInCategory(categoryId);
+        int maxPage = PagingUtil.maxPage(totalItem, maxPageItem);
+        int page = PagingUtil.convertToPageNumber(pageStr, maxPage);
+        Sorter sorter = StringUtils.isBlank(sortName) ? new Sorter("createdAt", "DESC") :
+                new Sorter(sortName, sortBy);
+        PageRequest pageRequest = PageRequest.builder().page(page).maxPageItem(maxPageItem)
+                .sorters(List.of(sorter)).build();
+
+        List<ProductDTO> products = productService.getProductsByCategoryId(categoryId, pageRequest);
+        if (user != null) {
+            for (ProductDTO product : products) {
+                product.setWishlist(wishlistService.existsItem(user.getId(), product.getId()));
             }
         }
-        resp.getWriter().write(gson.toJson(result));
+        response.getWriter().write(new Gson().toJson(products));
     }
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProductReviewService implements Pageable<ProductReviewDTO> {
+public class ProductReviewService{
     @Inject
     private ProductReviewDAO reviewDAO;
     @Inject
@@ -23,16 +23,6 @@ public class ProductReviewService implements Pageable<ProductReviewDTO> {
 
     public boolean save(ProductReview review) {
         return reviewDAO.save(review);
-    }
-
-    @Override
-    public List<ProductReviewDTO> getPage(int id, int size, int page, String sortBy, String sort) {
-        return null;
-    }
-
-    @Override
-    public List<ProductReviewDTO> getPage(int id, int size, int page) {
-        return null;
     }
 
     public List<ProductReviewDTO> getReviewByProductId(int productId, PageRequest pageRequest) {

@@ -46,7 +46,7 @@ public class CategoryService {
         }
     }
 
-    public List<Category> getAllCategoryInfo() {
-        return categoryDAO.getAllCategory();
+    public List<Category> getAllCategories() {
+        return categoryDAO.findAll();
     }
 }

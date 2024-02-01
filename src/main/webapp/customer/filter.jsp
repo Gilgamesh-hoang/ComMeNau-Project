@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<%--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>--%>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
@@ -64,29 +63,16 @@
                                         <div class="shop-w__intro-wrap">
                                             <h1 class="shop-w__h">PHÂN LOẠI</h1>
 
-                                            <!-- <span class="fas fa-minus shop-w__toggle" data-target="#s-category" data-toggle="collapse"></span> -->
                                         </div>
                                         <div class="shop-w__wrap collapse show" id="s-category">
                                             <ul class="shop-w__category-list gl-scroll">
                                                 <li class="">
-                                                    <a class="has-list"  href="<c:url value='/menu'/>">Tất cả</a>
+                                                    <a class="has-list" id="0" href="<c:url value='/menu'/>">Tất cả</a>
                                                 </li>
                                                 <c:forEach var="category" items="${requestScope.categories}">
                                                 <li class="">
-                                                    <a class="has-list"  href="<c:url value='/menu?categoryId=${category.id}'/>">${category.name}</a>
+                                                    <a class="has-list" id="${category.id}" href="<c:url value='/menu?categoryId=${category.id}'/>">${category.name}</a>
                                                 </li>
-<%--                                                <li class="">--%>
-<%--                                                    <a class="has-list" href="<c:url value='/menu?categoryId=2'/> ">ĂN--%>
-<%--                                                        KÈM</a>--%>
-<%--                                                </li>--%>
-<%--                                                <li class="">--%>
-<%--                                                    <a class="has-list" href="<c:url value='/menu?categoryId=3'/>">GIẢI--%>
-<%--                                                        KHÁT</a>--%>
-<%--                                                </li>--%>
-<%--                                                <li class="">--%>
-<%--                                                    <a class="has-list" href="<c:url value='/menu?categoryId=4'/>">TRÁNG--%>
-<%--                                                        MIỆNG</a>--%>
-<%--                                                </li>--%>
                                                 </c:forEach>
                                             </ul>
                                         </div>
@@ -100,21 +86,18 @@
                             <div class="shop-p__toolbar u-s-m-b-30">
                                 <div class="shop-p__tool-style">
                                     <div class="tool-style__group u-s-m-b-8">
-                                        <!-- <span class="js-shop-grid-target is-active">Lưới</span> -->
-                                        <!-- <span class="js-shop-list-target">List</span> -->
                                     </div>
                                     <form>
                                         <div class="tool-style__form-wrap">
 
-                                            <div class="u-s-m-b-8"><select id="sortingOptions"
-                                                                           class="select-box select-box--transparent-b-2">
-                                                <option sortBy="createdAt" sort="desc" selected>Sắp xếp: Mặt hàng mới
-                                                    nhất
-                                                </option>
-                                                <option sortBy="rate" sort="desc">Sắp xếp: Đánh giá tốt nhất</option>
-                                                <option sortBy="price" sort="asc">Sắp xếp: Giá thấp nhất</option>
-                                                <option sortBy="price" sort="desc">Sắp xếp: Giá cao nhất</option>
-                                            </select></div>
+                                            <div class="u-s-m-b-8">
+                                                <select id="sortingOptions" class="select-box select-box--transparent-b-2">
+                                                    <option sortName="createdAt" sortBy="desc" selected>Mới nhất</option>
+                                                    <option sortName="rate" sortBy="desc">Đánh giá tốt nhất</option>
+                                                    <option sortName="price" sortBy="asc">Giá thấp nhất</option>
+                                                    <option sortName="price" sortBy="desc">Giá cao nhất</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -137,70 +120,50 @@
                 </div>
             </div>
         </div>
-        <!--====== End - Section 1 ======-->
     </div>
-    <!--====== End - App Content ======-->
-
-
     <!--====== Main Footer ======-->
     <jsp:include page="common/footer.jsp"></jsp:include>
 
 </div>
-<!--====== End - Main App ======-->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-
     var categoryId = window.location.search.substring(1).split("=")[1];
     const buttons = document.querySelectorAll('.has-list');
     var reviewSize = ${requestScope.total};
+    var sortName = undefined;
     var sortBy = undefined;
-    var sort = undefined;
     if (!categoryId) {
         categoryId = 0;
     }
-
-    function markLink(categoryId){
-        var links = $(".has-list")
-        for(let i = 0 ; i < links.length ; i++){
-            if(categoryId ==0){
-                links.eq(0).addClass("selected")
-                break;
-            }
-            else if(i == categoryId){
-                links.eq(i).addClass("selected")
-                break;
-            }
-        }
-    }
     markLink(categoryId)
+    loadProducts(1);
 
-    $('#sortingOptions').on('change', function() {
-        sortBy = $(this).children(":selected").attr("sortBy")
-        sort = $(this).children(":selected").attr("sort")
-        loadProducts(1);
-    });
+    function markLink(categoryId) {
+        // Remove class "selected" from all tags
+        $(".shop-w__category-list a").removeClass("selected");
+
+        // Add class "selected" to the clicked tag
+        $("#" + categoryId).addClass("selected");
+    }
 
     function loadProducts(pagination) {
         var url = "";
-        if (sortBy != undefined) {
-            url = "http://localhost:8080/menu/filter?id=" + categoryId + "&size=9&page=" + pagination + "&sortBy=" + sortBy + "&sort=" + sort
+        if (sortName != undefined) {
+            url = "${pageContext.request.contextPath}/menu/filter?id=" + categoryId + "&page=" + pagination + "&sortName=" + sortName + "&sortBy=" + sortBy
         } else {
-            url = "http://localhost:8080/menu/filter?id=" + categoryId + "&size=9&page=" + pagination;
+            url = "${pageContext.request.contextPath}/menu/filter?id=" + categoryId + "&page=" + pagination;
         }
         $.ajax({
             type: "GET",
             url: url,
-            contentType: "application/x-www-form-urlencoded; charset=UTF-16",
-            // Serialize dữ liệu biểu mẫu
             success: function (response) {
                 var re = JSON.parse(response);
                 $(".products").empty();
                 re.forEach(n => {
                     var star = ``;
-                    for (let i = 0; i < n.rating; i++) {
+                    for (let i = 0; i < n.rate; i++) {
                         star += ` <i class="fas fa-star"></i>`
                     }
-                    for (let i = 0; i < 5 - n.rating; i++) {
+                    for (let i = 0; i < 5 - n.rate; i++) {
                         star += ` <i class="far fa-star"></i>`
                     }
                     var discount = formatCurrency(n.price * (1 - n.discount));
@@ -236,7 +199,7 @@
                                                     </div>
                                                     <div class="product-m__name">
 
-                                                        <a href="product-detail.html">` + n.productName + `</a>
+                                                        <a href="product-detail.html">` + n.name + `</a>
                                                     </div>
                                                     <div class="product-m__rating gl-rating-style">
                                                        ` + star + `
@@ -275,9 +238,7 @@
 
                     $.ajax({
                         type: method,
-                        url: "http://localhost:8080/wishlist?productId=" + edit.attr('productId') + "&userId=" + userId,
-                        contentType: "application/x-www-form-urlencoded; charset=UTF-16",
-                        // Serialize dữ liệu biểu mẫu
+                        url: "${pageContext.request.contextPath}/wishlist?productId=" + edit.attr('productId') + "&userId=" + userId,
                         success: function (response) {
                             if (edit.hasClass("far")) {
                                 edit.removeClass("far")
@@ -286,10 +247,8 @@
                                 edit.removeClass("fas")
                                 edit.addClass("far")
                             }
-
                         },
                         error: function (error) {
-
                         }
 
                     });
@@ -303,17 +262,7 @@
     }
 
 
-    loadProducts(1);
 
-
-    // function formatCurrency(amount) {
-    //     const formatter = new Intl.NumberFormat('vi-VN', {
-    //         style: 'currency',
-    //         currency: 'VND'
-    //     });
-    //
-    //     return formatter.format(amount);
-    // }
     function roundPrice(price) {
         return Math.round(price / 1000) * 1000;
     }
@@ -331,8 +280,7 @@
 
     $(document).ready(function () {
         const data = Array.from({length: reviewSize}, (_, index) => `Item ${index + 1}`);
-
-        // Cấu hình và kích hoạt Pagination.js
+        //Pagination.js
         $('#pagination-container').pagination({
             dataSource: data,
             pageSize: 9,  // Số lượng mục trên mỗi trang
@@ -341,8 +289,7 @@
             },
         });
 
-
-        // Sử dụng hàm thông thường thay vì lambda function
+        //select a category
         buttons.forEach(function (button) {
             button.addEventListener('click', function () {
                 $(".shop-w__category-list li a").removeClass("selected");
@@ -350,10 +297,18 @@
             });
         });
 
+        //sorting
+        $('#sortingOptions').on('change', function() {
+            sortName = $(this).children(":selected").attr("sortName")
+            sortBy = $(this).children(":selected").attr("sortBy")
+            loadProducts(1);
+        });
+
 
     });
 
-    $(document).on('click', '.btn-add-cart', function () {
+    //add a product to cart
+    $(document).on('click','.btn-add-cart', function () {
         var inputData = {};
         inputData['productId'] = $(this).data('input-id');
         console.log(inputData);
@@ -362,37 +317,12 @@
             type: "POST",
             url: "<c:url value="/carts"/>",
             data: JSON.stringify(inputData),
-            contentType: "application/json; charset=utf-8",
             success: function () {
-                Swal.fire({
-                    icon: "success",
-                    title: "Đã thêm vào giỏ hàng",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 700,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
+                toastr.success("Đã thêm vào giỏ hàng", '', { timeOut: 700 });
             },
             error: function (error) {
                 console.log("Đã xảy ra lỗi trong quá trình gửi dữ liệu: " + error);
-                Swal.fire({
-                    icon: "warning",
-                    title: "Không thêm được vào giỏ",
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 700,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
+                toastr.error("Không thêm được vào giỏ", '', { timeOut: 700 });
             }
         });
     });

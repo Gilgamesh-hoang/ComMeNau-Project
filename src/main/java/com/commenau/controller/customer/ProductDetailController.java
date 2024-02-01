@@ -1,4 +1,5 @@
 package com.commenau.controller.customer;
+
 import com.commenau.constant.SystemConstant;
 import com.commenau.dto.ProductDTO;
 import com.commenau.model.User;
@@ -27,11 +28,11 @@ public class ProductDetailController extends HttpServlet {
         int productId = 0;
         try {
             productId = Integer.valueOf(pathInfo[1]);
-        }catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
-        if (productId != 0 ) {
+        if (productId != 0) {
             if (req.getSession(false) != null && req.getSession(false).getAttribute("auth") != null) {
                 long userId = ((User) req.getSession(false).getAttribute(SystemConstant.AUTH)).getId();
                 req.setAttribute("userId", userId);

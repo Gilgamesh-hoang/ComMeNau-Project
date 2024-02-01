@@ -2,7 +2,6 @@ package com.commenau.service;
 
 import com.commenau.dao.*;
 import com.commenau.dto.ProductDTO;
-import com.commenau.dto.ProductRelativeViewDTO;
 import com.commenau.mapper.ProductMapper;
 import com.commenau.model.Product;
 import com.commenau.pagination.PageRequest;
@@ -10,12 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProductService implements Pageable<ProductDTO> {
-
+public class ProductService {
     @Inject
     private ProductDAO productDAO;
     @Inject
@@ -34,12 +31,10 @@ public class ProductService implements Pageable<ProductDTO> {
     private CancelProductDAO cancelDAO;
     @Inject
     private ProductMapper productMapper;
+
     public ProductDTO getByIdWithAvatar(int id) {
         Product product = productDAO.findOneById(id);
-        ProductDTO productDTO = productMapper.toDTO(product, ProductDTO.class);
-        productDTO.setAvatar(productImageDAO.findAvatarByProductId(product.getId()));
-        return productDTO;
-
+        return getProductDTOFromProduct(product, false);
     }
 
     public int countProductsInCategory(int categoryId) {
@@ -48,104 +43,41 @@ public class ProductService implements Pageable<ProductDTO> {
 
     public ProductDTO getProductById(int id) {
         Product product = productDAO.findOneById(id);
-        ProductDTO productDTO = productMapper.toDTO(product, ProductDTO.class);
-
-        productDTO.setImages(productImageDAO.getAllImageByProductId(id));
-        productDTO.setAmountOfReview(countProductReviewsById(Math.toIntExact(product.getId())));
-        productDTO.setRate(averageRating(id));
-
-        return productDTO;
-
+        return getProductDTOFromProduct(product, true);
     }
 
-
-    public int averageRating(int id) {
-        return productDAO.averageRating(id);
-    }
-
-    public int countProductReviewsById(int id) {
-        return productDAO.countProductReviewsById(id);
-    }
 
     public List<ProductDTO> getNewestProducts(int limit) {
         List<Product> products = productDAO.findNewestProducts(limit);
-        return products.stream().map(product -> {
-            ProductDTO dto = productMapper.toDTO(product, ProductDTO.class);
-            dto.setCategoryName(categoryDao.getNameById(product.getCategoryId()));
-            dto.setAvatar(productImageDAO.findAvatarByProductId(dto.getId()));
-            dto.setRate(averageRating(product.getId()));
-            dto.setAmountOfReview(countProductReviewsById(product.getId()));
-            return dto;
-        }).collect(Collectors.toList());
+        return products.stream().map(product -> getProductDTOFromProduct(product, false))
+                .collect(Collectors.toList());
+
     }
 
     public List<ProductDTO> getRelativeProducts(int productId) {
         List<Product> products = productDAO.findRelativeProductsById(productId);
-        return products.stream().map(product -> {
-            ProductDTO dto = productMapper.toDTO(product, ProductDTO.class);
-            dto.setCategoryName(categoryDao.getNameById(product.getCategoryId()));
-            dto.setAvatar(productImageDAO.findAvatarByProductId(dto.getId()));
-            dto.setRate(averageRating(product.getId()));
-            dto.setAmountOfReview(countProductReviewsById(product.getId()));
-            return dto;
-        }).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductDTO> getPage(int categoryId, int size, int page, String sortBy, String sort) {
-        List<Product> products;
-        if (sortBy == null) {
-            products = productDAO.getProductViewPage(categoryId, size, page);
-        } else if (!sortBy.equals("rate")) {
-            products = productDAO.getProductViewPage(categoryId, size, page, sortBy, sort);
-        } else {
-            products = productDAO.getProductViewPageSortByRating(categoryId, size, page, sort);
-
-        }
-        List<ProductDTO> productDTOS = new ArrayList<>();
-
-        for (var x : products) {
-
-            ProductDTO productDTO =
-                    ProductDTO.builder()
-                            .id(Math.toIntExact(x.getId()))
-                            .name(x.getName())
-                            .description(x.getDescription())
-                            .price(x.getPrice())
-                            .discount(x.getDiscount())
-                            .rate((int) x.getRate())
-                            .available(x.getAvailable())
-                            .build();
-            String categoryName = categoryDao.getNameById(Math.toIntExact(x.getCategoryId()));
-            productDTO.setCategoryName(categoryName);
-            productDTO.setAmountOfReview(this.countProductReviewsById(x.getId()));
-            productDTO.setAvatar(productImageDAO.findAvatarByProductId(x.getId()));
-            productDTOS.add(productDTO);
-        }
-
-
-        return productDTOS;
+        return products.stream().map(product -> getProductDTOFromProduct(product, false))
+                .collect(Collectors.toList());
 
     }
+
+    public List<ProductDTO> getProductsByCategoryId(int categoryId, PageRequest pageRequest) {
+        List<Product> products = productDAO.findByCategoryId(categoryId, pageRequest);
+        return products.stream().map(product -> getProductDTOFromProduct(product, false))
+                .collect(Collectors.toList());
+    }
+
 
     public List<ProductDTO> getByKeyWord(PageRequest pageRequest, String keyWord) {
         if (StringUtils.isBlank(keyWord))
             return getAll(pageRequest);
         else {
             List<Product> products = productDAO.findByKeyWord(pageRequest, keyWord.trim());
-            return products.stream().map(product -> {
-                        ProductDTO dto = productMapper.toDTO(product, ProductDTO.class);
-                        dto.setCategoryName(categoryDao.getNameById(product.getCategoryId()));
-                        dto.setAvatar(productImageDAO.findAvatarByProductId(dto.getId()));
-                        return dto;
-            }).collect(Collectors.toList());
+            return products.stream().map(product -> getProductDTOFromProduct(product, false))
+                    .collect(Collectors.toList());
         }
     }
 
-    @Override
-    public List<ProductDTO> getPage(int id, int size, int page) {
-        return this.getPage(id, size, page, null, null);
-    }
 
     public int countAll() {
         return productDAO.countAll();
@@ -158,7 +90,9 @@ public class ProductService implements Pageable<ProductDTO> {
     }
 
     public List<ProductDTO> getAll(PageRequest pageRequest) {
-        return productDAO.findAll(pageRequest);
+        List<Product> products = productDAO.findAll(pageRequest);
+        return products.stream().map(product -> getProductDTOFromProduct(product, false))
+                .collect(Collectors.toList());
     }
 
     public int save(Product product) {
@@ -214,4 +148,16 @@ public class ProductService implements Pageable<ProductDTO> {
             return productDAO.setDefaultAvailable();
         else return productDAO.setDefaultAvailable(ids);
     }
+
+    private ProductDTO getProductDTOFromProduct(Product product, boolean isGetImages) {
+        ProductDTO dto = productMapper.toDTO(product, ProductDTO.class);
+        dto.setCategoryName(categoryDao.getNameById(product.getCategoryId()));
+        dto.setAvatar(productImageDAO.findAvatarByProductId(dto.getId()));
+        dto.setRate(productDAO.averageRating(product.getId()));
+        dto.setAmountOfReview(productDAO.countProductReviewsById(product.getId()));
+        if (isGetImages)
+            dto.setImages(productImageDAO.getAllImageByProductId(product.getId()));
+        return dto;
+    }
+
 }

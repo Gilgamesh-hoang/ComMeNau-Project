@@ -8,7 +8,7 @@ import java.util.List;
 public class WishListDAO {
     public boolean existsItem(int productId, long userId) {
         int result = JDBIConnector.getInstance().withHandle(handle ->
-                handle.createQuery("SELECT COUNT(*) FROM wishlists WHERE userId = ? AND productId = ? ")
+                handle.createQuery("SELECT COUNT(id) FROM wishlists WHERE userId = ? AND productId = ? ")
                         .bind(0, userId).bind(1, productId)
                         .mapTo(Integer.class).stream().findFirst().orElse(0));
         return result > 0;

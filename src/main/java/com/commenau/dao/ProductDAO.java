@@ -2,9 +2,9 @@ package com.commenau.dao;
 
 import com.commenau.connectionPool.JDBIConnector;
 import com.commenau.constant.SystemConstant;
-import com.commenau.dto.ProductDTO;
 import com.commenau.model.Product;
 import com.commenau.pagination.PageRequest;
+import com.commenau.pagination.Sorter;
 import com.commenau.util.PagingUtil;
 import org.jdbi.v3.core.statement.Update;
 
@@ -25,13 +25,15 @@ public class ProductDAO {
 
     public int averageRating(int id) {
         return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select avg(rating) from product_reviews where productId = ?").bind(0, id).mapTo(Double.class).findOne().orElse(0d).intValue();
+            return n.createQuery("SELECT AVG(rating) FROM product_reviews WHERE productId = ?")
+                    .bind(0, id).mapTo(Double.class).findOne().orElse(0d).intValue();
         });
     }
 
     public int countProductReviewsById(int id) {
         return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select count(*) from product_reviews where productId = ?").bind(0, id).mapTo(Integer.class).findOne().orElse(0);
+            return n.createQuery("SELECT COUNT(id) FROM product_reviews WHERE productId = ?" +
+                    "").bind(0, id).mapTo(Integer.class).findOne().orElse(0);
         });
     }
 
@@ -57,54 +59,12 @@ public class ProductDAO {
         );
     }
 
-    public List<Product> getProductViewPage(int categoryId, int size, int page, String sortBy, String sort) {
-        if (sortBy.equals("price")) {
-            sortBy = "price_discount";
-        }
-        String sortby = sortBy;
-        return JDBIConnector.getInstance().withHandle(n -> {
-            String sql = null;
-
-            if (categoryId == 0) {
-                sql = "select *, p.price * (1 - p.discount) AS price_discount from products as p where  status = 1  order by " + sortby + " " + sort + "  limit ? offset ?";
-                return n.createQuery(sql).bind(0, size).bind(1, (page - 1) * size).mapToBean(Product.class).stream().toList();
-            } else {
-                sql = "select *, p.price * (1 - p.discount) AS price_discount from products as p where  status = 1 and p.categoryId =  ? order by " + sortby + " " + sort + "  limit ? offset ?";
-                return n.createQuery(sql).bind(0, categoryId).bind(1, size).bind(2, (page - 1) * size).mapToBean(Product.class).stream().toList();
-            }
-        });
-    }
-
-    public List<Product> getProductViewPage(int categoryId, int size, int page) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            String sql = null;
-            if (categoryId == 0) {
-                sql = "select p.id, p.createdAt , p.categoryId, p.name , p.description , p.price , p.discount , p.status , p.available, avg(pr.rating) as rate from products  as p left join product_reviews as pr on p.id = pr.productId where p.status = 1 group by p.id   limit ? offset ?";
-                return n.createQuery(sql).bind(0, size).bind(1, (page - 1) * size).mapToBean(Product.class).stream().toList();
-            } else {
-                sql = "select p.id, p.createdAt , p.categoryId, p.name , p.description , p.price , p.discount , p.status , p.available, avg(pr.rating) as rate from products  as p left join product_reviews as pr on p.id = pr.productId where p.status = 1 and p.categoryId =  ? group by p.id   limit ? offset ?";
-                return n.createQuery(sql).bind(0, categoryId).bind(1, size).bind(2, (page - 1) * size).mapToBean(Product.class).stream().toList();
-            }
-        });
-    }
-
-    public List<Product> getProductViewPageSortByRating(int categoryId, int size, int page, String sort) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            String sql = null;
-            if (categoryId == 0) {
-                sql = "select p.id, p.createdAt,p.name , p.categoryId, p.description , p.price , p.discount, p.available , p.status, avg(pr.rating) as rate from products  as p left join product_reviews as pr on p.id = pr.productId where p.status = 1 group by p.id   order by rating  " + sort + "  limit ? offset ? ";
-                return n.createQuery(sql).bind(0, size).bind(1, (page - 1) * size).mapToBean(Product.class).stream().toList();
-            } else {
-                sql = "select p.id, p.createdAt,p.name , p.categoryId, p.description , p.price , p.discount, p.available , p.status, avg(pr.rating) as rate from products  as p left join product_reviews as pr on p.id = pr.productId where p.status = 1 and p.categoryId =  ? group by p.id   order by rating  " + sort + "  limit ? offset ? ";
-                return n.createQuery(sql).bind(0, categoryId).bind(1, size).bind(2, (page - 1) * size).mapToBean(Product.class).stream().toList();
-            }
-        });
-    }
-
     public int countProductsInCategory(int categoryId) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select count(*) from products where status = 1 and categoryId = ?").bind(0, categoryId).mapTo(Integer.class).findOne().orElse(0);
-        });
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(id) FROM products WHERE status = :status AND categoryId = :categoryId")
+                        .bind("status", SystemConstant.IN_BUSINESS).bind("categoryId", categoryId)
+                        .mapTo(Integer.class).findOne().orElse(0)
+        );
     }
 
 
@@ -118,7 +78,6 @@ public class ProductDAO {
     }
 
     public int countAll() {
-
         return JDBIConnector.getInstance().withHandle(handle ->
                         handle.createQuery("SELECT COUNT(id) FROM products"))
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
@@ -133,26 +92,32 @@ public class ProductDAO {
                 .mapTo(Integer.class).stream().findFirst().orElse(0);
     }
 
-    public List<ProductDTO> findAll(PageRequest pageRequest) {
+    public List<Product> findAll(PageRequest pageRequest) {
         StringBuilder builder = new StringBuilder();
-        builder.append("SELECT p.id AS productId,c.name AS categoryName,p.name AS productName,price,status,available,image ");
-        builder.append("FROM products p ");
-        builder.append("LEFT JOIN categories c ON p.categoryId = c.id ");
-        builder.append("LEFT JOIN product_images pi ON p.id = pi.productId AND pi.isAvatar = 1 ");
+        builder.append("SELECT * FROM products ");
         String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
         return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery(sql)
-                        .map((rs, ctx) -> {
-                            return ProductDTO.builder()
-                                    .id(rs.getInt("productId"))
-                                    .categoryName(rs.getString("categoryName"))
-                                    .name(rs.getString("productName"))
-                                    .price(rs.getDouble("price"))
-                                    .status(rs.getBoolean("status"))
-                                    .available(rs.getInt("available"))
-                                    .avatar(rs.getString("image") == null ? "" : rs.getString("image"))
-                                    .build();
-                        }).stream().toList()
+                        .mapToBean(Product.class).stream().toList()
+        );
+    }
+
+    public List<Product> findByCategoryId(int categoryId, PageRequest pageRequest) {
+        for (Sorter sorter : pageRequest.getSorters()) {
+            if (sorter.getSortName().equalsIgnoreCase("price")) {
+                sorter.setSortName("price_discount");
+                break;
+            }
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT p.*, price * (1 - discount) AS price_discount, AVG(pr.rating) AS rate ")
+                .append("FROM products p LEFT JOIN product_reviews pr ON p.id = pr.productId ")
+                .append("WHERE status = :status AND categoryId = :categoryId GROUP BY p.id ");
+        String sql = PagingUtil.appendSortersAndLimit(builder, pageRequest);
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery(sql).bind("status", SystemConstant.IN_BUSINESS).bind("categoryId", categoryId)
+                        .mapToBean(Product.class).stream().toList()
         );
     }
 
@@ -269,4 +234,6 @@ public class ProductDAO {
         });
         return result > 0;
     }
+
+
 }
