@@ -11,9 +11,18 @@ import java.util.Optional;
 
 public class UserDAO {
     public boolean isAdmin(int id) {
-        return JDBIConnector.getInstance().withHandle(n -> {
-            return n.createQuery("select count(*) from users join roles on users.roleId = roles.id where users.id = ? and roles.name = 'ROLE_ADMIN'").bind(0, id).mapTo(Integer.class).one() > 0;
-        });
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(users.id) FROM users INNER JOIN roles ON users.roleId = roles.id " +
+                                "WHERE users.id = ? AND roles.name = ?")
+                        .bind(0, id).bind(1, SystemConstant.ADMIN).mapTo(Integer.class).one() > 0
+        );
+    }
+
+    public User findAdmin() {
+        return JDBIConnector.getInstance().withHandle(handle ->
+                handle.createQuery("SELECT users.id FROM users INNER JOIN roles ON users.roleId = roles.id " +
+                                "WHERE roles.name = ?").bind(0, SystemConstant.ADMIN).mapToBean(User.class).one()
+        );
     }
 
 

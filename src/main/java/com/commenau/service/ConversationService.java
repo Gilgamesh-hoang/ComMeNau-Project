@@ -2,11 +2,13 @@ package com.commenau.service;
 
 import com.commenau.dao.ConversationDAO;
 import com.commenau.dao.UserDAO;
-import com.commenau.dto.ChatMessageDTO;
+import com.commenau.dto.MessageDTO;
+import com.commenau.dto.UserChatDTO;
+import com.commenau.mapper.MessageMapper;
 import com.commenau.model.Conversation;
 import com.commenau.model.Message;
 import com.commenau.model.User;
-import com.commenau.model.UserChatDTO;
+import com.commenau.pagination.PageRequest;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -15,20 +17,29 @@ import java.util.List;
 
 public class ConversationService {
 
-    ConversationDAO conversationDAO = new ConversationDAO();
 
-    UserDAO userDAO = new UserDAO();
+    private ConversationDAO conversationDAO = new ConversationDAO();
 
-    public int getId(int participantId) {
-        return conversationDAO.getId(participantId);
+    private UserDAO userDAO = new UserDAO();
+
+    private MessageMapper messageMapper = new MessageMapper();
+
+    public int getConversationById(int participantId) {
+        int id = conversationDAO.findConservationById(participantId);
+
+        //id isn't exists
+        if(id == 0) {
+            id = conversationDAO.createConversation(participantId);
+        }
+        return id;
     }
 
-    public int saveMessage(int senderId, int receiverId, int conversationId, String msg) {
-        return conversationDAO.saveMessage(senderId, receiverId, conversationId, msg);
+    public Message saveMessage(Message message) {
+        return conversationDAO.saveMessage(message);
     }
 
     public List<UserChatDTO> getUsersChatByRelativeName(String query) {
-        List<Conversation> conversations = conversationDAO.getAllConversation();
+        List<Conversation> conversations = conversationDAO.getAllConversations();
         List<UserChatDTO> userChatDTOS = new ArrayList<>();
         for (var x : conversations) {
             UserChatDTO userChatDTO = UserChatDTO.builder().build();
@@ -43,7 +54,7 @@ public class ConversationService {
     }
 
     public List<UserChatDTO> getUsersChat() {
-        List<Conversation> conversations = conversationDAO.getAllConversation();
+        List<Conversation> conversations = conversationDAO.getAllConversations();
         List<UserChatDTO> userChatDTOS = new ArrayList<>();
 
         for (var x : conversations) {
@@ -52,42 +63,27 @@ public class ConversationService {
             if (lastMessage == null) continue;
             User user = userDAO.getFirstNameAndLastName((long) x.getParticipantId());
 
-            ChatMessageDTO chatMessageDTO = ChatMessageDTO.builder().build();
-            chatMessageDTO.setSenderId(lastMessage.getSenderId());
-            chatMessageDTO.setTime(lastMessage.getSendTime());
-            chatMessageDTO.setContent(lastMessage.getContent());
-            chatMessageDTO.setViewed(lastMessage.isViewed());
+            MessageDTO messageDTO = MessageDTO.builder().build();
+            messageDTO.setSenderId(lastMessage.getSenderId());
+            messageDTO.setTime(lastMessage.getSendTime());
+            messageDTO.setContent(lastMessage.getContent());
+            messageDTO.setViewed(lastMessage.isViewed());
 
 
             userChatDTO.setId(x.getParticipantId());
             userChatDTO.setName(user.getLastName() + " " + user.getFirstName());
-            userChatDTO.setMessage(chatMessageDTO);
+            userChatDTO.setMessage(messageDTO);
             userChatDTOS.add(userChatDTO);
         }
-
-
         return userChatDTOS.stream().sorted(Comparator.comparing(n -> n.getMessage().getTime())).toList();
     }
 
-    public List<ChatMessageDTO> getMessages(int participantId, int section) {
-        List<ChatMessageDTO> chatMessageDTOS = new ArrayList<>();
-
-        List<Message> messages = conversationDAO.getMessages(participantId, section);
-
-
-        for (var x : messages) {
-            ChatMessageDTO chatMessageDTO = ChatMessageDTO.builder().build();
-            chatMessageDTO.setSenderId(x.getSenderId());
-            chatMessageDTO.setTime(x.getSendTime());
-            chatMessageDTO.setContent(x.getContent());
-            chatMessageDTO.setViewed(x.isViewed());
-            chatMessageDTOS.add(chatMessageDTO);
-        }
-
-        return chatMessageDTOS;
+    public List<MessageDTO> getMessages(int participantId, PageRequest pageRequest) {
+        List<Message> messages = conversationDAO.getMessages(participantId, pageRequest);
+        return messageMapper.toDTO(messages, MessageDTO.class);
     }
 
-    public void updateViewed(int particapantId, int ownerId) {
-        conversationDAO.updateViewed(particapantId, ownerId);
+    public boolean updateViewed(int particapantId, int ownerId) {
+        return conversationDAO.updateViewed(particapantId, ownerId);
     }
 }

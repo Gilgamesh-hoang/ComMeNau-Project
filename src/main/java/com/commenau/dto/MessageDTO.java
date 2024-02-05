@@ -11,9 +11,9 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatMessageDTO {
+public class MessageDTO {
     private String content;
-    private int senderId;
+    private long senderId;
     private Timestamp time;
     private boolean viewed;
 }

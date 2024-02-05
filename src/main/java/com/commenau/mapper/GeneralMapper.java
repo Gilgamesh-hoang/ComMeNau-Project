@@ -1,7 +1,7 @@
 package com.commenau.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
@@ -15,12 +15,9 @@ public abstract class GeneralMapper<D, E> {
 	private ModelMapper modelMapper;
 
 	public List<D> toDTO(List<E> entities, Class<D> dtoClass) {
-		List<D> result = new ArrayList<>();
-		entities.stream().forEach(entity -> {
-			D dto = modelMapper.map(entity, dtoClass);
-			result.add(dto);
-		});
-		return result;
+		return entities.stream().map(entity -> {
+			return modelMapper.map(entity, dtoClass);
+		}).collect(Collectors.toList());
 	}
 
 	public D toDTO(E entity, Class<D> dtoClass) {

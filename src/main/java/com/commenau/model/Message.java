@@ -14,8 +14,10 @@ import java.sql.Timestamp;
 public class Message {
     private int id;
     private int conversationId;
-    private int senderId;
-    private int recipientId;
+    private long senderId;
+    private long recipientId;
+//    private int senderId;
+//    private int recipientId;
     private boolean viewed;
     private String content;
     private Timestamp sendTime;

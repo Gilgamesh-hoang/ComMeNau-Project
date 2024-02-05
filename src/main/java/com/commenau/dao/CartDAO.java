@@ -8,37 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class CartDAO {
-
-    //    public List<CartItemDTO> findCartItemByUserId(long userId) {
-//        StringBuilder sql = new StringBuilder();
-//        sql.append("SELECT ci.id AS cartItemId, ci.quantity, p.id AS productId,p.available, p.name,")
-//                .append("p.price, p.discount, pi.image ")
-//                .append("FROM carts AS c ")
-//                .append("INNER JOIN cart_items AS ci ON c.id = ci.cartId ")
-//                .append("INNER JOIN products AS p ON ci.productId = p.id ")
-//                .append("INNER JOIN product_images AS pi ON pi.productId = p.id ")
-//                .append("WHERE c.userId = :userId AND isAvatar = :isAvatar");
-//        return JDBIConnector.getInstance().withHandle(handle ->
-//                handle.createQuery(sql.toString())
-//                        .bind("userId", userId)
-//                        .bind("isAvatar", 1)
-//                        .map((rs, ctx) -> {
-//                            // mapping form resultSet to object
-//                            ProductDTO product = ProductDTO.builder()
-//                                    .id(rs.getInt("productId"))
-//                                    .productName(rs.getString("name"))
-//                                    .price(rs.getDouble("price"))
-//                                    .available(rs.getInt("available"))
-//                                    .discount(rs.getFloat("discount"))
-//                                    .images(List.of(rs.getString("image")))
-//                                    .build();
-//                            return CartItemDTO.builder().id(rs.getInt("cartItemId"))
-//                                    .product(product)
-//                                    .quantity(rs.getInt("quantity"))
-//                                    .build();
-//                        }).list()
-//        );
-//    }
     public List<CartItem> findCartItemByUserId(long userId) {
         String sql = "SELECT ci.id AS id, ci.quantity, ci.productId FROM carts AS c "+
                 "INNER JOIN cart_items AS ci ON c.id = ci.cartId WHERE c.userId = :userId";

@@ -14,8 +14,8 @@
 
 
 -- Dumping database structure for commenau
-CREATE DATABASE IF NOT EXISTS `commenau` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `commenau`;
+CREATE DATABASE IF NOT EXISTS `commenau2` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `commenau2`;
 
 -- Dumping structure for table commenau.blogs
 CREATE TABLE IF NOT EXISTS `blogs` (

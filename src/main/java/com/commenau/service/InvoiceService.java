@@ -51,9 +51,8 @@ public class InvoiceService {
     }
 
     public InvoiceDTO getInvoiceById(int invoiceId) {
-        InvoiceDTO result = invoiceMapper.toDTO(invoiceDAO.getInvoiceById(invoiceId), InvoiceDTO.class);
-        result.setTotal(calculateTotalPrice(invoiceId) + result.getShippingFee());
-        result.setStatus(invoiceStatusDAO.getStatusByInvoice(invoiceId));
+        Invoice invoice = invoiceDAO.getInvoiceById(invoiceId);
+        InvoiceDTO result = mapToInvoiceDTO(invoice);
         return result;
     }
 

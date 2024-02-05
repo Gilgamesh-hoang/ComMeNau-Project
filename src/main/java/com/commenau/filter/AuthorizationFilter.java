@@ -5,10 +5,12 @@ import com.commenau.dao.RoleDAO;
 import com.commenau.model.Role;
 import com.commenau.model.User;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.ServerEndpointConfig;
 import java.io.IOException;
 
 //public class AuthorizationFilter implements Filter {

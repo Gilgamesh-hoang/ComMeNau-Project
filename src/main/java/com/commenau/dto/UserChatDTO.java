@@ -1,6 +1,5 @@
-package com.commenau.model;
+package com.commenau.dto;
 
-import com.commenau.dto.ChatMessageDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserChatDTO {
     private int id;
     private String name;
-    private ChatMessageDTO message;
+    private MessageDTO message;
 }
