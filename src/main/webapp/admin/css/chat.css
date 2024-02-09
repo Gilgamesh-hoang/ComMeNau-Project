@@ -18,7 +18,7 @@ a{
     overflow-y: auto;
 }
 
-.chat-message-self,
+.chat-message-admin,
 .chat-message-user {
     display: flex;
     flex-shrink: 0
@@ -29,7 +29,7 @@ a{
     padding-left: 0.25rem;
     padding-right: 0.25rem;
 }
-.chat-message-self > .time{
+.chat-message-admin > .time{
     margin-left: 0.5rem;
 }
 .chat-message-user > .time{
@@ -48,7 +48,7 @@ a{
     margin-right: 1rem;
 }
 
-.chat-message-self {
+.chat-message-admin {
     margin-right: auto
 }
 
@@ -268,7 +268,7 @@ html, body {
     width: 15%;
 }
 
-.chat-msg.self > .msg-avatar img {
+.chat-msg.admin > .msg-avatar img {
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -292,7 +292,7 @@ html, body {
     clear: both;
 }
 
-.chat-msg.self > .cm-msg-text {
+.chat-msg.admin > .cm-msg-text {
     float: right;
     margin-right: 10px;
     background: #5A5EB9;

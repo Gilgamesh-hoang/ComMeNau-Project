@@ -9,26 +9,24 @@ import com.commenau.model.Conversation;
 import com.commenau.model.Message;
 import com.commenau.model.User;
 import com.commenau.pagination.PageRequest;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ConversationService {
-
-
     private ConversationDAO conversationDAO = new ConversationDAO();
 
     private UserDAO userDAO = new UserDAO();
 
     private MessageMapper messageMapper = new MessageMapper();
 
-    public int getConversationById(int participantId) {
+    public int getConversationById(long participantId) {
         int id = conversationDAO.findConservationById(participantId);
 
         //id isn't exists
-        if(id == 0) {
+        if (id == 0) {
             id = conversationDAO.createConversation(participantId);
         }
         return id;
@@ -38,52 +36,34 @@ public class ConversationService {
         return conversationDAO.saveMessage(message);
     }
 
-    public List<UserChatDTO> getUsersChatByRelativeName(String query) {
-        List<Conversation> conversations = conversationDAO.getAllConversations();
-        List<UserChatDTO> userChatDTOS = new ArrayList<>();
-        for (var x : conversations) {
-            UserChatDTO userChatDTO = UserChatDTO.builder().build();
-            User user = userDAO.getFirstNameAndLastName((long) x.getParticipantId());
-            userChatDTO.setId(x.getParticipantId());
-            userChatDTO.setName(user.getLastName() + " " + user.getFirstName());
-            if (userChatDTO.getName().toLowerCase().contains(query.toLowerCase())) {
-                userChatDTOS.add(userChatDTO);
-            }
+    public List<UserChatDTO> getUsersByName(String name) {
+        if (StringUtils.isBlank(name)) {
+            return getAllUserChats();
+        } else {
+            return mapToUserChatDTO(conversationDAO.findConversationsByName(name));
         }
-        return userChatDTOS;
     }
 
-    public List<UserChatDTO> getUsersChat() {
-        List<Conversation> conversations = conversationDAO.getAllConversations();
-        List<UserChatDTO> userChatDTOS = new ArrayList<>();
+    public List<UserChatDTO> getAllUserChats() {
+        return mapToUserChatDTO(conversationDAO.findAllConversations());
+    }
 
-        for (var x : conversations) {
-            UserChatDTO userChatDTO = UserChatDTO.builder().build();
-            Message lastMessage = conversationDAO.getLastMessage(x.getParticipantId());
-            if (lastMessage == null) continue;
-            User user = userDAO.getFirstNameAndLastName((long) x.getParticipantId());
-
-            MessageDTO messageDTO = MessageDTO.builder().build();
-            messageDTO.setSenderId(lastMessage.getSenderId());
-            messageDTO.setTime(lastMessage.getSendTime());
-            messageDTO.setContent(lastMessage.getContent());
-            messageDTO.setViewed(lastMessage.isViewed());
-
-
-            userChatDTO.setId(x.getParticipantId());
-            userChatDTO.setName(user.getLastName() + " " + user.getFirstName());
-            userChatDTO.setMessage(messageDTO);
-            userChatDTOS.add(userChatDTO);
-        }
-        return userChatDTOS.stream().sorted(Comparator.comparing(n -> n.getMessage().getTime())).toList();
+    private List<UserChatDTO> mapToUserChatDTO(List<Conversation> conversations) {
+        return conversations.stream().map(conversation -> {
+            Message msg = conversationDAO.getLastMessage(conversation.getParticipantId());
+            MessageDTO lastMessage = messageMapper.toDTO(msg);
+            User user = userDAO.getFullName((long) conversation.getParticipantId());
+            return UserChatDTO.builder().userId(conversation.getParticipantId()).message(lastMessage)
+                    .fullName(StringUtils.joinWith(" ", user.getLastName(), user.getFirstName())).build();
+        }).sorted(Comparator.comparing(chat -> chat.getMessage().getTime())).toList();
     }
 
     public List<MessageDTO> getMessages(int participantId, PageRequest pageRequest) {
         List<Message> messages = conversationDAO.getMessages(participantId, pageRequest);
-        return messageMapper.toDTO(messages, MessageDTO.class);
+        return messages.stream().map(message -> messageMapper.toDTO(message)).collect(Collectors.toList());
     }
 
-    public boolean updateViewed(int particapantId, int ownerId) {
-        return conversationDAO.updateViewed(particapantId, ownerId);
+    public boolean updateViewed(int participantId, int ownerId) {
+        return conversationDAO.updateViewed(participantId, ownerId);
     }
 }

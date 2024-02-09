@@ -18,7 +18,9 @@ public class UserChatController extends HttpServlet {
     ConversationService conversationService;
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String keyword = req.getParameter("keyword");
         resp.setContentType("application/json");
-        resp.getWriter().write(gson.toJson(conversationService.getUsersChat()));
+        String s = gson.toJson(conversationService.getUsersByName(keyword));
+        resp.getWriter().write(gson.toJson(conversationService.getUsersByName(keyword)));
     }
 }

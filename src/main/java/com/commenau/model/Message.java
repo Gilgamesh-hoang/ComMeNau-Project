@@ -16,8 +16,6 @@ public class Message {
     private int conversationId;
     private long senderId;
     private long recipientId;
-//    private int senderId;
-//    private int recipientId;
     private boolean viewed;
     private String content;
     private Timestamp sendTime;

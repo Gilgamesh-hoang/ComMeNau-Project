@@ -9,7 +9,6 @@ import com.commenau.model.User;
 import com.commenau.pagination.PageRequest;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class ProductReviewService{
     public List<ProductReviewDTO> getReviewByProductId(int productId, PageRequest pageRequest) {
         return reviewDAO.getReviewByProductId(productId, pageRequest).stream().map(review -> {
             ProductReviewDTO dto = reviewMapper.toDTO(review, ProductReviewDTO.class);
-            User user = userDAO.getFirstNameAndLastName(review.getUserId());
+            User user = userDAO.getFullName(review.getUserId());
             dto.setLastName(user.getLastName());
             dto.setFirstName(user.getFirstName());
             return dto;

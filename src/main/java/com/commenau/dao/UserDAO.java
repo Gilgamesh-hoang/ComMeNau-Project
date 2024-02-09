@@ -93,7 +93,7 @@ public class UserDAO {
         return result > 0;
     }
 
-    public User getFirstNameAndLastName(Long userId) {
+    public User getFullName(Long userId) {
         return JDBIConnector.getInstance().withHandle(handle ->
                 handle.createQuery("SELECT firstName,lastName FROM users WHERE id = ?")
                         .bind(0, userId).mapToBean(User.class).stream().findFirst().orElse(null)

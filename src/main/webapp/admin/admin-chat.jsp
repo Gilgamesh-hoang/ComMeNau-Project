@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<c:url value="/admin/chat" var="adminChatURL"/>
 <html>
 <head>
     <title>Chat</title>
@@ -60,8 +61,6 @@
                                         <ul style="width: 100%;
                         position: absolute;
                         background: white;
-                        /*border: 1px solid lightgray;*/
-                        /*border-top: 0px;*/
                         z-index: 1000;"
                                             id="searchResults">
                                         </ul>
@@ -112,81 +111,79 @@
 </body>
 <script>
     $(document).ready(function () {
-        var userId = ${sessionScope.auth.id};
-
-        var userIdShow = window.location.search.substring(1).split("&")[0].split("=")[1];
-
+        // Get adminId from session scope
+        var adminId = ${sessionScope.auth.id};
+        // Get userId from the URL
+        var userId = window.location.search.substring(1).split("&")[0].split("=")[1];
         var section = 1;
+        // Section for handling WebSocket connection
+        const socket = new WebSocket("ws://localhost:8080/chat/" + adminId);
 
-        const socket = new WebSocket("ws://localhost:8080/chat/" + userId);
-
-
-        socket.onopen = function (event) {
-
-        };
-
-
+        socket.onopen = function (event) {};
         socket.onmessage = function (event) {
-            var chatmessage = JSON.parse(event.data);
-            if (userIdShow == chatmessage.senderId) {
-                gennerateMessage(chatmessage.content, 'user', chatmessage.time, false);
-                loadUsers(false , false);
-            }
-            else {
-                loadUsers(false , true);
-            }
+            // Handle incoming messages from WebSocket
+            var chatMessage = JSON.parse(event.data);
+            var type = (adminId == chatMessage.senderId) ? 'admin' : 'user';
+            generateMessage(chatMessage.content, type, chatMessage.time, false);
+            loadUsers(false , true);
         };
+        socket.onclose = function (event) {};
 
-        socket.onclose = function (event) {
-
-        };
-        function formatTime(date, format) {
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-
-            // Thêm số 0 đằng trước nếu giờ, phút hoặc giây chỉ có một chữ số
-            hours = hours < 10 ? "0" + hours : hours;
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-
-
-            // Thay thế các phần tử định dạng
-            format = format.replace("hh", hours);
-            format = format.replace("mm", minutes);
-
-            return format;
-        }
-        function updateView(userId) {
-            $.ajax({
-                type: "PUT",
-                url: "http://localhost:8080/message/" + userId + "?ownerId=0",
-                contentType: "application/x-www-form-urlencoded; charset=UTF-16",
-                // Serialize dữ liệu biểu mẫu
-                success: function (response) {
-
-                }
-            });
-        }
-
-        if (userIdShow != null) {
+        // Load users and messages based on userId
+        if (userId != null) {
             loadUsers(false , true)
-            updateView(userIdShow)
+            updateView(userId)
         }
         else{
             loadUsers(true , true);
         }
 
+        // Function to format time
+        function formatTime(date, format) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            // Add leading zero if the hour or minute has only one digit
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            // Replace formatting elements
+            format = format.replace("hh", hours);
+            format = format.replace("mm", minutes);
+            return format;
+        }
+
+        // Update message view for a specific user
+        function updateView(userId) {
+            var data = {
+                participantId: userId,
+                ownerId: adminId
+            };
+            $.ajax({
+                type: "PUT",
+                url: "<c:url value="/message"/>",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=UTF-8",
+                success: function (response) {
+                }
+            });
+        }
+
+        // Load messages based on userId and section
         function loadMessages(userId) {
-            return $.ajax({
+            var data = {
+                participantId: userId,
+                section: section
+            };
+            $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/message/" + userId + "?section=" + section,
-                contentType: "application/x-www-form-urlencoded; charset=UTF-16",
-                // Serialize dữ liệu biểu mẫu
+                url: "<c:url value="/message"/>",
+                data: $.param(data),
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (response) {
                     section++;
                     response.forEach(n => {
-                        if (n.senderId == 0)
-                            gennerateMessage(n.content, 'self', n.time, true)
-                        else gennerateMessage(n.content, 'user', n.time, true)
+                        if (n.senderId == adminId)
+                            generateMessage(n.content, 'admin', n.time, true);
+                        else generateMessage(n.content, 'user', n.time, true);
                     })
                     return true;
                 }
@@ -196,9 +193,10 @@
             });
         }
 
+        // Handle scroll event for chat messages
         $(".chat-messages").scroll(function () {
             if ($(this).scrollTop() === 0) {
-                if (loadMessages(userIdShow)) {
+                if (loadMessages(userId)) {
                     updateView();
                     var positionToScroll = $(".chat-messages").find(".chat-message").eq(0).position();
                     $(".chat-messages").scrollTop(positionToScroll.top);
@@ -206,50 +204,40 @@
             }
         });
 
+        //Load user list based on the condition
         function loadUsers(loadMessage , mark) {
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/admin/chat/users",
-                contentType: "application/x-www-form-urlencoded; charset=UTF-16",
-                // Serialize dữ liệu biểu mẫu
+                url: "<c:url value="/admin/chat/users"/>",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (response) {
                     $("#users").empty();
                     for (let i = response.length - 1; i >= 0; i--) {
                         var time = new Date(response[i].message.time);
-
-                        var noti = !response[i].message.viewed && response[i].message.senderId != 0;
-
+                        var noti = !response[i].message.viewed && response[i].message.senderId !== 0;
                         var bold = '';
                         var badge = ``;
-
                         if (noti && mark) {
                             bold = "fw-bold";
                             badge = `<div class="badge bg-success ">!</div>`;
                         }
-
                         var content = response[i].message.content.length < 30 ? response[i].message.content :  response[i].message.content.toString().substr(0,30).concat("...");
-
-                        var user = ` <a href="/admin/chat?user=` + response[i].id + `" class="user-chat d-flex flex-row justify-content-between px-5 pb-3 border-0">
-        <div class="d-flex align-items-start">
-        <img src="images/avatar-icon.jpg" class="rounded-circle me-3" alt="2"
-        width="40" height="40">
-        <div class="flex-grow-1 ml-3 ">`
-                            + response[i].name +
-                            `<div class="` + bold + `">` + content + `</div>
-        </div>
-        </div>
-        <div class="float-right">
-        ` + badge + `
-        <div class="fw-bold">` + formatTime(time , "hh:mm") + `</div>
-        </div>
-        </a>`
+                        var user = ` <a href="${adminChatURL}?user=` + response[i].userId + `" class="user-chat d-flex flex-row justify-content-between px-5 pb-3 border-0">
+                            <div class="d-flex align-items-start">
+                                <img src="images/avatar-icon.jpg" class="rounded-circle me-3" alt="2"width="40" height="40">
+                                <div class="flex-grow-1 ml-3 ">`+ response[i].fullName +`<div class="` + bold + `">` + content + `</div></div>
+                            </div>
+                            <div class="float-right">` + badge + `
+                                <div class="fw-bold">` + formatTime(time , "hh:mm") + `</div>
+                            </div>
+                        </a>`
 
                         $("#users").append(user);
-                        if(userIdShow == response[i].id){
+                        if(userId == response[i].userId){
                             $(".chat-container").css("display","block")
-                            $("#username").text(response[i].name)
-                            updateView(userIdShow);
-                            loadMessages(userIdShow);
+                            $("#username").text(response[i].fullName)
+                            updateView(userId);
+                            loadMessages(userId);
                             $(".chat-messages").stop().animate({scrollTop: $(".chat-messages")[0].scrollHeight}, 1000);
                         }
                     }
@@ -258,44 +246,35 @@
             });
         }
 
-
-
-
-        $(".list-group-item").click(function () {
-            $(".chat-messages").empty();
-        });
+        // Handle click event for chat submit button
         $(".chat-submit").click(function (e) {
             e.preventDefault();
             var msg = $("#chat-input").val();
-            if (msg.trim() == '') {
+            if (msg.trim() === '') {
                 return false;
             }
-            gennerateMessage(msg, 'self', new Date().getTime(), false);
-            loadUsers(false , false);
-            var message = { receiverId:userIdShow,msg: msg}
-
+            generateMessage(msg, 'admin', new Date().getTime(), false);
+            var message = {senderId:adminId, recipientId: userId, msg: msg};
             socket.send(JSON.stringify(message));
-
             $("#chat-input").val('');
             $(".chat-messages").stop().animate({scrollTop: $(".chat-messages")[0].scrollHeight}, 1000);
-        })
+        });
 
-        function gennerateMessage(msg, type, time, pre) {
+        function generateMessage(msg, type, time, pre) {
             var sendTime = new Date(time);
             var imgSrc = type === 'user' ? "images/avatar-icon.jpg" : "images/admin-icon.jpg";
-            console.log(imgSrc)
             var str = `<div class="chat-message chat-message-` + type + ` pb-4">
-        <div>
-            <img src="` + imgSrc + `"
-                 class="rounded-circle mr-1" alt="3" width="40" height="40">
-        </div>
-        <div class="message flex-shrink-1 bg-light rounded">
-           ` + msg + `
-        </div>
-        <div class="time">
-            ` +formatTime(sendTime,"hh:mm")+ `
-        </div>
-    </div>`
+                <div>
+                    <img src="` + imgSrc + `"
+                         class="rounded-circle mr-1" alt="3" width="40" height="40">
+                </div>
+                <div class="message flex-shrink-1 bg-light rounded">
+                   ` + msg + `
+                </div>
+                <div class="time">
+                    ` +formatTime(sendTime,"hh:mm")+ `
+                </div>
+            </div>`
             if (pre) {
                 $(".chat-messages").prepend(str);
             } else {
@@ -303,28 +282,24 @@
             }
         }
 
-        // search
+        // Search functionality
         $(document).on("mousedown", function (event) {
-            // Kiểm tra xem phần tử được click có là con của #yourDiv hay không
-            if ((!$('#searchResults').is(event.target) && ! $('#searchResults').has(event.target).length) || ($('#main-search').is(event.target) && !$('#main-search').has(event.target).length)){
+            if ((!$('#searchResults').is(event.target) && ! $('#searchResults').has(event.target).length)
+                || ($('#main-search').is(event.target) && !$('#main-search').has(event.target).length)){
                 $('#main-search').val("");
                 $('#searchResults').empty();
             }
         });
         $('#main-search').on("input",function (){
             $('#searchResults').empty();
-            var query = $(this).val().toLowerCase();
-            if (query !== '') {
+            var keyword = $(this).val().toLowerCase();
+            if (keyword !== '') {
                 $.ajax({
                     type: "GET",
-                    url: "/admin/chat/users/search?query=" + query,
-                    contentType: "application/x-www-form-urlencoded; charset=UTF-16",
-                    // Serialize dữ liệu biểu mẫu
+                    url: "<c:url value='/admin/chat/users'/>?keyword=" + encodeURIComponent(keyword),
                     success: function (response) {
-
-                        var data = JSON.parse(response);
-                        data.forEach(element => {
-                            $('#searchResults').append("<a href='/admin/chat?user="+  element.id + "' class='product-link'>" + element.name + "</a>");
+                        response.forEach(element => {
+                            $('#searchResults').append("<a href='/admin/chat?user="+  element.userId + "' class='product-link'>" + element.fullName + "</a>");
                             $('#searchResults li:gt(7)').remove();
                         });
                     }
