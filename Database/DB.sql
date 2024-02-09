@@ -14,8 +14,8 @@
 
 
 -- Dumping database structure for commenau
-CREATE DATABASE IF NOT EXISTS `commenau2` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `commenau2`;
+CREATE DATABASE IF NOT EXISTS `commenau` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `commenau`;
 
 -- Dumping structure for table commenau.blogs
 CREATE TABLE IF NOT EXISTS `blogs` (
@@ -82,9 +82,9 @@ CREATE TABLE IF NOT EXISTS `cancel_products` (
   PRIMARY KEY (`id`),
   KEY `FK_cancel_products_products` (`productId`),
   CONSTRAINT `FK_cancel_products_products` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=733 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=814 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table commenau.cancel_products: ~387 rows (approximately)
+-- Dumping data for table commenau.cancel_products: ~483 rows (approximately)
 /*!40000 ALTER TABLE `cancel_products` DISABLE KEYS */;
 INSERT INTO `cancel_products` (`id`, `productId`, `quantity`, `canceledAt`) VALUES
 	(143, 38, 50, '2023-11-08 23:59:59'),
@@ -512,7 +512,88 @@ INSERT INTO `cancel_products` (`id`, `productId`, `quantity`, `canceledAt`) VALU
 	(728, 122, 60, '2024-01-22 10:56:58'),
 	(729, 123, 60, '2024-01-22 10:56:58'),
 	(730, 104, 55, '2024-01-22 14:54:57'),
-	(731, 105, 60, '2024-01-22 14:54:57');
+	(731, 105, 60, '2024-01-22 14:54:57'),
+	(733, 38, 60, '2024-02-01 16:19:40'),
+	(734, 39, 60, '2024-02-01 16:19:40'),
+	(735, 40, 60, '2024-02-01 16:19:40'),
+	(736, 41, 60, '2024-02-01 16:19:40'),
+	(737, 42, 60, '2024-02-01 16:19:40'),
+	(738, 43, 60, '2024-02-01 16:19:40'),
+	(739, 44, 60, '2024-02-01 16:19:40'),
+	(740, 45, 60, '2024-02-01 16:19:40'),
+	(741, 46, 60, '2024-02-01 16:19:40'),
+	(742, 47, 60, '2024-02-01 16:19:40'),
+	(743, 48, 60, '2024-02-01 16:19:40'),
+	(744, 50, 60, '2024-02-01 16:19:40'),
+	(745, 51, 60, '2024-02-01 16:19:40'),
+	(746, 52, 60, '2024-02-01 16:19:40'),
+	(747, 53, 60, '2024-02-01 16:19:40'),
+	(748, 54, 60, '2024-02-01 16:19:40'),
+	(749, 55, 60, '2024-02-01 16:19:40'),
+	(750, 56, 60, '2024-02-01 16:19:40'),
+	(751, 57, 60, '2024-02-01 16:19:40'),
+	(752, 58, 60, '2024-02-01 16:19:40'),
+	(753, 59, 60, '2024-02-01 16:19:40'),
+	(754, 60, 60, '2024-02-01 16:19:40'),
+	(755, 61, 60, '2024-02-01 16:19:40'),
+	(756, 62, 60, '2024-02-01 16:19:40'),
+	(757, 63, 60, '2024-02-01 16:19:40'),
+	(758, 64, 60, '2024-02-01 16:19:40'),
+	(759, 65, 60, '2024-02-01 16:19:40'),
+	(760, 66, 60, '2024-02-01 16:19:40'),
+	(761, 67, 60, '2024-02-01 16:19:40'),
+	(762, 68, 60, '2024-02-01 16:19:40'),
+	(763, 69, 60, '2024-02-01 16:19:40'),
+	(764, 71, 60, '2024-02-01 16:19:40'),
+	(765, 72, 60, '2024-02-01 16:19:40'),
+	(766, 73, 60, '2024-02-01 16:19:40'),
+	(767, 74, 60, '2024-02-01 16:19:40'),
+	(768, 76, 60, '2024-02-01 16:19:40'),
+	(769, 77, 60, '2024-02-01 16:19:40'),
+	(770, 78, 60, '2024-02-01 16:19:40'),
+	(771, 79, 60, '2024-02-01 16:19:40'),
+	(772, 80, 60, '2024-02-01 16:19:40'),
+	(773, 81, 60, '2024-02-01 16:19:40'),
+	(774, 82, 60, '2024-02-01 16:19:40'),
+	(775, 83, 60, '2024-02-01 16:19:40'),
+	(776, 84, 60, '2024-02-01 16:19:40'),
+	(777, 85, 60, '2024-02-01 16:19:40'),
+	(778, 86, 60, '2024-02-01 16:19:40'),
+	(779, 87, 60, '2024-02-01 16:19:40'),
+	(780, 88, 60, '2024-02-01 16:19:40'),
+	(781, 89, 60, '2024-02-01 16:19:40'),
+	(782, 90, 60, '2024-02-01 16:19:40'),
+	(783, 91, 60, '2024-02-01 16:19:40'),
+	(784, 92, 60, '2024-02-01 16:19:40'),
+	(785, 93, 60, '2024-02-01 16:19:40'),
+	(786, 94, 60, '2024-02-01 16:19:40'),
+	(787, 95, 60, '2024-02-01 16:19:40'),
+	(788, 96, 60, '2024-02-01 16:19:40'),
+	(789, 97, 60, '2024-02-01 16:19:40'),
+	(790, 98, 60, '2024-02-01 16:19:40'),
+	(791, 99, 60, '2024-02-01 16:19:40'),
+	(792, 100, 60, '2024-02-01 16:19:40'),
+	(793, 101, 60, '2024-02-01 16:19:40'),
+	(794, 102, 60, '2024-02-01 16:19:40'),
+	(795, 103, 60, '2024-02-01 16:19:40'),
+	(796, 105, 60, '2024-02-01 16:19:40'),
+	(797, 106, 60, '2024-02-01 16:19:40'),
+	(798, 107, 60, '2024-02-01 16:19:40'),
+	(799, 108, 60, '2024-02-01 16:19:40'),
+	(800, 109, 60, '2024-02-01 16:19:40'),
+	(801, 111, 60, '2024-02-01 16:19:40'),
+	(802, 112, 60, '2024-02-01 16:19:40'),
+	(803, 113, 60, '2024-02-01 16:19:40'),
+	(804, 114, 60, '2024-02-01 16:19:40'),
+	(805, 115, 60, '2024-02-01 16:19:40'),
+	(806, 116, 60, '2024-02-01 16:19:40'),
+	(807, 117, 60, '2024-02-01 16:19:40'),
+	(808, 118, 60, '2024-02-01 16:19:40'),
+	(809, 119, 60, '2024-02-01 16:19:40'),
+	(810, 120, 60, '2024-02-01 16:19:40'),
+	(811, 121, 60, '2024-02-01 16:19:40'),
+	(812, 122, 60, '2024-02-01 16:19:40'),
+	(813, 123, 60, '2024-02-01 16:19:40');
 /*!40000 ALTER TABLE `cancel_products` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.carts
@@ -543,9 +624,9 @@ CREATE TABLE IF NOT EXISTS `cart_items` (
   KEY `FK_cart_items_products` (`productId`),
   CONSTRAINT `FK_cart_items_carts` FOREIGN KEY (`cartId`) REFERENCES `carts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_cart_items_products` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=249 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8;
 
--- Dumping data for table commenau.cart_items: ~7 rows (approximately)
+-- Dumping data for table commenau.cart_items: ~5 rows (approximately)
 /*!40000 ALTER TABLE `cart_items` DISABLE KEYS */;
 INSERT INTO `cart_items` (`id`, `cartId`, `productId`, `quantity`) VALUES
 	(239, 15, 42, 1),
@@ -553,17 +634,16 @@ INSERT INTO `cart_items` (`id`, `cartId`, `productId`, `quantity`) VALUES
 	(241, 16, 38, 1),
 	(242, 16, 39, 1),
 	(243, 16, 40, 1),
-	(247, 5, 38, 2),
-	(248, 5, 39, 4);
+	(249, 5, 105, 6);
 /*!40000 ALTER TABLE `cart_items` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.categories
 CREATE TABLE IF NOT EXISTS `categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   `code` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table commenau.categories: ~4 rows (approximately)
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
@@ -571,7 +651,7 @@ INSERT INTO `categories` (`id`, `name`, `code`) VALUES
 	(1, 'Cơm', 'com'),
 	(2, 'Món ăn kèm', 'mon-an-kem'),
 	(3, 'Nước giải khát', 'nuoc-giai-khat'),
-	(4, 'Tráng miệng', 'trang-mieng');
+	(23, 'Tráng miệng', 'trang-mieng');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.contacts
@@ -614,14 +694,16 @@ CREATE TABLE IF NOT EXISTS `conversations` (
   PRIMARY KEY (`id`),
   KEY `FK_conversations_users` (`participantId`),
   CONSTRAINT `FK_conversations_users` FOREIGN KEY (`participantId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
--- Dumping data for table commenau.conversations: ~3 rows (approximately)
+-- Dumping data for table commenau.conversations: ~5 rows (approximately)
 /*!40000 ALTER TABLE `conversations` DISABLE KEYS */;
 INSERT INTO `conversations` (`id`, `participantId`) VALUES
-	(10, 13),
-	(13, 18),
-	(8, 19);
+	(16, 11),
+	(18, 12),
+	(20, 13),
+	(21, 18),
+	(19, 20);
 /*!40000 ALTER TABLE `conversations` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.email_verifications
@@ -743,7 +825,7 @@ INSERT INTO `invoice_status` (`id`, `invoiceId`, `status`, `updatedAt`) VALUES
 	(11, 71, 'DELIVERED', '2024-01-25 10:22:22'),
 	(12, 72, 'TRANSPORTING', '2024-01-25 10:22:14'),
 	(13, 73, 'PROCESSING', '2024-01-25 10:22:04'),
-	(14, 74, 'CANCELLED', '2024-01-25 22:24:32');
+	(14, 74, 'CANCELLED', '2024-01-27 11:05:08');
 /*!40000 ALTER TABLE `invoice_status` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.messages
@@ -755,42 +837,103 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `viewed` tinyint(4) DEFAULT 0,
   `content` text CHARACTER SET utf8mb4 NOT NULL,
   `sendTime` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=140 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `FK_messages_conversations` (`conversationId`),
+  KEY `FK_messages_users` (`senderId`),
+  KEY `FK_messages_users_2` (`recipientId`),
+  CONSTRAINT `FK_messages_conversations` FOREIGN KEY (`conversationId`) REFERENCES `conversations` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_messages_users` FOREIGN KEY (`senderId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_messages_users_2` FOREIGN KEY (`recipientId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=240 DEFAULT CHARSET=utf8;
 
--- Dumping data for table commenau.messages: ~28 rows (approximately)
+-- Dumping data for table commenau.messages: ~67 rows (approximately)
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
 INSERT INTO `messages` (`id`, `conversationId`, `senderId`, `recipientId`, `viewed`, `content`, `sendTime`) VALUES
-	(86, 8, 19, 0, 1, 'xin chào', '2024-01-04 11:26:59'),
-	(87, 8, 19, 0, 1, 'chào', '2024-01-04 11:27:15'),
-	(88, 8, 0, 19, 1, 'hô', '2024-01-04 11:27:25'),
-	(89, 8, 19, 0, 1, 'Sự cố phi cơ 737 MAX 9 bung phần thân giữa không trung có thể khiến làn sóng hoài nghi về chất lượng máy bay Boeing tăng lên sau loạt tai nạn.', '2024-01-09 10:57:37'),
-	(90, 8, 0, 19, 1, 'Chiếc Boeing 737 MAX 9 mang số hiệu 1282 ngày 5/1 cất cánh từ sân bay quốc tế Portland, bang Oregon, Mỹ để tới California, Mỹ. Tuy nhiên, chỉ 20 phút sau, máy bay chở 177 người phải hạ cánh khẩn cấp khi một phần thân bung khỏi phi cơ, tạo ra lỗ hổng có kích thước tương đương cửa thoát hiểm.', '2024-01-09 10:58:37'),
-	(91, 8, 19, 0, 1, 'Ủy ban An toàn Giao thông Mỹ đã bắt đầu điều tra về sự cố mà chiếc Boeing 737 MAX 9 gặp phải khi đang ở độ cao hơn 4.800 m. Jennifer Homendy, chủ tịch ủy ban, cho biết sự việc có thể tồi tệ hơn rất nhiều nếu nó xảy ra ở độ cao lớn hơn.  Nếu sự cố bung thân xảy ra ở độ cao hành trình khoảng 10.000 m, khoang máy bay sẽ lập tức mất khả năng điều áp, toàn bộ dưỡng khí thoát ra ngoài, hành khách bên trong sẽ nhanh chóng bất tỉnh và lạnh cóng. Những người tháo dây an toàn để đi lại trên khoang cũng có thể bị hút ra ngoài qua lỗ thủng.', '2024-01-09 10:58:57'),
-	(92, 9, 22, 0, 1, 'Ủy ban An toàn Giao thông Mỹ đã bắt đầu điều tra về sự cố mà chiếc Boeing 737 MAX 9 gặp phải khi đang ở độ cao hơn 4.800 m. Jennifer Homendy, chủ tịch ủy ban, cho biết sự việc có thể tồi tệ hơn rất nhiều nếu nó xảy ra ở độ cao lớn hơn.  Nếu sự cố bung thân xảy ra ở độ cao hành trình khoảng 10.000 m, khoang máy bay sẽ lập tức mất khả năng điều áp, toàn bộ dưỡng khí thoát ra ngoài, hành khách bên trong sẽ nhanh chóng bất tỉnh và lạnh cóng. Những người tháo dây an toàn để đi lại trên khoang cũng có thể bị hút ra ngoài qua lỗ thủng.', '2024-01-09 11:00:55'),
-	(93, 9, 0, 22, 1, 'Ủy ban An toàn Giao thông Mỹ đã bắt đầu điều tra về sự cố mà chiếc Boeing 737 MAX 9 gặp phải khi đang ở độ cao hơn 4.800 m. Jennifer Homendy, chủ tịch ủy ban, cho biết sự việc có thể tồi tệ hơn rất nhiều nếu nó xảy ra ở độ cao lớn hơn. Nếu sự cố bung thân xảy ra ở độ cao hành trình khoảng 10.000 m, khoang máy bay sẽ lập tức mất khả năng điều áp, toàn bộ dưỡng khí thoát ra ngoài, hành khách bên trong sẽ nhanh chóng bất tỉnh và lạnh cóng. Những người tháo dây an toàn để đi lại trên khoang cũng có thể bị hút ra ngoài qua lỗ thủng.', '2024-01-09 11:03:49'),
-	(94, 8, 19, 0, 1, 'hello', '2024-01-09 11:07:59'),
-	(95, 8, 19, 0, 1, 'có gì không ', '2024-01-09 11:14:23'),
-	(96, 8, 0, 19, 1, 'không có gì', '2024-01-09 11:14:34'),
-	(97, 9, 22, 0, 1, 'hi', '2024-01-09 11:14:53'),
-	(98, 10, 13, 0, 1, 'Ủy ban An toàn Giao thông Mỹ đã bắt đầu điều tra về sự cố mà chiếc Boeing 737 MAX 9 gặp phải khi đang ở độ cao hơn 4.800 m. Jennifer Homendy, chủ tịch ủy ban, cho biết sự việc có thể tồi tệ hơn rất nhiều nếu nó xảy ra ở độ cao lớn hơn. Nếu sự cố bung thân xảy ra ở độ cao hành trình khoảng 10.000 m, khoang máy bay sẽ lập tức mất khả năng điều áp, toàn bộ dưỡng khí thoát ra ngoài, hành khách bên trong sẽ nhanh chóng bất tỉnh và lạnh cóng. Những người tháo dây an toàn để đi lại trên khoang cũng có thể bị hút ra ngoài qua lỗ thủng.', '2024-01-09 11:16:16'),
-	(99, 10, 0, 13, 1, 'hi', '2024-01-09 11:17:22'),
-	(100, 9, 22, 0, 1, 'xin chào', '2024-01-09 11:17:46'),
-	(101, 10, 13, 0, 1, 'xinchaof', '2024-01-09 11:18:05'),
-	(102, 9, 22, 0, 0, 'Ủy ban An toàn Giao thông Mỹ đã bắt đầu điều tra về sự cố mà chiếc Boeing 737 MAX 9 gặp phải khi đang ở độ cao hơn 4.800 m. Jennifer Homendy, chủ tịch ủy ban, cho biết sự việc có thể tồi tệ hơn rất nhiều nếu nó xảy ra ở độ cao lớn hơn. Nếu sự cố bung thân xảy ra ở độ cao hành trình khoảng 10.000 m, khoang máy bay sẽ lập tức mất khả năng điều áp, toàn bộ dưỡng khí thoát ra ngoài, hành khách bên trong sẽ nhanh chóng bất tỉnh và lạnh cóng. Những người tháo dây an toàn để đi lại trên khoang cũng có thể bị hút ra ngoài qua lỗ thủng.', '2024-01-09 11:34:35'),
-	(103, 8, 0, 19, 1, 'xin chào', '2024-01-11 22:00:39'),
-	(104, 8, 19, 0, 1, 'xin chào admin', '2024-01-11 22:05:51'),
-	(105, 9, 22, 0, 0, 'xin chào admin', '2024-01-12 21:24:48'),
-	(106, 9, 22, 0, 1, 'hello', '2024-01-12 21:26:43'),
-	(131, 13, 18, 0, 1, 'xin chào bạn admin', '2024-01-20 20:24:36'),
-	(132, 13, 0, 18, 1, 'admin xin chào khách hàng', '2024-01-20 20:24:56'),
-	(133, 13, 0, 18, 1, 'có gì không ạ', '2024-01-20 20:25:10'),
-	(134, 13, 18, 0, 1, 'mình muốn hỏi như sau', '2024-01-20 20:25:23'),
-	(135, 13, 18, 0, 1, 'abc', '2024-01-20 20:29:28'),
-	(136, 13, 18, 0, 1, '123', '2024-01-20 20:35:37'),
-	(137, 13, 18, 0, 1, 'alo', '2024-01-20 20:37:24'),
-	(138, 13, 0, 18, 1, 'co gi khogn', '2024-01-20 20:46:34'),
-	(139, 8, 0, 19, 1, 'alo', '2024-01-22 10:31:05');
+	(154, 16, 11, 1, 1, 'chào', '2024-02-05 21:07:07'),
+	(155, 16, 11, 1, 1, 'chào ádmin', '2024-02-05 21:07:23'),
+	(156, 16, 11, 1, 1, 'hello', '2024-02-05 21:07:28'),
+	(157, 16, 11, 1, 1, 'lô', '2024-02-05 21:07:38'),
+	(158, 18, 12, 1, 1, 'lô', '2024-02-05 21:07:38'),
+	(160, 19, 20, 1, 1, 'lô', '2024-02-05 21:09:38'),
+	(161, 20, 13, 1, 1, 'lô', '2024-02-05 21:07:38'),
+	(162, 21, 18, 1, 0, 'lô', '2024-02-05 21:07:38'),
+	(163, 16, 11, 1, 1, 's', '2024-02-08 21:38:37'),
+	(164, 16, 1, 11, 1, 'ad', '2024-02-08 21:39:36'),
+	(165, 16, 1, 11, 1, 'xin', '2024-02-08 22:04:23'),
+	(166, 16, 1, 11, 1, 'ad', '2024-02-08 22:06:34'),
+	(167, 16, 1, 11, 1, 'xin vh', '2024-02-08 22:06:54'),
+	(168, 16, 1, 11, 1, 'a', '2024-02-08 22:11:03'),
+	(169, 16, 1, 11, 1, 'a', '2024-02-08 22:11:40'),
+	(170, 16, 1, 11, 1, 'ad', '2024-02-08 22:13:02'),
+	(171, 16, 1, 11, 1, 'zx', '2024-02-08 22:14:47'),
+	(172, 16, 1, 11, 1, 'ads', '2024-02-08 22:15:43'),
+	(173, 16, 1, 11, 1, 'a', '2024-02-08 22:20:30'),
+	(174, 16, 1, 11, 1, 'xinchaof user', '2024-02-08 22:29:11'),
+	(175, 16, 1, 11, 1, 'ad', '2024-02-08 22:29:23'),
+	(176, 16, 11, 1, 1, 'ad', '2024-02-08 22:29:40'),
+	(177, 16, 1, 11, 1, 'a', '2024-02-08 22:29:55'),
+	(178, 16, 1, 11, 1, 'aa', '2024-02-08 22:30:01'),
+	(179, 16, 11, 1, 1, 'sao thế', '2024-02-08 22:34:02'),
+	(180, 16, 1, 11, 1, 'khoomg co', '2024-02-08 22:34:12'),
+	(181, 16, 11, 1, 1, '1', '2024-02-08 22:34:44'),
+	(182, 16, 11, 1, 1, '2', '2024-02-08 22:34:45'),
+	(183, 16, 11, 1, 1, '4', '2024-02-08 22:34:47'),
+	(184, 16, 1, 11, 1, '1', '2024-02-08 22:34:51'),
+	(185, 16, 1, 11, 1, '2', '2024-02-08 22:34:53'),
+	(186, 16, 1, 11, 1, '3', '2024-02-08 22:34:56'),
+	(187, 16, 11, 1, 1, '1', '2024-02-08 22:39:06'),
+	(188, 16, 11, 1, 1, '1', '2024-02-08 22:39:17'),
+	(189, 16, 11, 1, 1, '1', '2024-02-08 22:39:36'),
+	(190, 16, 11, 1, 1, '2', '2024-02-08 22:39:39'),
+	(191, 16, 11, 1, 1, '3', '2024-02-08 22:39:41'),
+	(192, 16, 11, 1, 1, '123', '2024-02-08 22:40:01'),
+	(193, 16, 11, 1, 1, '123', '2024-02-08 22:40:13'),
+	(194, 16, 11, 1, 1, 'á', '2024-02-08 22:40:33'),
+	(195, 16, 1, 11, 1, '123', '2024-02-08 22:41:09'),
+	(196, 16, 11, 1, 1, '123', '2024-02-08 22:41:23'),
+	(197, 16, 11, 1, 1, '1', '2024-02-08 22:41:28'),
+	(198, 16, 11, 1, 1, '2', '2024-02-08 22:41:35'),
+	(199, 16, 11, 1, 1, 'adđ', '2024-02-08 22:43:35'),
+	(200, 16, 11, 1, 1, '123', '2024-02-08 22:46:33'),
+	(201, 16, 11, 1, 1, '546', '2024-02-08 22:46:45'),
+	(202, 16, 1, 11, 1, 'addd', '2024-02-08 22:46:52'),
+	(203, 16, 1, 11, 1, 'addd', '2024-02-08 22:46:58'),
+	(204, 16, 1, 11, 1, 'c', '2024-02-08 22:49:35'),
+	(205, 16, 1, 11, 1, 'ad', '2024-02-08 22:50:45'),
+	(206, 16, 1, 11, 1, 'ad', '2024-02-08 22:52:12'),
+	(207, 16, 11, 1, 1, '1', '2024-02-08 22:52:46'),
+	(208, 16, 11, 1, 1, '2', '2024-02-08 22:52:49'),
+	(209, 16, 11, 1, 1, '3', '2024-02-08 22:52:50'),
+	(210, 16, 11, 1, 1, '4', '2024-02-08 22:52:52'),
+	(211, 16, 11, 1, 1, '5', '2024-02-08 22:52:54'),
+	(212, 16, 11, 1, 1, '6', '2024-02-08 22:52:56'),
+	(213, 16, 1, 11, 1, '1', '2024-02-08 22:53:16'),
+	(214, 16, 1, 11, 1, '2', '2024-02-08 22:53:18'),
+	(215, 16, 1, 11, 1, '3', '2024-02-08 22:53:19'),
+	(216, 16, 1, 11, 1, '4', '2024-02-08 22:53:22'),
+	(217, 16, 1, 11, 1, '5', '2024-02-08 22:53:23'),
+	(218, 16, 1, 11, 1, '6', '2024-02-08 22:53:25'),
+	(219, 16, 1, 11, 1, '1', '2024-02-08 22:53:46'),
+	(220, 16, 11, 1, 1, '12', '2024-02-08 22:53:52'),
+	(221, 16, 11, 1, 1, '123', '2024-02-08 22:53:59'),
+	(222, 16, 1, 11, 1, '123', '2024-02-08 22:55:07'),
+	(223, 16, 11, 1, 1, '123', '2024-02-08 22:55:13'),
+	(224, 16, 1, 11, 1, '12', '2024-02-09 20:45:21'),
+	(225, 16, 1, 11, 1, 'ád', '2024-02-09 20:45:30'),
+	(226, 16, 11, 1, 1, 'ad', '2024-02-09 20:45:34'),
+	(227, 16, 1, 11, 1, 'aaaaa', '2024-02-09 20:45:56'),
+	(228, 16, 11, 1, 1, '45645654', '2024-02-09 20:46:13'),
+	(229, 16, 11, 1, 1, '456456456', '2024-02-09 20:46:19'),
+	(230, 16, 1, 11, 1, 'ádsadasd', '2024-02-09 20:46:24'),
+	(231, 16, 1, 11, 1, 'ádsadassa', '2024-02-09 20:46:26'),
+	(232, 16, 1, 11, 1, 'ád', '2024-02-09 20:52:03'),
+	(233, 16, 1, 11, 1, 'ádsadasd', '2024-02-09 20:52:07'),
+	(234, 16, 11, 1, 1, 'sadsad', '2024-02-09 20:52:10'),
+	(235, 16, 1, 11, 1, 'sadsadsad', '2024-02-09 20:52:14'),
+	(236, 16, 1, 11, 1, 'dsadas', '2024-02-09 20:52:15'),
+	(237, 16, 1, 11, 1, 'dsadas', '2024-02-09 20:52:17'),
+	(238, 16, 11, 1, 1, 'sad', '2024-02-09 20:52:19'),
+	(239, 16, 1, 11, 1, 'dsad', '2024-02-09 20:52:22');
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.products
@@ -803,7 +946,6 @@ CREATE TABLE IF NOT EXISTS `products` (
   `price` double NOT NULL,
   `discount` float DEFAULT NULL,
   `status` tinyint(4) NOT NULL,
-  `rate` float DEFAULT 0,
   `createdAt` datetime DEFAULT current_timestamp(),
   `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
@@ -813,89 +955,89 @@ CREATE TABLE IF NOT EXISTS `products` (
 
 -- Dumping data for table commenau.products: ~83 rows (approximately)
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` (`id`, `categoryId`, `name`, `available`, `description`, `price`, `discount`, `status`, `rate`, `createdAt`, `updatedAt`) VALUES
-	(38, 1, 'Tôm Ram Thịt', 60, 'Cơm + Canh + Đồ Xào + Tôm Ram Thịt', 39000, 0.2, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(39, 1, 'Heo Kho Mắm Ruốc', 60, 'Cơm + Canh + Đồ Xào + Heo Kho Mắm Ruốc', 39000, 0.2, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(40, 1, 'Sườn Non Ram Mặn Ngọt', 60, 'Cơm + Canh + Đồ Xào + Sườn Non Ram Mặn Ngọt', 39000, 0.4, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(41, 1, 'Đùi Gà Chiên Xốc Mắm', 60, 'Cơm + Canh + Đồ Xào + Đùi Gà Chiên Xốc Mắm', 39000, 0.38, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(42, 1, 'Trứng Chiên Thịt Bằm', 60, 'Cơm + Canh + Đồ Xào + Trứng Chiên Thịt Bằm', 39000, 0.2, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(43, 1, 'Đậu Hủ Nhồi Thịt Sốt Cà', 60, 'Cơm + Canh + Đồ Xào + Đậu Hủ Sốt Cà', 39000, 0, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(44, 1, 'Đậu Ve Xào Thịt', 60, 'Cơm + Canh+ Đồ Xào + Đậu Ve Xào Thịt', 39000, 0.22, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(45, 1, 'Gà Kho Sả Ớt', 60, 'Cơm + Canh+ Đồ Xào + Gà kho xả ớt', 39000, 0.01, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(46, 1, 'Canh Gà Nấu Lá Giang', 60, 'Cơm + Canh gà lá giang + Đồ Xào ', 39000, 0.4, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(47, 1, 'Cá Nục Chiên Xốc Mắm', 60, 'Cơm + Canh + Đồ Xào + Cá nục chiên', 39000, 0.48, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(48, 1, 'Cá Cơm Kho Tiêu', 60, 'Cơm + Canh+ Đồ Xào + Cá cơm kho tiêu', 39000, 0, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(50, 1, 'Heo Kho Tàu', 60, 'Cơm + Canh + Đồ Xào + Heo Kho Tàu', 39000, 0, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(51, 1, 'Sườn nướng', 60, 'Cơm + Canh+ Đồ Xào + Sườn nướng', 50000, 0.02, 1, NULL, '2023-10-21 17:04:52', '2024-01-22 16:16:22'),
-	(52, 1, 'Cơm Tôm Ram Thịt', 60, 'Cơm + Canh+ Đồ Xào + Tôm ram thịt', 50000, 0.39, 1, NULL, '2023-10-21 17:06:35', '2024-01-22 16:16:22'),
-	(53, 1, 'Cá lóc nướng', 60, 'Cơm + Canh+ Đồ Xào + Cá lóc nướng', 50000, 0.38, 1, NULL, '2023-10-21 17:06:35', '2024-01-22 16:16:22'),
-	(54, 1, 'Tôm Ram Mặn Ngọt', 60, 'Cơm + Canh + Đồ Xào + Tôm Ram Mặn Ngọt', 50000, 0, 1, NULL, '2023-10-21 17:06:35', '2024-01-22 16:16:22'),
-	(55, 1, 'Tà hũ thịt sốt cà', 60, 'Cơm + Canh+ Đồ Xào + Tàu hủ sốt cà', 50000, 0.16, 1, NULL, '2023-10-21 17:06:48', '2024-01-22 16:16:22'),
-	(56, 1, 'Sườn Xào Chua Ngọt', 60, 'Cơm + Canh + Đồ Xào + Sườn Xào Chua Ngọt', 50000, 0.03, 1, NULL, '2023-10-21 17:06:48', '2024-01-22 16:16:22'),
-	(57, 1, 'Cá Ngừ Kho Khóm', 60, 'Cơm + Canh + Đồ Xào + Cá Ngừ Kho Khóm', 50000, 0, 1, NULL, '2023-10-21 17:06:48', '2024-01-22 16:16:22'),
-	(58, 1, 'Cơm Tấm Long Xuyên', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 35000, 0.2, 1, NULL, '2023-10-21 17:06:56', '2024-01-22 16:16:22'),
-	(59, 1, 'Cơm Tấm', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 35000, 0.01, 1, NULL, '2023-10-21 17:06:56', '2024-01-22 16:16:22'),
-	(60, 1, 'Cơm Sườn Cốt Lết', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 35000, 0, 1, NULL, '2023-10-21 17:06:56', '2024-01-22 16:16:22'),
-	(61, 1, 'Cơm Sườn Cọng Chả', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 60000, 0.25, 1, NULL, '2023-10-21 17:06:59', '2024-01-22 16:16:22'),
-	(62, 1, 'Cơm Sườn Cọng Bì Trứng', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 60000, 0.37, 1, NULL, '2023-10-21 17:06:59', '2024-01-22 16:16:22'),
-	(63, 1, 'Cơm phá lấu', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 50000, 0.09, 1, NULL, '2023-10-21 17:06:59', '2024-01-22 16:16:22'),
-	(64, 1, 'Cơm Heo Quay Da Giòn', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 50000, 0, 1, NULL, '2023-10-21 17:07:14', '2024-01-22 16:16:22'),
-	(65, 1, 'Cơm Chiên Gà', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 80000, 0.49, 1, NULL, '2023-10-21 17:07:14', '2024-01-22 16:16:22'),
-	(66, 1, 'Cơm Chiên Dương Châu', 60, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 50000, 0, 1, NULL, '2023-10-21 17:07:14', '2024-01-22 16:16:22'),
-	(67, 1, 'Khổ Qua Xào Trứng', 60, 'Cơm + Canh + Đồ Xào + Khổ Qua Xào Trứng', 39000, 0.03, 1, NULL, '2023-10-21 17:09:00', '2024-01-22 16:16:22'),
-	(68, 1, 'Cơm sườn cốt lết ram', 60, 'Cơm + Canh+ Đồ Xào + cốt lết ram', 39000, 0.45, 1, NULL, '2023-10-21 17:09:05', '2024-01-22 16:16:22'),
-	(69, 1, 'Chả cá sốt cà', 60, 'Cơm + Canh+ Đồ Xào + Chả cá sốt cà', 80000, 0.16, 1, NULL, '2023-10-21 17:09:09', '2024-01-22 16:16:22'),
-	(71, 2, 'Canh Chua Tôm', 60, 'Tôm,đậu bắp, cà chua, giá, dọc mùng,..', 19000, 0.22, 1, NULL, '2023-10-21 20:07:20', '2024-01-22 16:16:22'),
-	(72, 2, 'Canh Gân Bò Dưa Chua', 60, 'Gân bò, dưa chua, cà chua,...', 19000, 0.27, 1, NULL, '2023-10-21 20:07:20', '2024-01-22 16:16:22'),
-	(73, 2, 'Canh Khổ Qua Nhồi', 60, 'Thịt xay, khổ qua,...', 19000, 0.18, 1, NULL, '2023-10-21 20:07:20', '2024-01-22 16:16:22'),
-	(74, 2, 'Đùi Nướng Gà Thêm', 60, NULL, 49000, 0, 1, NULL, '2023-10-21 20:07:24', '2024-01-22 16:16:22'),
-	(76, 2, 'Sườn Nướng Thêm', 60, NULL, 45000, 0.35, 1, NULL, '2023-10-21 20:07:24', '2024-01-22 16:16:22'),
-	(77, 2, 'Ba Rọi Thêm', 60, NULL, 49000, 0, 1, NULL, '2023-10-21 20:07:26', '2024-01-22 16:16:22'),
-	(78, 2, 'Thịt Xiên Nướng Thêm', 60, NULL, 45000, 0.16, 1, NULL, '2023-10-21 20:07:26', '2024-01-22 16:16:22'),
-	(79, 2, 'Xá Xíu Thêm', 60, NULL, 49000, 0, 1, NULL, '2023-10-21 20:07:26', '2024-01-22 16:16:22'),
-	(80, 2, 'Trứng Ốp La Thêm', 60, NULL, 12000, 0.33, 1, NULL, '2023-10-21 20:07:28', '2024-01-22 16:16:22'),
-	(81, 2, 'Chả Trứng Thêm', 60, NULL, 18000, 0.06, 1, NULL, '2023-10-21 20:07:28', '2024-01-22 16:16:22'),
-	(82, 2, 'Chả Giò Thêm', 60, NULL, 15000, 0.31, 1, NULL, '2023-10-21 20:07:28', '2024-01-22 16:16:22'),
-	(83, 2, 'Bì Thêm', 60, NULL, 12000, 0.38, 1, NULL, '2023-10-21 20:07:31', '2024-01-22 16:16:22'),
-	(84, 2, 'CÁ HÚ THÊM', 60, NULL, 39000, 0.48, 1, NULL, '2023-10-21 20:07:31', '2024-01-22 16:16:22'),
-	(85, 2, 'Thịt Kho Tiêu Thêm', 60, NULL, 39000, 0, 1, NULL, '2023-10-21 20:07:31', '2024-01-22 16:16:22'),
-	(86, 2, 'Cơm Thêm', 60, NULL, 9000, 0.24, 1, NULL, '2023-10-21 20:07:33', '2024-01-22 16:16:22'),
-	(87, 2, 'Chả Viên Thêm', 60, NULL, 10000, 0.49, 1, NULL, '2023-10-21 20:07:33', '2024-01-22 16:16:22'),
-	(88, 2, 'Cá Thu Nhật Kho Tiêu Thêm', 60, NULL, 39000, 0, 1, NULL, '2023-10-21 20:07:33', '2024-01-22 16:16:22'),
-	(89, 3, 'Dừa tắc tươi', 60, 'Dừa tắc tươi là một loại nước uống tươi ngon được làm từ tắc tươi.', 20000, 0.24, 1, NULL, '2023-10-22 20:43:09', '2024-01-22 16:16:22'),
-	(90, 3, 'Nước dừa tươi', 60, 'Nước dừa tươi là một loại nước uống tự nhiên và tươi ngon được làm từ nước dừa tươi.', 25000, 0.46, 1, NULL, '2023-10-22 20:43:14', '2024-01-22 16:16:22'),
-	(91, 3, 'Chai sting dâu', 60, 'Chai Sting vị dâu, một món nước ngon và sảng khoái.', 15000, 0.07, 1, NULL, '2023-10-22 20:43:14', '2024-01-22 16:16:22'),
-	(92, 3, 'Redbull', 60, 'Redbull, nước uống cung cấp năng lượng với hương vị độc đáo.', 30000, 0.49, 1, NULL, '2023-10-22 20:43:19', '2024-01-22 16:16:22'),
-	(93, 3, 'Nước cam tươi ly lớn', 60, 'Nước cam tươi ngon, tươi mát, ly lớn phục vụ cho sự thưởng thức.', 35000, 0, 1, NULL, '2023-10-22 20:43:19', '2024-01-22 16:16:22'),
-	(94, 3, 'Trà tắc tươi mật ong', 60, 'Trà tắc tươi hòa quyện vị ngọt tự nhiên của mật ong.', 18000, 0.13, 1, NULL, '2023-10-22 20:43:19', '2024-01-22 16:16:22'),
-	(95, 3, 'Đá me đậu phộng', 60, 'Đá me đậu phộng là một loại đá xay mát lạnh với hương vị chanh me và đậu phộng giòn.', 22000, 0.48, 1, NULL, '2023-10-22 20:43:24', '2024-01-22 16:16:22'),
-	(96, 3, 'Cafe sữa đá', 60, 'Cafe sữa đá, món đá cà phê truyền thống của Việt Nam với vị ngon đậm đà.', 20000, 0.01, 1, NULL, '2023-10-22 20:49:16', '2024-01-22 16:16:22'),
-	(97, 3, 'Cafe đá', 60, 'Cafe đá, cà phê đá mát lạnh với hương thơm độc đáo.', 18000, 0, 1, NULL, '2023-10-22 20:49:21', '2024-01-22 16:16:22'),
-	(98, 3, 'Sữa đậu nành', 60, 'Sữa đậu nành là một loại thức uống ngon và bổ dưỡng cho người ưa chuộng sữa đậu nành.', 15000, 0.02, 1, NULL, '2023-10-22 20:49:23', '2024-01-22 16:16:22'),
-	(99, 3, 'Nước ép táo', 60, 'Nước ép táo tươi ngon và bổ dưỡng, đem lại hương vị tươi mát.', 25000, 0.29, 1, NULL, '2023-10-22 20:49:31', '2024-01-22 16:16:22'),
-	(100, 3, 'Soda dâu tây', 60, 'Soda dâu tây, nước uống có hương vị dâu tây ngọt ngon.', 20000, 0, 1, NULL, '2023-10-22 20:49:31', '2024-01-22 16:16:22'),
-	(101, 3, 'Bạc xỉu đá', 60, 'Bạc xỉu đá, món nước cafe mát lạnh, thường được thêm đá.', 18000, 0.48, 1, NULL, '2023-10-22 20:49:31', '2024-01-22 16:16:22'),
-	(102, 3, 'Soda trái vải', 60, 'Soda trái vải, món nước uống sảng khoái với hương vị trái vải.', 20000, 0.31, 1, NULL, '2023-10-22 20:49:51', '2024-01-22 16:16:22'),
-	(103, 3, 'Nước tinh khiết', 60, 'Nước tinh khiết, một loại nước uống không có chất tạp, tươi mát.', 10000, 0, 1, NULL, '2023-10-22 20:49:51', '2024-01-22 16:16:22'),
-	(104, 1, 'Cơm gà ta luộc', 60, '<p>Cơm g&agrave; ta luộc l&agrave; m&oacute;n cơm truyền thống với g&agrave; ta luộc mềm v&agrave; thơm ngon. M&oacute;n ăn phong c&aacute;ch gia đ&igrave;nh với hương vị quen thuộc, ph&ugrave; hợp cho bữa trưa h&agrave;ng ng&agrave;y.</p>\r\n', 55000, 0.17, 0, 4, '2023-10-22 20:55:08', '2024-01-23 20:09:57'),
-	(105, 1, 'Cơm canh chua cá', 60, 'Cơm canh chua cá là món cơm dậy mùi chua ngọt với cá tươi ngon và canh chua đầy hương vị. Món ăn truyền thống có hương vị đậm đà và tươi mát.', 45000, 0.24, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(106, 1, 'Cơm đùi gà ốp la', 60, 'Cơm đùi gà ốp la là món cơm với đùi gà ốp la thơm ngon và trứng gà béo ngon. Món ăn ngon lành và bổ dưỡng, phù hợp cho cả gia đình.', 50000, 0.19, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(107, 1, 'Cơm bò xào trứng ốp la', 60, 'Cơm bò xào trứng ốp la là món cơm với bò xào thơm ngon và trứng ốp la béo ngon. Hương vị độc đáo và hấp dẫn.', 60000, 0.25, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(108, 1, 'Cơm gà kho sả ớt', 60, 'Cơm gà kho sả ớt là món cơm với gà kho thơm ngon và sả ớt cay cay. Món ăn hấp dẫn với hương vị đậm đà.', 55000, 0, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(109, 1, 'Cơm bò xào', 60, 'Cơm bò xào là món cơm với bò xào thơm ngon và gia vị đa dạng. Món ăn ngon và bổ dưỡng.', 58000, 0.06, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(111, 1, 'Cơm tấm sườn', 60, 'Cơm tấm sườn là món cơm tấm với sườn thơm ngon và cơm tấm ngon lành. Hương vị đậm đà và ngon miệng.', 50000, 0.4, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(112, 1, 'Cơm thịt rim tôm', 60, 'Cơm thịt rim tôm là món cơm với thịt rim tôm thơm ngon và gia vị phong phú. Món ăn độc đáo và hấp dẫn.', 65000, 0.07, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(113, 1, 'Cơm khổ qua chả cá', 60, 'Cơm khổ qua chả cá là món cơm với khổ qua mềm và chả cá thơm ngon. Món ăn đa dạng vị chua ngọt và đậm đà.', 48000, 0, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(114, 1, 'Cơm thịt kho tiêu', 60, 'Cơm thịt kho tiêu là món cơm với thịt kho tiêu thơm ngon và nước mắm đậm đà. Món ăn phong cách miền Nam ngon lành.', 62000, 0.45, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(115, 1, 'Cơm trứng cuộn thịt', 60, 'Cơm trứng cuộn thịt là món cơm với trứng cuộn và thịt ngon lành. Món ăn đơn giản nhưng ngon miệng.', 53000, 0, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(116, 1, 'Cơm mực xào', 60, 'Cơm mực xào là món cơm với mực xào thơm ngon và gia vị đậm đà. Món ăn ngon và hấp dẫn.', 70000, 0.44, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(117, 1, 'Cơm thịt kho mắm ruốc', 60, 'Món cơm thịt kho mắm ruốc có thịt thơm ngon được kho cùng mắm ruốc, tạo nên một hương vị đặc trưng.', 55000, 0.12, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(118, 1, 'Cơm tấm đùi gà', 60, 'Cơm tấm đùi gà là món cơm tấm kết hợp với đùi gà thơm ngon. Món này thường kèm theo rau sống và nước mắm.', 60000, 0.28, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(119, 1, 'Cơm thịt luộc cà pháo', 60, 'Cơm thịt luộc cà pháo là món cơm với thịt luộc và cà pháo tạo nên hương vị hấp dẫn và bổ dưỡng.', 45000, 0, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(120, 1, 'Cơm thịt kho trứng', 60, 'Cơm thịt kho trứng là món cơm với thịt kho và trứng thơm ngon. Món này có hương vị thấm đẫm.', 50000, 0.28, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(121, 1, 'Cơm sườn non rim nước dừa', 60, 'Cơm sườn non rim nước dừa là món cơm với sườn non rim cùng nước dừa thơm ngon. Hương vị độc đáo.', 70000, 0.36, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(122, 1, 'Cơm giò heo hầm cải chua', 60, 'Cơm giò heo hầm cải chua là món cơm với giò heo hầm và cải chua tạo nên hương vị bắt mắt và ngon miệng.', 65000, 0.43, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22'),
-	(123, NULL, 'Cơm cá chiên sả ớt', 60, 'Cơm cá chiên sả ớt là món cơm với cá chiên giòn, gia vị sả ớt thơm ngon. Món này có hương vị cay nồng.', 75000, 0.08, 1, NULL, '2023-10-22 20:55:08', '2024-01-22 16:16:22');
+INSERT INTO `products` (`id`, `categoryId`, `name`, `available`, `description`, `price`, `discount`, `status`, `createdAt`, `updatedAt`) VALUES
+	(38, 1, 'Tôm Ram Thịt', 0, 'Cơm + Canh + Đồ Xào + Tôm Ram Thịt', 39000, 0.2, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(39, 1, 'Heo Kho Mắm Ruốc', 0, 'Cơm + Canh + Đồ Xào + Heo Kho Mắm Ruốc', 39000, 0.2, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(40, 1, 'Sườn Non Ram Mặn Ngọt', 0, 'Cơm + Canh + Đồ Xào + Sườn Non Ram Mặn Ngọt', 39000, 0.4, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(41, 1, 'Đùi Gà Chiên Xốc Mắm', 0, 'Cơm + Canh + Đồ Xào + Đùi Gà Chiên Xốc Mắm', 39000, 0.38, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(42, 1, 'Trứng Chiên Thịt Bằm', 0, 'Cơm + Canh + Đồ Xào + Trứng Chiên Thịt Bằm', 39000, 0.2, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(43, 1, 'Đậu Hủ Nhồi Thịt Sốt Cà', 0, 'Cơm + Canh + Đồ Xào + Đậu Hủ Sốt Cà', 39000, 0, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(44, 1, 'Đậu Ve Xào Thịt', 0, 'Cơm + Canh+ Đồ Xào + Đậu Ve Xào Thịt', 39000, 0.22, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(45, 1, 'Gà Kho Sả Ớt', 0, 'Cơm + Canh+ Đồ Xào + Gà kho xả ớt', 39000, 0.01, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(46, 1, 'Canh Gà Nấu Lá Giang', 0, 'Cơm + Canh gà lá giang + Đồ Xào ', 39000, 0.4, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(47, 1, 'Cá Nục Chiên Xốc Mắm', 0, 'Cơm + Canh + Đồ Xào + Cá nục chiên', 39000, 0.48, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(48, 1, 'Cá Cơm Kho Tiêu', 0, 'Cơm + Canh+ Đồ Xào + Cá cơm kho tiêu', 39000, 0, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(50, 1, 'Heo Kho Tàu', 0, 'Cơm + Canh + Đồ Xào + Heo Kho Tàu', 39000, 0, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(51, 1, 'Sườn nướng', 0, 'Cơm + Canh+ Đồ Xào + Sườn nướng', 50000, 0.02, 1, '2023-10-21 17:04:52', '2024-02-01 16:19:40'),
+	(52, 1, 'Cơm Tôm Ram Thịt', 0, 'Cơm + Canh+ Đồ Xào + Tôm ram thịt', 50000, 0.39, 1, '2023-10-21 17:06:35', '2024-02-01 16:19:40'),
+	(53, 1, 'Cá lóc nướng', 0, 'Cơm + Canh+ Đồ Xào + Cá lóc nướng', 50000, 0.38, 1, '2023-10-21 17:06:35', '2024-02-01 16:19:40'),
+	(54, 1, 'Tôm Ram Mặn Ngọt', 0, 'Cơm + Canh + Đồ Xào + Tôm Ram Mặn Ngọt', 50000, 0, 1, '2023-10-21 17:06:35', '2024-02-01 16:19:40'),
+	(55, 1, 'Tà hũ thịt sốt cà', 0, 'Cơm + Canh+ Đồ Xào + Tàu hủ sốt cà', 50000, 0.16, 1, '2023-10-21 17:06:48', '2024-02-01 16:19:40'),
+	(56, 1, 'Sườn Xào Chua Ngọt', 0, 'Cơm + Canh + Đồ Xào + Sườn Xào Chua Ngọt', 50000, 0.03, 1, '2023-10-21 17:06:48', '2024-02-01 16:19:40'),
+	(57, 1, 'Cá Ngừ Kho Khóm', 0, 'Cơm + Canh + Đồ Xào + Cá Ngừ Kho Khóm', 50000, 0, 1, '2023-10-21 17:06:48', '2024-02-01 16:19:40'),
+	(58, 1, 'Cơm Tấm Long Xuyên', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 35000, 0.2, 1, '2023-10-21 17:06:56', '2024-02-01 16:19:40'),
+	(59, 1, 'Cơm Tấm', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 35000, 0.01, 1, '2023-10-21 17:06:56', '2024-02-01 16:19:40'),
+	(60, 1, 'Cơm Sườn Cốt Lết', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 35000, 0, 1, '2023-10-21 17:06:56', '2024-02-01 16:19:40'),
+	(61, 1, 'Cơm Sườn Cọng Chả', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 60000, 0.25, 1, '2023-10-21 17:06:59', '2024-02-01 16:19:40'),
+	(62, 1, 'Cơm Sườn Cọng Bì Trứng', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 60000, 0.37, 1, '2023-10-21 17:06:59', '2024-02-01 16:19:40'),
+	(63, 1, 'Cơm phá lấu', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 50000, 0.09, 1, '2023-10-21 17:06:59', '2024-02-01 16:19:40'),
+	(64, 1, 'Cơm Heo Quay Da Giòn', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 50000, 0, 1, '2023-10-21 17:07:14', '2024-02-01 16:19:40'),
+	(65, 1, 'Cơm Chiên Gà', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 80000, 0.49, 1, '2023-10-21 17:07:14', '2024-02-01 16:19:40'),
+	(66, 1, 'Cơm Chiên Dương Châu', 0, '- Món phụ, món rau và canh sẽ được thay đổi theo ngày. Đơn giá đã bao gồm chi phí hộp nhựa và đũa thìa, hộp đựng canh, nước chấm', 50000, 0, 1, '2023-10-21 17:07:14', '2024-02-01 16:19:40'),
+	(67, 1, 'Khổ Qua Xào Trứng', 0, 'Cơm + Canh + Đồ Xào + Khổ Qua Xào Trứng', 39000, 0.03, 1, '2023-10-21 17:09:00', '2024-02-01 16:19:40'),
+	(68, 1, 'Cơm sườn cốt lết ram', 0, 'Cơm + Canh+ Đồ Xào + cốt lết ram', 39000, 0.45, 1, '2023-10-21 17:09:05', '2024-02-01 16:19:40'),
+	(69, 1, 'Chả cá sốt cà', 0, 'Cơm + Canh+ Đồ Xào + Chả cá sốt cà', 80000, 0.16, 1, '2023-10-21 17:09:09', '2024-02-01 16:19:40'),
+	(71, 2, 'Canh Chua Tôm', 0, 'Tôm,đậu bắp, cà chua, giá, dọc mùng,..', 19000, 0.22, 1, '2023-10-21 20:07:20', '2024-02-01 16:19:40'),
+	(72, 2, 'Canh Gân Bò Dưa Chua', 0, 'Gân bò, dưa chua, cà chua,...', 19000, 0.27, 1, '2023-10-21 20:07:20', '2024-02-01 16:19:40'),
+	(73, 2, 'Canh Khổ Qua Nhồi', 0, 'Thịt xay, khổ qua,...', 19000, 0.18, 1, '2023-10-21 20:07:20', '2024-02-01 16:19:40'),
+	(74, 2, 'Đùi Nướng Gà Thêm', 0, NULL, 49000, 0, 1, '2023-10-21 20:07:24', '2024-02-01 16:19:40'),
+	(76, 2, 'Sườn Nướng Thêm', 0, NULL, 45000, 0.35, 1, '2023-10-21 20:07:24', '2024-02-01 16:19:40'),
+	(77, 2, 'Ba Rọi Thêm', 0, NULL, 49000, 0, 1, '2023-10-21 20:07:26', '2024-02-01 16:19:40'),
+	(78, 2, 'Thịt Xiên Nướng Thêm', 0, NULL, 45000, 0.16, 1, '2023-10-21 20:07:26', '2024-02-01 16:19:40'),
+	(79, 2, 'Xá Xíu Thêm', 0, NULL, 49000, 0, 1, '2023-10-21 20:07:26', '2024-02-01 16:19:40'),
+	(80, 2, 'Trứng Ốp La Thêm', 0, NULL, 12000, 0.33, 1, '2023-10-21 20:07:28', '2024-02-01 16:19:40'),
+	(81, 2, 'Chả Trứng Thêm', 0, NULL, 18000, 0.06, 1, '2023-10-21 20:07:28', '2024-02-01 16:19:40'),
+	(82, 2, 'Chả Giò Thêm', 0, NULL, 15000, 0.31, 1, '2023-10-21 20:07:28', '2024-02-01 16:19:40'),
+	(83, 2, 'Bì Thêm', 0, NULL, 12000, 0.38, 1, '2023-10-21 20:07:31', '2024-02-01 16:19:40'),
+	(84, 2, 'CÁ HÚ THÊM', 0, NULL, 39000, 0.48, 1, '2023-10-21 20:07:31', '2024-02-01 16:19:40'),
+	(85, 2, 'Thịt Kho Tiêu Thêm', 0, NULL, 39000, 0, 1, '2023-10-21 20:07:31', '2024-02-01 16:19:40'),
+	(86, 2, 'Cơm Thêm', 0, NULL, 9000, 0.24, 1, '2023-10-21 20:07:33', '2024-02-01 16:19:40'),
+	(87, 2, 'Chả Viên Thêm', 0, NULL, 10000, 0.49, 1, '2023-10-21 20:07:33', '2024-02-01 16:19:40'),
+	(88, 2, 'Cá Thu Nhật Kho Tiêu Thêm', 0, NULL, 39000, 0, 1, '2023-10-21 20:07:33', '2024-02-01 16:19:40'),
+	(89, 3, 'Dừa tắc tươi', 0, 'Dừa tắc tươi là một loại nước uống tươi ngon được làm từ tắc tươi.', 20000, 0.24, 1, '2023-10-22 20:43:09', '2024-02-01 16:19:40'),
+	(90, 3, 'Nước dừa tươi', 0, 'Nước dừa tươi là một loại nước uống tự nhiên và tươi ngon được làm từ nước dừa tươi.', 25000, 0.46, 1, '2023-10-22 20:43:14', '2024-02-01 16:19:40'),
+	(91, 3, 'Chai sting dâu', 0, 'Chai Sting vị dâu, một món nước ngon và sảng khoái.', 15000, 0.07, 1, '2023-10-22 20:43:14', '2024-02-01 16:19:40'),
+	(92, 3, 'Redbull', 0, 'Redbull, nước uống cung cấp năng lượng với hương vị độc đáo.', 30000, 0.49, 1, '2023-10-22 20:43:19', '2024-02-01 16:19:40'),
+	(93, 3, 'Nước cam tươi ly lớn', 0, 'Nước cam tươi ngon, tươi mát, ly lớn phục vụ cho sự thưởng thức.', 35000, 0, 1, '2023-10-22 20:43:19', '2024-02-01 16:19:40'),
+	(94, 3, 'Trà tắc tươi mật ong', 0, 'Trà tắc tươi hòa quyện vị ngọt tự nhiên của mật ong.', 18000, 0.13, 1, '2023-10-22 20:43:19', '2024-02-01 16:19:40'),
+	(95, 3, 'Đá me đậu phộng', 0, 'Đá me đậu phộng là một loại đá xay mát lạnh với hương vị chanh me và đậu phộng giòn.', 22000, 0.48, 1, '2023-10-22 20:43:24', '2024-02-01 16:19:40'),
+	(96, 3, 'Cafe sữa đá', 0, 'Cafe sữa đá, món đá cà phê truyền thống của Việt Nam với vị ngon đậm đà.', 20000, 0.01, 1, '2023-10-22 20:49:16', '2024-02-01 16:19:40'),
+	(97, 3, 'Cafe đá', 0, 'Cafe đá, cà phê đá mát lạnh với hương thơm độc đáo.', 18000, 0, 1, '2023-10-22 20:49:21', '2024-02-01 16:19:40'),
+	(98, 3, 'Sữa đậu nành', 0, 'Sữa đậu nành là một loại thức uống ngon và bổ dưỡng cho người ưa chuộng sữa đậu nành.', 15000, 0.02, 1, '2023-10-22 20:49:23', '2024-02-01 16:19:40'),
+	(99, 3, 'Nước ép táo', 0, 'Nước ép táo tươi ngon và bổ dưỡng, đem lại hương vị tươi mát.', 25000, 0.29, 1, '2023-10-22 20:49:31', '2024-02-01 16:19:40'),
+	(100, 3, 'Soda dâu tây', 0, 'Soda dâu tây, nước uống có hương vị dâu tây ngọt ngon.', 20000, 0, 1, '2023-10-22 20:49:31', '2024-02-01 16:19:40'),
+	(101, 3, 'Bạc xỉu đá', 0, 'Bạc xỉu đá, món nước cafe mát lạnh, thường được thêm đá.', 18000, 0.48, 1, '2023-10-22 20:49:31', '2024-02-01 16:19:40'),
+	(102, 3, 'Soda trái vải', 0, 'Soda trái vải, món nước uống sảng khoái với hương vị trái vải.', 20000, 0.31, 1, '2023-10-22 20:49:51', '2024-02-01 16:19:40'),
+	(103, 3, 'Nước tinh khiết', 0, 'Nước tinh khiết, một loại nước uống không có chất tạp, tươi mát.', 10000, 0, 1, '2023-10-22 20:49:51', '2024-02-01 16:19:40'),
+	(104, 1, 'Cơm gà ta luộc', 60, '<p>Cơm g&agrave; ta luộc l&agrave; m&oacute;n cơm truyền thống với g&agrave; ta luộc mềm v&agrave; thơm ngon. M&oacute;n ăn phong c&aacute;ch gia đ&igrave;nh với hương vị quen thuộc, ph&ugrave; hợp cho bữa trưa h&agrave;ng ng&agrave;y.</p>\r\n', 55000, 0.17, 0, '2023-10-22 20:55:08', '2024-01-23 20:09:57'),
+	(105, 1, 'Cơm canh chua cá', 0, 'Cơm canh chua cá là món cơm dậy mùi chua ngọt với cá tươi ngon và canh chua đầy hương vị. Món ăn truyền thống có hương vị đậm đà và tươi mát.', 45000, 0.24, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(106, 1, 'Cơm đùi gà ốp la', 0, 'Cơm đùi gà ốp la là món cơm với đùi gà ốp la thơm ngon và trứng gà béo ngon. Món ăn ngon lành và bổ dưỡng, phù hợp cho cả gia đình.', 50000, 0.19, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(107, 1, 'Cơm bò xào trứng ốp la', 0, 'Cơm bò xào trứng ốp la là món cơm với bò xào thơm ngon và trứng ốp la béo ngon. Hương vị độc đáo và hấp dẫn.', 60000, 0.25, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(108, 1, 'Cơm gà kho sả ớt', 0, 'Cơm gà kho sả ớt là món cơm với gà kho thơm ngon và sả ớt cay cay. Món ăn hấp dẫn với hương vị đậm đà.', 55000, 0, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(109, 1, 'Cơm bò xào', 0, 'Cơm bò xào là món cơm với bò xào thơm ngon và gia vị đa dạng. Món ăn ngon và bổ dưỡng.', 58000, 0.06, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(111, 1, 'Cơm tấm sườn', 0, 'Cơm tấm sườn là món cơm tấm với sườn thơm ngon và cơm tấm ngon lành. Hương vị đậm đà và ngon miệng.', 50000, 0.4, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(112, 1, 'Cơm thịt rim tôm', 0, 'Cơm thịt rim tôm là món cơm với thịt rim tôm thơm ngon và gia vị phong phú. Món ăn độc đáo và hấp dẫn.', 65000, 0.07, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(113, 1, 'Cơm khổ qua chả cá', 0, 'Cơm khổ qua chả cá là món cơm với khổ qua mềm và chả cá thơm ngon. Món ăn đa dạng vị chua ngọt và đậm đà.', 48000, 0, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(114, 1, 'Cơm thịt kho tiêu', 0, 'Cơm thịt kho tiêu là món cơm với thịt kho tiêu thơm ngon và nước mắm đậm đà. Món ăn phong cách miền Nam ngon lành.', 62000, 0.45, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(115, 1, 'Cơm trứng cuộn thịt', 0, 'Cơm trứng cuộn thịt là món cơm với trứng cuộn và thịt ngon lành. Món ăn đơn giản nhưng ngon miệng.', 53000, 0, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(116, 1, 'Cơm mực xào', 0, 'Cơm mực xào là món cơm với mực xào thơm ngon và gia vị đậm đà. Món ăn ngon và hấp dẫn.', 70000, 0.44, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(117, 1, 'Cơm thịt kho mắm ruốc', 0, 'Món cơm thịt kho mắm ruốc có thịt thơm ngon được kho cùng mắm ruốc, tạo nên một hương vị đặc trưng.', 55000, 0.12, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(118, 1, 'Cơm tấm đùi gà', 0, 'Cơm tấm đùi gà là món cơm tấm kết hợp với đùi gà thơm ngon. Món này thường kèm theo rau sống và nước mắm.', 60000, 0.28, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(119, 1, 'Cơm thịt luộc cà pháo', 0, 'Cơm thịt luộc cà pháo là món cơm với thịt luộc và cà pháo tạo nên hương vị hấp dẫn và bổ dưỡng.', 45000, 0, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(120, 1, 'Cơm thịt kho trứng', 0, 'Cơm thịt kho trứng là món cơm với thịt kho và trứng thơm ngon. Món này có hương vị thấm đẫm.', 50000, 0.28, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(121, 1, 'Cơm sườn non rim nước dừa', 0, 'Cơm sườn non rim nước dừa là món cơm với sườn non rim cùng nước dừa thơm ngon. Hương vị độc đáo.', 70000, 0.36, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(122, 1, 'Cơm giò heo hầm cải chua', 0, 'Cơm giò heo hầm cải chua là món cơm với giò heo hầm và cải chua tạo nên hương vị bắt mắt và ngon miệng.', 65000, 0.43, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40'),
+	(123, NULL, 'Cơm cá chiên sả ớt', 0, 'Cơm cá chiên sả ớt là món cơm với cá chiên giòn, gia vị sả ớt thơm ngon. Món này có hương vị cay nồng.', 75000, 0.08, 1, '2023-10-22 20:55:08', '2024-02-01 16:19:40');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.product_images
@@ -1016,24 +1158,26 @@ CREATE TABLE IF NOT EXISTS `product_reviews` (
   KEY `FK_product_reviews_products` (`productId`),
   CONSTRAINT `FK_product_reviews_products` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_product_reviews_users` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
--- Dumping data for table commenau.product_reviews: ~13 rows (approximately)
+-- Dumping data for table commenau.product_reviews: ~14 rows (approximately)
 /*!40000 ALTER TABLE `product_reviews` DISABLE KEYS */;
 INSERT INTO `product_reviews` (`id`, `userId`, `productId`, `rating`, `content`, `createdAt`) VALUES
-	(6, 1, 104, 5, 'ngon quá', '2024-01-03 20:21:48'),
-	(7, 1, 104, 4, 'ngon quá', '2024-01-03 20:23:18'),
-	(8, 1, 104, 4, 'tuyệt vời', '2024-01-09 10:40:59'),
-	(9, 1, 104, 4, 'tuyệt vời', '2024-01-09 10:42:11'),
-	(14, 13, 104, 1, 'không ngon lắm', '2024-01-20 17:10:02'),
-	(15, 13, 104, 3, 'ngon ', '2024-01-20 17:14:12'),
-	(16, 13, 104, 5, 'ngon', '2024-01-20 17:15:39'),
-	(17, 13, 104, 4, 'tuyệt', '2024-01-20 17:16:02'),
-	(18, 13, 104, 4, 'tuyệt', '2024-01-20 17:16:15'),
-	(19, 13, 104, 3, 'ngon', '2024-01-20 17:16:52'),
-	(21, 19, 38, 2, 'ok', '2024-01-22 10:37:30'),
-	(22, 19, 38, 4, 'ngin', '2024-01-22 10:37:38'),
-	(23, 19, 38, 1, 'tốt', '2024-01-22 10:37:44');
+	(6, 1, 105, 5, '1', '2024-01-03 20:21:48'),
+	(7, 1, 105, 4, '2', '2024-01-03 20:23:18'),
+	(8, 1, 105, 4, '3', '2024-01-09 10:40:59'),
+	(9, 1, 105, 4, '4', '2024-01-09 10:42:11'),
+	(14, 13, 105, 1, '5', '2024-01-20 17:10:02'),
+	(15, 13, 105, 3, '6', '2024-01-20 17:14:12'),
+	(16, 13, 105, 5, '7', '2024-01-20 17:15:39'),
+	(17, 13, 105, 4, '8', '2024-01-20 17:16:02'),
+	(18, 13, 105, 4, '9', '2024-01-20 17:16:15'),
+	(19, 13, 105, 3, '10', '2024-01-20 17:16:52'),
+	(21, 19, 105, 2, '11', '2024-01-22 10:37:30'),
+	(22, 19, 105, 4, '12', '2024-01-22 10:37:38'),
+	(23, 19, 105, 1, '13', '2024-01-22 10:37:44'),
+	(24, 1, 105, 5, 'ngon quá', '2024-01-28 22:11:11'),
+	(25, 1, 105, 1, 'tuyệt', '2024-01-28 22:11:37');
 /*!40000 ALTER TABLE `product_reviews` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.reply_contacts
@@ -1101,18 +1245,18 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table commenau.users: ~12 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `roleId`, `firstName`, `lastName`, `email`, `username`, `password`, `phoneNumber`, `address`, `status`, `createdAt`, `updatedAt`) VALUES
-	(1, 1, 'Phi', 'Hoàng', 'vophihoang252003@gmail.com', 'admin', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '0333333333', 'Khu phố 6, phường linh trung thủ đức', 'ACTIVATED', '2023-12-01 21:02:25', '2024-01-24 17:24:32'),
-	(11, 1, 'John', 'Doe', 'john@example.com', 'johndoe', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '123456789', '123 Main St, City', 'ACTIVATED', '2023-12-01 08:30:00', '2024-01-24 17:24:32'),
-	(12, 1, 'Alice', 'Smith', 'alice@example.com', 'alicesmith', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '987654321', '456 Elm St, Town', 'ACTIVATED', '2023-12-02 10:45:00', '2024-01-24 17:24:33'),
-	(13, 1, 'Bobh', 'Johnson1', 'bob@example.com', 'bobjohnson', '$2a$10$fVpGvWhkmAkmXGVDywT4y.9Z644Hqlk3Tn6OyZ.vVrKnxNUxgHtKm', '0333333333', 'Khu phố 6, phường linh trung thủ đức', 'ACTIVATED', '2023-12-03 12:15:00', '2024-01-24 17:24:33'),
-	(14, 1, 'Emma', 'Brown', 'emma@example.com', 'emmabrown', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '111222333', '101 Pine St, Town', 'ACTIVATED', '2023-12-04 14:20:00', '2024-01-24 17:24:34'),
-	(15, 1, 'Michael', 'Wilson', 'michael@example.com', 'michaelwilson', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '444555666', '202 Maple St, City', 'ACTIVATED', '2023-12-05 16:00:00', '2024-01-24 17:24:34'),
-	(16, 1, 'Sophia', 'Lee', 'sophia@example.com', 'sophialee', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '777888999', '303 Cedar St, Village', 'ACTIVATED', '2023-12-06 18:30:00', '2024-01-24 17:24:35'),
-	(17, 1, 'Oliver', 'Davis', 'oliver@example.com', 'oliverdavis', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '333222111', '404 Oak St, City', 'ACTIVATED', '2023-12-07 20:10:00', '2024-01-24 17:24:36'),
-	(18, 1, 'Charlotte', 'Garcia', 'charlotte@example.com', 'charlottegarcia', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '999888777', '505 Pine St, Town', 'ACTIVATED', '2023-12-08 22:25:00', '2024-01-24 17:24:36'),
-	(19, 1, 'Daniel', 'Rodriguez', 'daniel@example.com', 'danielrodriguez', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '121212121', '606 Elm St, Village', 'ACTIVATED', '2023-12-09 09:00:00', '2024-01-24 17:24:37'),
-	(20, 1, 'Ava', 'Martinez', 'ava@example.com', 'avamartinez', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '131313131', '707 Maple St, City', 'ACTIVATED', '2023-12-10 11:20:00', '2024-01-24 17:24:37'),
-	(34, 1, 'Thiên', 'Thiên', 'hoanghoangking01@gmail.com', '581d0cffce', '$2a$10$nIRcfcT0F8VjZYAWkfo/F.4XMW4kN2sd40m1W1YR.ecczB66HY6ly', NULL, NULL, 'ACTIVATED', '2024-01-22 10:42:56', '2024-01-24 17:24:38');
+	(1, 2, 'Phi', 'Hoàng', 'vophihoang252003@gmail.com', 'admin', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '0333333333', 'Khu phố 6, phường linh trung thủ đức', 'ACTIVATED', '2023-12-01 21:02:25', '2024-02-01 16:25:22'),
+	(11, 1, 'John', 'Doe', 'john@example.com', 'john', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '123456789', '123 Main St, City', 'ACTIVATED', '2023-12-01 08:30:00', '2024-02-09 21:56:38'),
+	(12, 1, 'Alice', 'Smith', 'alice@example.com', 'alicesmith', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '987654321', '456 Elm St, Town', 'ACTIVATED', '2023-12-02 10:45:00', '2024-01-27 12:15:38'),
+	(13, 1, 'Bobh', 'Johnson1', 'bob@example.com', 'bobjohnson', '$2a$10$fVpGvWhkmAkmXGVDywT4y.9Z644Hqlk3Tn6OyZ.vVrKnxNUxgHtKm', '0333333333', 'Khu phố 6, phường linh trung thủ đức', 'ACTIVATED', '2023-12-03 12:15:00', '2024-01-27 12:14:58'),
+	(14, 1, 'Emma', 'Brown', 'emma@example.com', 'emmabrown', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '111222333', '101 Pine St, Town', 'ACTIVATED', '2023-12-04 14:20:00', '2024-01-27 12:14:57'),
+	(15, 1, 'Michael', 'Wilson', 'michael@example.com', 'michaelwilson', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '444555666', '202 Maple St, City', 'ACTIVATED', '2023-12-05 16:00:00', '2024-01-27 12:14:57'),
+	(16, 1, 'Sophia', 'Lee', 'sophia@example.com', 'sophialee', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '777888999', '303 Cedar St, Village', 'ACTIVATED', '2023-12-06 18:30:00', '2024-01-27 12:14:56'),
+	(17, 1, 'Oliver', 'Davis', 'oliver@example.com', 'oliverdavis', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '333222111', '404 Oak St, City', 'ACTIVATED', '2023-12-07 20:10:00', '2024-01-27 12:14:56'),
+	(18, 1, 'Charlotte', 'Garcia', 'charlotte@example.com', 'charlottegarcia', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '999888777', '505 Pine St, Town', 'ACTIVATED', '2023-12-08 22:25:00', '2024-01-27 12:14:55'),
+	(19, 1, 'Daniel', 'Rodriguez', 'daniel@example.com', 'danielrodriguez', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '121212121', '606 Elm St, Village', 'ACTIVATED', '2023-12-09 09:00:00', '2024-01-27 12:14:55'),
+	(20, 1, 'Ava', 'Martinez', 'ava@example.com', 'avamartinez', '$2a$12$vBAPHSQO97MwV1xlS8Pgm.5DRjnpgL.DarQpKvo7An5FUsfClm1G2', '131313131', '707 Maple St, City', 'ACTIVATED', '2023-12-10 11:20:00', '2024-01-27 12:14:55'),
+	(34, 1, 'Thiên', 'Thiên', 'hoanghoangking01@gmail.com', '581d0cffce', '$2a$10$nIRcfcT0F8VjZYAWkfo/F.4XMW4kN2sd40m1W1YR.ecczB66HY6ly', NULL, NULL, 'ACTIVATED', '2024-01-22 10:42:56', '2024-01-27 12:14:54');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 -- Dumping structure for table commenau.wishlists
@@ -1126,10 +1270,12 @@ CREATE TABLE IF NOT EXISTS `wishlists` (
   KEY `FK_wishlists_products` (`productId`),
   CONSTRAINT `FK_wishlists_products` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_wishlists_users` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table commenau.wishlists: ~0 rows (approximately)
 /*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
+INSERT INTO `wishlists` (`id`, `userId`, `productId`, `addedAt`) VALUES
+	(158, 1, 105, '2024-01-28 19:49:21');
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

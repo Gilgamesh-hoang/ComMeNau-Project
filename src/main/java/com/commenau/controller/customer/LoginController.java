@@ -1,7 +1,6 @@
 package com.commenau.controller.customer;
 
 import com.commenau.constant.SystemConstant;
-import com.commenau.dao.UserDAO;
 import com.commenau.model.User;
 import com.commenau.service.RoleService;
 import com.commenau.service.UserService;
@@ -20,6 +19,7 @@ public class LoginController extends HttpServlet {
     private UserService userService;
     @Inject
     private RoleService roleService;
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,6 +42,7 @@ public class LoginController extends HttpServlet {
         request.setAttribute("rememberMe", rememberMe);
         request.getRequestDispatcher("/customer/signin.jsp").forward(request, response);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
