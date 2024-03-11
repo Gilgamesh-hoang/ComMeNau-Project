@@ -85,7 +85,9 @@
                                 <form id="signin-form" class="l-f-o__form" method="post" action="<c:url value="/login"/>">
                                     <div class="gl-s-api">
                                         <div class="m-b-15">
-                                            <a class="gl-s-api__btn gl-s-api__btn--fb"><i class="fab fa-facebook-f"></i>
+                                            <a class="gl-s-api__btn gl-s-api__btn--fb"
+                                               href="https://www.facebook.com/dialog/oauth?client_id=1575893676531836&redirect_uri=http://localhost:8080/login-facebook&scope=email,public_profile"
+                                            ><i class="fab fa-facebook-f"></i>
                                                 <span>Đăng nhập với Facebook</span>
                                             </a>
                                         </div>
