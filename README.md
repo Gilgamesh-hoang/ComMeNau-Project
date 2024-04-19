@@ -89,11 +89,3 @@ Perform CRUD operations for orders, products, users and other entities.
 | 14 	| Favorites list.                        	|                                                          	|
 | 15 	| Blog                                   	|                                                          	|
 | 16 	| Chat with the administrator (Chatbox). 	|                                                          	|
-
-### Security
-
-The Web ComMeNau project prioritizes security with the following measures:
-
-* Bcrypt for password hashing
-* Properties file
-* Protection against SQL injection attacks
